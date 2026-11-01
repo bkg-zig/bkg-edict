@@ -1,0 +1,39 @@
+{
+  "last": {
+    "id": "COMPOSE-FIX-001",
+    "title": "Docker-Compose-Stack reparieren",
+    "owner": {
+      "agent": "build",
+      "model": "MiniMax-M3.1-Flash"
+    },
+    "status": "in_progress",
+    "started_at": "2026-10-30T23:54:36.289Z",
+    "scope": "edict/docker-compose.yml, edict/frontend/Dockerfile, edict/frontend/vite.config.ts, edict/backend/app/config.py, edict/migration/env.py",
+    "acceptance": [
+      "docker compose -f edict/docker-compose.yml up baut alle Images ohne Fehler.",
+      "Backend laeuft gegen Postgres und Redis, Alembic-Migrationen laufen durch.",
+      "Frontend-Image liefert die gebaute Oberflaeche aus."
+    ]
+  },
+  "history": [
+    {
+      "id": "RUST-PORT-001",
+      "title": "Vollständiger Rust-Port und deutsche Übersetzung",
+      "owner": {
+        "agent": "build",
+        "model": "MiniMax-M3.1-Flash"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-30T23:22:33Z",
+      "claimed_at": "2026-10-30T23:40:00Z",
+      "scope": "Bestandsaufnahme, Architekturentscheidung, Rust-Port, Übersetzung, Dokumentation, Tests und Build-Verifikation",
+      "decision": "Dioxus für Oberfläche und Server, Axum als HTTP-Schicht, SQLx/PostgreSQL, Redis Streams, Rust-CLI",
+      "acceptance": [
+        "Alle produktiven Python-Komponenten sind durch Rust ersetzt oder ihre Rust-Entsprechung ist nachweislich im produktiven Lauf nicht mehr erforderlich.",
+        "Oberflächentexte, Fehlermeldungen und die maßgebliche Dokumentation sind deutsch.",
+        "Die bestehenden HTTP-, WebSocket- und Persistenzverträge bleiben kompatibel.",
+        "Formatierung, Lint, Tests und Build laufen mit dokumentierten Befehlen erfolgreich."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/edict-core",
+    "crates/edict-db",
+    "crates/edict-server",
+    "crates/edict-worker",
+    "crates/edict-cli",
+]
+# Die Dioxus-Oberfläche wird mit dem wasm32-Ziel gebaut und bleibt deshalb
+# außerhalb der Standard-Mitglieder des Workspace.
+exclude = ["crates/edict-web"]
+default-members = [
+    "crates/edict-core",
+    "crates/edict-db",
+    "crates/edict-server",
+    "crates/edict-worker",
+    "crates/edict-cli",
+]
+
+[workspace.package]
+version = "2.0.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.83"
+
+[workspace.dependencies]
+edict-core = { path = "crates/edict-core" }
+edict-db = { path = "crates/edict-db" }
+
+anyhow = "1"
+async-trait = "0.1"
+axum = { version = "0.8", features = ["macros", "ws"] }
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4", features = ["derive", "env"] }
+dirs = "6"
+dotenvy = "0.15"
+fs2 = "0.4"
+futures-util = "0.3"
+http = "1"
+mime_guess = "2"
+quick-xml = "0.37"
+rand = "0.9"
+redis = { version = "0.32", features = ["tokio-comp", "streams", "connection-manager", "script"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+rss = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono", "json", "migrate"] }
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+tokio-stream = "0.1"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace", "fs"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+url = "2"
+uuid = { version = "1", features = ["v4", "serde"] }
+walkdir = "2"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true

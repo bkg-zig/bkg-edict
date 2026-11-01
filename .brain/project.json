@@ -1,0 +1,29 @@
+{
+  "last": {
+    "name": "Edict 2.0",
+    "objective": "Das vorhandene Edict-Projekt vollständig auf Rust umstellen und die deutschsprachige Oberfläche sowie die Projektdokumentation in deutscher Sprache bereitstellen.",
+    "repository": "/home/openchamber/dump/coding/edict-2.0",
+    "branch": "main",
+    "started_at": "2026-10-30T23:22:33Z",
+    "owner": {
+      "agent": "build",
+      "model": "MiniMax-M3.1-Flash",
+      "tools": [
+        "shell",
+        "read",
+        "edit",
+        "write",
+        "subagent",
+        "bkg"
+      ],
+      "skills": [
+        "bkg-zero",
+        "bkg-task-flow",
+        "bkg-debate",
+        "communication-style",
+        "writing-for-agents"
+      ]
+    },
+    "scope": "Bestandsaufnahme, Architekturentscheidung, Rust-Port, Übersetzung, Dokumentation, Tests und Build-Verifikation"
+  }
+}

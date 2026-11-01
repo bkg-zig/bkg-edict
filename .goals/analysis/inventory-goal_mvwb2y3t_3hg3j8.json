@@ -1,0 +1,2923 @@
+{
+  "taskId": "inventory-goal_mvwb2y3t_3hg3j8",
+  "result": {
+    "repositories": [
+      {
+        "path": "/home/openchamber/dump/coding/bkg-edict",
+        "name": "bkg-edict",
+        "type": "git",
+        "structure": {
+          "Cargo.lock": {
+            "type": "file",
+            "size": 75831
+          },
+          "crates": {
+            "edict-db": {
+              "Cargo.toml": {
+                "type": "file",
+                "size": 472
+              },
+              "migrations": {
+                "0001_init.sql": {
+                  "type": "file",
+                  "size": 5304
+                }
+              },
+              "src": {
+                "database.rs": {
+                  "type": "file",
+                  "size": 1444
+                },
+                "redis_bus.rs": {
+                  "type": "file",
+                  "size": 11738
+                },
+                "lib.rs": {
+                  "type": "file",
+                  "size": 153
+                }
+              }
+            },
+            "edict-server": {
+              "Cargo.toml": {
+                "type": "file",
+                "size": 601
+              },
+              "src": {
+                "main.rs": {
+                  "type": "file",
+                  "size": 82
+                }
+              }
+            },
+            "edict-worker": {
+              "Cargo.toml": {
+                "type": "file",
+                "size": 544
+              },
+              "src": {
+                "main.rs": {
+                  "type": "file",
+                  "size": 89
+                }
+              }
+            },
+            "edict-cli": {
+              "Cargo.toml": {
+                "type": "file",
+                "size": 469
+              },
+              "src": {
+                "main.rs": {
+                  "type": "file",
+                  "size": 84
+                }
+              }
+            },
+            "edict-core": {
+              "Cargo.toml": {
+                "type": "file",
+                "size": 325
+              },
+              "src": {
+                "state_machine.rs": {
+                  "type": "file",
+                  "size": 3845
+                },
+                "model.rs": {
+                  "type": "file",
+                  "size": 15151
+                },
+                "filestore.rs": {
+                  "type": "file",
+                  "size": 5314
+                },
+                "labels.rs": {
+                  "type": "file",
+                  "size": 2829
+                },
+                "agents.rs": {
+                  "type": "file",
+                  "size": 1972
+                },
+                "config.rs": {
+                  "type": "file",
+                  "size": 5386
+                },
+                "error.rs": {
+                  "type": "file",
+                  "size": 2515
+                },
+                "service.rs": {
+                  "type": "file",
+                  "size": 12149
+                },
+                "repository.rs": {
+                  "type": "file",
+                  "size": 4501
+                },
+                "lib.rs": {
+                  "type": "file",
+                  "size": 836
+                }
+              }
+            }
+          },
+          "Cargo.toml": {
+            "type": "file",
+            "size": 1828
+          },
+          "target": {
+            "debug": {
+              "deps": {
+                "libserde-5d70a9e48be1f415.rlib": {
+                  "type": "file",
+                  "size": 1195022
+                },
+                "zerotrie-fc0d9a5775744cde.d": {
+                  "type": "file",
+                  "size": 6604
+                },
+                "libunicode_ident-81bfb0f85f6a8742.rlib": {
+                  "type": "file",
+                  "size": 57558
+                },
+                "libnum_traits-e9615387847f4a5b.rmeta": {
+                  "type": "file",
+                  "size": 1828842
+                },
+                "libidna_adapter-235846807177c46c.rlib": {
+                  "type": "file",
+                  "size": 107770
+                },
+                "libpin_project_lite-d48789d525c49729.rmeta": {
+                  "type": "file",
+                  "size": 94756
+                },
+                "libfind_msvc_tools-2ef9e0c30a4a9e21.rmeta": {
+                  "type": "file",
+                  "size": 52788
+                },
+                "thiserror_impl-d7159352e3061bf7.d": {
+                  "type": "file",
+                  "size": 3748
+                },
+                "libsocket2-ca8210dbcb50b073.rmeta": {
+                  "type": "file",
+                  "size": 417669
+                },
+                "librand_chacha-772038d494f7ec10.rmeta": {
+                  "type": "file",
+                  "size": 152578
+                },
+                "libedict_core-2863e7cbb6ee737b.rlib": {
+                  "type": "file",
+                  "size": 3361936
+                },
+                "libsignal_hook_registry-1449f61b6fabbdc1.rmeta": {
+                  "type": "file",
+                  "size": 79116
+                },
+                "fastrand-34a764052e3edbb7.d": {
+                  "type": "file",
+                  "size": 666
+                },
+                "libsubtle-1a1bdfe5db79d7a4.rmeta": {
+                  "type": "file",
+                  "size": 119626
+                },
+                "libserde_json-305f83a661d4e08c.rmeta": {
+                  "type": "file",
+                  "size": 1620456
+                },
+                "edict_core-62eebd5b095c8d12.d": {
+                  "type": "file",
+                  "size": 1178
+                },
+                "libpotential_utf-9a6143771d86261e.rlib": {
+                  "type": "file",
+                  "size": 166794
+                },
+                "writeable-253f7d22a4a6e525.d": {
+                  "type": "file",
+                  "size": 3564
+                },
+                "shlex-221f6492014c5dba.d": {
+                  "type": "file",
+                  "size": 1030
+                },
+                "sha2-7f3510439730360c.d": {
+                  "type": "file",
+                  "size": 3834
+                },
+                "scopeguard-72077e85bdc77ec2.d": {
+                  "type": "file",
+                  "size": 680
+                },
+                "iana_time_zone-263634509012496c.d": {
+                  "type": "file",
+                  "size": 1590
+                },
+                "futures_core-3b39bc7c8546ea11.d": {
+                  "type": "file",
+                  "size": 3384
+                },
+                "libdisplaydoc-17b443973ac6c7cf.so": {
+                  "type": "file",
+                  "size": 8879504
+                },
+                "libsqlx_postgres-0d796c73a0e81a61.rmeta": {
+                  "type": "file",
+                  "size": 3522962
+                },
+                "tinystr-376fbad8dc8c73e8.d": {
+                  "type": "file",
+                  "size": 3454
+                },
+                "futures_sink-cdabf34dc84b79fc.d": {
+                  "type": "file",
+                  "size": 698
+                },
+                "liblibc-ca95d298963f410e.rmeta": {
+                  "type": "file",
+                  "size": 4378875
+                },
+                "libserde-38010616223ac20f.rlib": {
+                  "type": "file",
+                  "size": 1194806
+                },
+                "libthiserror-d77e1b97487706ca.rlib": {
+                  "type": "file",
+                  "size": 33376
+                },
+                "libsignal_hook_registry-1449f61b6fabbdc1.rlib": {
+                  "type": "file",
+                  "size": 800068
+                },
+                "liburl-3d2e9081ecb091a1.rmeta": {
+                  "type": "file",
+                  "size": 371107
+                },
+                "hkdf-ec4c90ee45634e0e.d": {
+                  "type": "file",
+                  "size": 1420
+                },
+                "tracing_core-5939259b70f8dcc6.d": {
+                  "type": "file",
+                  "size": 4511
+                },
+                "displaydoc-17b443973ac6c7cf.d": {
+                  "type": "file",
+                  "size": 1388
+                },
+                "libchrono-7b32d0183450ef8b.rlib": {
+                  "type": "file",
+                  "size": 6128366
+                },
+                "rustversion-330082f51b296de7.d": {
+                  "type": "file",
+                  "size": 4643
+                },
+                "slab-1fe17daa02024b00.d": {
+                  "type": "file",
+                  "size": 1035
+                },
+                "rustls_pki_types-372137854ec47c86.d": {
+                  "type": "file",
+                  "size": 11973
+                },
+                "libpercent_encoding-70f9167c8155d3c0.rmeta": {
+                  "type": "file",
+                  "size": 51737
+                },
+                "zerocopy-8e65088ee55d853c.d": {
+                  "type": "file",
+                  "size": 8256
+                },
+                "libsha1_smol-36ce55d3c1b2241e.rlib": {
+                  "type": "file",
+                  "size": 320300
+                },
+                "libbyteorder-c2eb3758a373a88b.rmeta": {
+                  "type": "file",
+                  "size": 289032
+                },
+                "serde_json-906cb9383affae14.d": {
+                  "type": "file",
+                  "size": 6991
+                },
+                "crc_catalog-98429af9fe93fd35.d": {
+                  "type": "file",
+                  "size": 1517
+                },
+                "typenum-93390c974fd6012d.d": {
+                  "type": "file",
+                  "size": 5543
+                },
+                "libfutures_channel-92d33592e9092c4e.rlib": {
+                  "type": "file",
+                  "size": 298698
+                },
+                "libunicode_bidi-5e71f7e6aa303bed.rlib": {
+                  "type": "file",
+                  "size": 2411884
+                },
+                "libasync_trait-4501b968d4de5fa7.so": {
+                  "type": "file",
+                  "size": 9409864
+                },
+                "libtokio_util-9ee28f9ba2347557.rlib": {
+                  "type": "file",
+                  "size": 2079064
+                },
+                "libicu_collections-04d234fbdc8078d3.rmeta": {
+                  "type": "file",
+                  "size": 454785
+                },
+                "libwebpki_roots-b95c52a2be4a1576.rmeta": {
+                  "type": "file",
+                  "size": 137586
+                },
+                "libzerovec_derive-c58744c4780cc510.so": {
+                  "type": "file",
+                  "size": 9168296
+                },
+                "libhmac-e04c355cecde7378.rlib": {
+                  "type": "file",
+                  "size": 50246
+                },
+                "librustls-0150f9915ecd43e5.rlib": {
+                  "type": "file",
+                  "size": 29047396
+                },
+                "foldhash-6525bf1d272e1444.d": {
+                  "type": "file",
+                  "size": 1857
+                },
+                "libtypenum-93390c974fd6012d.rmeta": {
+                  "type": "file",
+                  "size": 2782981
+                },
+                "hex-b0757a7bc7b6b2d3.d": {
+                  "type": "file",
+                  "size": 1008
+                },
+                "libtokio-dbd56717abfa611f.rmeta": {
+                  "type": "file",
+                  "size": 9456378
+                },
+                "libyoke-4ac03fbeeb7d5f44.rmeta": {
+                  "type": "file",
+                  "size": 242065
+                },
+                "sha1_smol-36ce55d3c1b2241e.d": {
+                  "type": "file",
+                  "size": 1070
+                },
+                "libwriteable-253f7d22a4a6e525.rlib": {
+                  "type": "file",
+                  "size": 443436
+                },
+                "libarc_swap-a3322ab279667455.rmeta": {
+                  "type": "file",
+                  "size": 392293
+                },
+                "zmij-017fa04e9bfbd0ce.d": {
+                  "type": "file",
+                  "size": 1440
+                },
+                "libserde-38010616223ac20f.rmeta": {
+                  "type": "file",
+                  "size": 842419
+                },
+                "libfutures_sink-cdabf34dc84b79fc.rmeta": {
+                  "type": "file",
+                  "size": 31668
+                },
+                "libfutures_intrusive-8f1307e4953c79bd.rlib": {
+                  "type": "file",
+                  "size": 1205766
+                },
+                "libparking_lot-6d473c39322374be.rmeta": {
+                  "type": "file",
+                  "size": 207467
+                },
+                "libsyn-34ce98f50cfd0d7f.rlib": {
+                  "type": "file",
+                  "size": 12960474
+                },
+                "proc_macro2-48009055b595a344.d": {
+                  "type": "file",
+                  "size": 5089
+                },
+                "libwebpki-d549b0389bf47d82.rmeta": {
+                  "type": "file",
+                  "size": 601027
+                },
+                "libsmallvec-10f66573dde7de05.rlib": {
+                  "type": "file",
+                  "size": 266060
+                },
+                "libicu_normalizer_data-9f8db4e471f7462f.rlib": {
+                  "type": "file",
+                  "size": 444532
+                },
+                "libfs2-9a5423ba41233a32.rlib": {
+                  "type": "file",
+                  "size": 160226
+                },
+                "futures_intrusive-8f1307e4953c79bd.d": {
+                  "type": "file",
+                  "size": 10682
+                },
+                "libbase64-91e625063911c6eb.rmeta": {
+                  "type": "file",
+                  "size": 315911
+                },
+                "libsmallvec-10f66573dde7de05.rmeta": {
+                  "type": "file",
+                  "size": 228380
+                },
+                "libtracing_core-5939259b70f8dcc6.rlib": {
+                  "type": "file",
+                  "size": 2225394
+                },
+                "liblibc-ca95d298963f410e.rlib": {
+                  "type": "file",
+                  "size": 4475422
+                },
+                "getrandom-0f9ff6b45a2b1a3e.d": {
+                  "type": "file",
+                  "size": 3644
+                },
+                "utf_types-c1159d532b4a9d0f.d": {
+                  "type": "file",
+                  "size": 1471
+                },
+                "libproc_macro2-48009055b595a344.rmeta": {
+                  "type": "file",
+                  "size": 351382
+                },
+                "hashbrown-2a1ab2b37b18b15d.d": {
+                  "type": "file",
+                  "size": 7016
+                },
+                "backon-88fab315df839955.d": {
+                  "type": "file",
+                  "size": 5339
+                },
+                "libicu_provider-8df87f3e710d38f3.rlib": {
+                  "type": "file",
+                  "size": 824906
+                },
+                "libform_urlencoded-c9042f133eeb6455.rmeta": {
+                  "type": "file",
+                  "size": 36159
+                },
+                "libhex-b0757a7bc7b6b2d3.rlib": {
+                  "type": "file",
+                  "size": 402592
+                },
+                "libchrono-ea282dc13e61a01d.rlib": {
+                  "type": "file",
+                  "size": 6139190
+                },
+                "icu_normalizer_data-9f8db4e471f7462f.d": {
+                  "type": "file",
+                  "size": 5171
+                },
+                "libshlex-221f6492014c5dba.rmeta": {
+                  "type": "file",
+                  "size": 49786
+                },
+                "event_listener-dde3b2c5511c229a.d": {
+                  "type": "file",
+                  "size": 1570
+                },
+                "webpki-d549b0389bf47d82.d": {
+                  "type": "file",
+                  "size": 13931
+                },
+                "litemap-9458e2b81b90860d.d": {
+                  "type": "file",
+                  "size": 1890
+                },
+                "sqlx_postgres-0d796c73a0e81a61.d": {
+                  "type": "file",
+                  "size": 43331
+                },
+                "libsyn-49747381701f24cf.rmeta": {
+                  "type": "file",
+                  "size": 4345841
+                },
+                "async_trait-5f88292a97cd291d.d": {
+                  "type": "file",
+                  "size": 2687
+                },
+                "libautocfg-2bddf2f80f691adf.rmeta": {
+                  "type": "file",
+                  "size": 82984
+                },
+                "sqlx-21cf3acb3f521b5c.d": {
+                  "type": "file",
+                  "size": 1011
+                },
+                "thiserror_impl-c67c1a531d02ab87.d": {
+                  "type": "file",
+                  "size": 3748
+                },
+                "tokio_util-9ee28f9ba2347557.d": {
+                  "type": "file",
+                  "size": 17778
+                },
+                "quote-8a050a42cff7de9b.d": {
+                  "type": "file",
+                  "size": 3047
+                },
+                "liblock_api-ea1d97961bc41a55.rlib": {
+                  "type": "file",
+                  "size": 397332
+                },
+                "libsqlx_core-970445692e10e55b.rmeta": {
+                  "type": "file",
+                  "size": 2758550
+                },
+                "version_check-79d478a2d6ba8ed6.d": {
+                  "type": "file",
+                  "size": 1964
+                },
+                "libserde_core-ed1ad932e2194d5c.rmeta": {
+                  "type": "file",
+                  "size": 4866739
+                },
+                "librand_core-0a4935038c60209c.rmeta": {
+                  "type": "file",
+                  "size": 134875
+                },
+                "combine-82d90a37a6194613.d": {
+                  "type": "file",
+                  "size": 9953
+                },
+                "futures_task-b3d9cb52b6b50815.d": {
+                  "type": "file",
+                  "size": 3268
+                },
+                "libppv_lite86-d9434cbaaaf65c7a.rlib": {
+                  "type": "file",
+                  "size": 1167442
+                },
+                "libsha1_smol-36ce55d3c1b2241e.rmeta": {
+                  "type": "file",
+                  "size": 62301
+                },
+                "zerofrom-c23cc60b0dc7d769.d": {
+                  "type": "file",
+                  "size": 1500
+                },
+                "libsynstructure-772bbb86847e3d8d.rlib": {
+                  "type": "file",
+                  "size": 1546488
+                },
+                "crossbeam_queue-d7d0750d275ff518.d": {
+                  "type": "file",
+                  "size": 1617
+                },
+                "libserde_json-305f83a661d4e08c.rlib": {
+                  "type": "file",
+                  "size": 4872764
+                },
+                "uuid-677c89edaed90d87.d": {
+                  "type": "file",
+                  "size": 4969
+                },
+                "libnum_traits-63f4a6e85539f525.rmeta": {
+                  "type": "file",
+                  "size": 1648564
+                },
+                "libcfg_if-0fbeb365b695d2ff.rlib": {
+                  "type": "file",
+                  "size": 8114
+                },
+                "libform_urlencoded-c9042f133eeb6455.rlib": {
+                  "type": "file",
+                  "size": 234280
+                },
+                "libhashbrown-2a1ab2b37b18b15d.rmeta": {
+                  "type": "file",
+                  "size": 1231951
+                },
+                "libunicode_bidi-5e71f7e6aa303bed.rmeta": {
+                  "type": "file",
+                  "size": 525968
+                },
+                "libcrc-5c212dd01e8f7f86.rlib": {
+                  "type": "file",
+                  "size": 480980
+                },
+                "libbase64-91e625063911c6eb.rlib": {
+                  "type": "file",
+                  "size": 729498
+                },
+                "icu_provider-8df87f3e710d38f3.d": {
+                  "type": "file",
+                  "size": 5814
+                },
+                "libzmij-017fa04e9bfbd0ce.rlib": {
+                  "type": "file",
+                  "size": 668274
+                },
+                "libsubtle-1a1bdfe5db79d7a4.rlib": {
+                  "type": "file",
+                  "size": 130198
+                },
+                "liblitemap-9458e2b81b90860d.rmeta": {
+                  "type": "file",
+                  "size": 282503
+                },
+                "libsyn-34ce98f50cfd0d7f.rmeta": {
+                  "type": "file",
+                  "size": 5258289
+                },
+                "subtle-1a1bdfe5db79d7a4.d": {
+                  "type": "file",
+                  "size": 652
+                },
+                "libfutures_util-f9900c094c8f3aa2.rlib": {
+                  "type": "file",
+                  "size": 6662612
+                },
+                "libppv_lite86-d9434cbaaaf65c7a.rmeta": {
+                  "type": "file",
+                  "size": 1158812
+                },
+                "libcfg_if-0fbeb365b695d2ff.rmeta": {
+                  "type": "file",
+                  "size": 5898
+                },
+                "libtokio_stream-068d7ccbebcbbbdf.rmeta": {
+                  "type": "file",
+                  "size": 874702
+                },
+                "libstringprep-f7ef05eff86f707d.rlib": {
+                  "type": "file",
+                  "size": 3089550
+                },
+                "bitflags-8a25d7f34d514d98.d": {
+                  "type": "file",
+                  "size": 3108
+                },
+                "icu_normalizer-a36df2fcc290868c.d": {
+                  "type": "file",
+                  "size": 2003
+                },
+                "libicu_normalizer-a36df2fcc290868c.rmeta": {
+                  "type": "file",
+                  "size": 597058
+                },
+                "libcpufeatures-d03b0f93a485ccc1.rmeta": {
+                  "type": "file",
+                  "size": 39360
+                },
+                "tinyvec-5afed8586f117ec7.d": {
+                  "type": "file",
+                  "size": 3189
+                },
+                "libfs2-9a5423ba41233a32.rmeta": {
+                  "type": "file",
+                  "size": 31076
+                },
+                "memchr-2974315c36bbf455.d": {
+                  "type": "file",
+                  "size": 11922
+                },
+                "idna_adapter-235846807177c46c.d": {
+                  "type": "file",
+                  "size": 694
+                },
+                "libzerotrie-fc0d9a5775744cde.rmeta": {
+                  "type": "file",
+                  "size": 453844
+                },
+                "libmio-a163f743e9731f15.rlib": {
+                  "type": "file",
+                  "size": 1779980
+                },
+                "libunicode_properties-ae5c26a41a65d807.rlib": {
+                  "type": "file",
+                  "size": 607444
+                },
+                "libparking-46c3f7e393bb8170.rlib": {
+                  "type": "file",
+                  "size": 220206
+                },
+                "libtokio_macros-fef03fe70dd93dcb.so": {
+                  "type": "file",
+                  "size": 8771880
+                },
+                "indexmap-db09b047f45b1acf.d": {
+                  "type": "file",
+                  "size": 7735
+                },
+                "md5-9d0f928d57e921f1.d": {
+                  "type": "file",
+                  "size": 1842
+                },
+                "parking-46c3f7e393bb8170.d": {
+                  "type": "file",
+                  "size": 659
+                },
+                "bytes-fa84c749ecf7f594.d": {
+                  "type": "file",
+                  "size": 7538
+                },
+                "libitoa-b101c554dc96d6c2.rmeta": {
+                  "type": "file",
+                  "size": 61652
+                },
+                "syn-49747381701f24cf.d": {
+                  "type": "file",
+                  "size": 20618
+                },
+                "libzmij-017fa04e9bfbd0ce.rmeta": {
+                  "type": "file",
+                  "size": 421655
+                },
+                "libredis-dd0a10c7fd454634.rmeta": {
+                  "type": "file",
+                  "size": 8347108
+                },
+                "libidna-e491feb74468fa78.rmeta": {
+                  "type": "file",
+                  "size": 244027
+                },
+                "libfind_msvc_tools-2ef9e0c30a4a9e21.rlib": {
+                  "type": "file",
+                  "size": 329426
+                },
+                "zeroize-cd5dea5b4f2ac696.d": {
+                  "type": "file",
+                  "size": 2247
+                },
+                "smallvec-10f66573dde7de05.d": {
+                  "type": "file",
+                  "size": 670
+                },
+                "libasync_trait-5f88292a97cd291d.so": {
+                  "type": "file",
+                  "size": 9401984
+                },
+                "libfutures_io-7027b38a831f0763.rlib": {
+                  "type": "file",
+                  "size": 216432
+                },
+                "find_msvc_tools-2ef9e0c30a4a9e21.d": {
+                  "type": "file",
+                  "size": 1593
+                },
+                "generic_array-f3252ffe899b8ae6.d": {
+                  "type": "file",
+                  "size": 3243
+                },
+                "synstructure-772bbb86847e3d8d.d": {
+                  "type": "file",
+                  "size": 1119
+                },
+                "libsyn-95c37f75d08d26c9.rlib": {
+                  "type": "file",
+                  "size": 9779040
+                },
+                "icu_locale_core-b57eaddde9def39b.d": {
+                  "type": "file",
+                  "size": 31710
+                },
+                "libsha2-7f3510439730360c.rmeta": {
+                  "type": "file",
+                  "size": 659097
+                },
+                "libthiserror-084517dc87b77849.rmeta": {
+                  "type": "file",
+                  "size": 31139
+                },
+                "librand_chacha-772038d494f7ec10.rlib": {
+                  "type": "file",
+                  "size": 1270860
+                },
+                "libnum_traits-63f4a6e85539f525.rlib": {
+                  "type": "file",
+                  "size": 1831256
+                },
+                "fs2-9a5423ba41233a32.d": {
+                  "type": "file",
+                  "size": 1004
+                },
+                "librustls-0150f9915ecd43e5.rmeta": {
+                  "type": "file",
+                  "size": 4251197
+                },
+                "libzeroize-cd5dea5b4f2ac696.rlib": {
+                  "type": "file",
+                  "size": 530298
+                },
+                "libhashbrown-d679f394939754b7.rlib": {
+                  "type": "file",
+                  "size": 1285576
+                },
+                "libthiserror-084517dc87b77849.rlib": {
+                  "type": "file",
+                  "size": 33376
+                },
+                "yoke_derive-5916189e7841c8f0.d": {
+                  "type": "file",
+                  "size": 1119
+                },
+                "librand-fc460462e98383c4.rlib": {
+                  "type": "file",
+                  "size": 1732118
+                },
+                "libzerocopy-8e65088ee55d853c.rmeta": {
+                  "type": "file",
+                  "size": 14592963
+                },
+                "syn-95c37f75d08d26c9.d": {
+                  "type": "file",
+                  "size": 18674
+                },
+                "libindexmap-db09b047f45b1acf.rlib": {
+                  "type": "file",
+                  "size": 1325144
+                },
+                "libgetrandom-b1d33a9baae31606.rmeta": {
+                  "type": "file",
+                  "size": 81422
+                },
+                "libbackon-88fab315df839955.rlib": {
+                  "type": "file",
+                  "size": 336224
+                },
+                "libutf8_iter-5e533fc2f687e78a.rlib": {
+                  "type": "file",
+                  "size": 180620
+                },
+                "once_cell-58dd468cb35436f8.d": {
+                  "type": "file",
+                  "size": 1491
+                },
+                "liblock_api-ea1d97961bc41a55.rmeta": {
+                  "type": "file",
+                  "size": 388803
+                },
+                "libbytes-fa84c749ecf7f594.rmeta": {
+                  "type": "file",
+                  "size": 885456
+                },
+                "libfutures_intrusive-8f1307e4953c79bd.rmeta": {
+                  "type": "file",
+                  "size": 807981
+                },
+                "webpki_roots-510d5023b93db576.d": {
+                  "type": "file",
+                  "size": 702
+                },
+                "libtokio_stream-068d7ccbebcbbbdf.rlib": {
+                  "type": "file",
+                  "size": 1102092
+                },
+                "errno-6a405010a76bf51b.d": {
+                  "type": "file",
+                  "size": 1034
+                },
+                "libhex-b0757a7bc7b6b2d3.rmeta": {
+                  "type": "file",
+                  "size": 342009
+                },
+                "parking_lot-6d473c39322374be.d": {
+                  "type": "file",
+                  "size": 5771
+                },
+                "libsynstructure-772bbb86847e3d8d.rmeta": {
+                  "type": "file",
+                  "size": 240415
+                },
+                "libring-7709deb18a11824f.rmeta": {
+                  "type": "file",
+                  "size": 1987001
+                },
+                "libcrossbeam_utils-ba3f3f577f521729.rlib": {
+                  "type": "file",
+                  "size": 1429442
+                },
+                "libcrc_catalog-98429af9fe93fd35.rlib": {
+                  "type": "file",
+                  "size": 108788
+                },
+                "libbackon-88fab315df839955.rmeta": {
+                  "type": "file",
+                  "size": 212689
+                },
+                "libparking_lot_core-41822da64a02524e.rmeta": {
+                  "type": "file",
+                  "size": 173123
+                },
+                "dotenvy-33ad28f03010c857.d": {
+                  "type": "file",
+                  "size": 2247
+                },
+                "liballocator_api2-c5f47beab62f0ed2.rmeta": {
+                  "type": "file",
+                  "size": 674804
+                },
+                "liblog-0cab3ca1da7238a2.rlib": {
+                  "type": "file",
+                  "size": 333906
+                },
+                "libpotential_utf-9a6143771d86261e.rmeta": {
+                  "type": "file",
+                  "size": 44898
+                },
+                "libversion_check-79d478a2d6ba8ed6.rmeta": {
+                  "type": "file",
+                  "size": 76505
+                },
+                "libhashlink-a6918d08d3f86b34.rmeta": {
+                  "type": "file",
+                  "size": 462054
+                },
+                "libuntrusted-bea8355399956399.rlib": {
+                  "type": "file",
+                  "size": 54074
+                },
+                "parking_lot_core-41822da64a02524e.d": {
+                  "type": "file",
+                  "size": 3476
+                },
+                "libcc-36ba111b830d8116.rmeta": {
+                  "type": "file",
+                  "size": 709233
+                },
+                "libunicode_normalization-4c00fbecaa9fe415.rlib": {
+                  "type": "file",
+                  "size": 2054350
+                },
+                "libeither-c1a6c1fe049ac73c.rmeta": {
+                  "type": "file",
+                  "size": 311249
+                },
+                "libedict_core-2863e7cbb6ee737b.rmeta": {
+                  "type": "file",
+                  "size": 724862
+                },
+                "libfutures_sink-cdabf34dc84b79fc.rlib": {
+                  "type": "file",
+                  "size": 33918
+                },
+                "tracing-22e1fb5888ac5056.d": {
+                  "type": "file",
+                  "size": 3534
+                },
+                "liblitemap-9458e2b81b90860d.rlib": {
+                  "type": "file",
+                  "size": 290710
+                },
+                "libgetrandom-0f9ff6b45a2b1a3e.rlib": {
+                  "type": "file",
+                  "size": 297970
+                },
+                "serde_derive-bb914fe359b7c4d8.d": {
+                  "type": "file",
+                  "size": 9585
+                },
+                "libfastrand-34a764052e3edbb7.rlib": {
+                  "type": "file",
+                  "size": 107150
+                },
+                "libmemchr-d889e926a647c184.rmeta": {
+                  "type": "file",
+                  "size": 1310297
+                },
+                "libutf_types-c1159d532b4a9d0f.rlib": {
+                  "type": "file",
+                  "size": 653706
+                },
+                "libsqlx-21cf3acb3f521b5c.rlib": {
+                  "type": "file",
+                  "size": 26478
+                },
+                "libzerovec-355263fb8164dc0c.rmeta": {
+                  "type": "file",
+                  "size": 1113207
+                },
+                "libcrc-5c212dd01e8f7f86.rmeta": {
+                  "type": "file",
+                  "size": 436629
+                },
+                "libmd5-9d0f928d57e921f1.rmeta": {
+                  "type": "file",
+                  "size": 64359
+                },
+                "libhkdf-ec4c90ee45634e0e.rlib": {
+                  "type": "file",
+                  "size": 57290
+                },
+                "ring-7709deb18a11824f.d": {
+                  "type": "file",
+                  "size": 64602
+                },
+                "libhmac-e04c355cecde7378.rmeta": {
+                  "type": "file",
+                  "size": 48034
+                },
+                "libunicode_normalization-4c00fbecaa9fe415.rmeta": {
+                  "type": "file",
+                  "size": 1738684
+                },
+                "libredis-dd0a10c7fd454634.rlib": {
+                  "type": "file",
+                  "size": 36349240
+                },
+                "libsyn-49747381701f24cf.rlib": {
+                  "type": "file",
+                  "size": 11998846
+                },
+                "libfutures_util-f9900c094c8f3aa2.rmeta": {
+                  "type": "file",
+                  "size": 5951972
+                },
+                "signal_hook_registry-1449f61b6fabbdc1.d": {
+                  "type": "file",
+                  "size": 1664
+                },
+                "libparking_lot-6d473c39322374be.rlib": {
+                  "type": "file",
+                  "size": 1458082
+                },
+                "syn-34ce98f50cfd0d7f.d": {
+                  "type": "file",
+                  "size": 20984
+                },
+                "autocfg-2bddf2f80f691adf.d": {
+                  "type": "file",
+                  "size": 1846
+                },
+                "libcrossbeam_utils-ba3f3f577f521729.rmeta": {
+                  "type": "file",
+                  "size": 797230
+                },
+                "thiserror-084517dc87b77849.d": {
+                  "type": "file",
+                  "size": 2827
+                },
+                "libfutures_channel-92d33592e9092c4e.rmeta": {
+                  "type": "file",
+                  "size": 260389
+                },
+                "libbyteorder-c2eb3758a373a88b.rlib": {
+                  "type": "file",
+                  "size": 300186
+                },
+                "libslab-1fe17daa02024b00.rlib": {
+                  "type": "file",
+                  "size": 153284
+                },
+                "libblock_buffer-a5e2f621a3d336b4.rmeta": {
+                  "type": "file",
+                  "size": 51540
+                },
+                "libtracing_attributes-206dde4a97de8512.so": {
+                  "type": "file",
+                  "size": 9640504
+                },
+                "librustls_pki_types-372137854ec47c86.rmeta": {
+                  "type": "file",
+                  "size": 404485
+                },
+                "tokio_macros-fef03fe70dd93dcb.d": {
+                  "type": "file",
+                  "size": 1115
+                },
+                "libuuid-677c89edaed90d87.rlib": {
+                  "type": "file",
+                  "size": 1285106
+                },
+                "librustls_pki_types-372137854ec47c86.rlib": {
+                  "type": "file",
+                  "size": 1434786
+                },
+                "libzerovec-355263fb8164dc0c.rlib": {
+                  "type": "file",
+                  "size": 1243204
+                },
+                "libblock_buffer-a5e2f621a3d336b4.rlib": {
+                  "type": "file",
+                  "size": 58198
+                },
+                "home-b7233b550f4ffb0a.d": {
+                  "type": "file",
+                  "size": 1019
+                },
+                "libicu_locale_core-b57eaddde9def39b.rmeta": {
+                  "type": "file",
+                  "size": 1591737
+                },
+                "socket2-ca8210dbcb50b073.d": {
+                  "type": "file",
+                  "size": 2267
+                },
+                "librand_core-0a4935038c60209c.rlib": {
+                  "type": "file",
+                  "size": 352182
+                },
+                "cpufeatures-d03b0f93a485ccc1.d": {
+                  "type": "file",
+                  "size": 1096
+                },
+                "allocator_api2-c5f47beab62f0ed2.d": {
+                  "type": "file",
+                  "size": 7274
+                },
+                "webpki_roots-b95c52a2be4a1576.d": {
+                  "type": "file",
+                  "size": 698
+                },
+                "num_traits-63f4a6e85539f525.d": {
+                  "type": "file",
+                  "size": 8250
+                },
+                "libserde_derive-bb914fe359b7c4d8.so": {
+                  "type": "file",
+                  "size": 10287240
+                },
+                "libquote-8a050a42cff7de9b.rmeta": {
+                  "type": "file",
+                  "size": 275715
+                },
+                "libserde-5d70a9e48be1f415.rmeta": {
+                  "type": "file",
+                  "size": 842634
+                },
+                "libhashbrown-2a1ab2b37b18b15d.rlib": {
+                  "type": "file",
+                  "size": 1345896
+                },
+                "libcrypto_common-e1af634e9565acc5.rlib": {
+                  "type": "file",
+                  "size": 33954
+                },
+                "libunicode_properties-ae5c26a41a65d807.rmeta": {
+                  "type": "file",
+                  "size": 504203
+                },
+                "libzerocopy-8e65088ee55d853c.rlib": {
+                  "type": "file",
+                  "size": 14908554
+                },
+                "libuuid-dce7787b1935e476.rmeta": {
+                  "type": "file",
+                  "size": 584844
+                },
+                "tokio_stream-068d7ccbebcbbbdf.d": {
+                  "type": "file",
+                  "size": 17206
+                },
+                "idna-e491feb74468fa78.d": {
+                  "type": "file",
+                  "size": 1813
+                },
+                "libatoi-ea58707f95fa327a.rmeta": {
+                  "type": "file",
+                  "size": 58569
+                },
+                "libicu_normalizer-a36df2fcc290868c.rlib": {
+                  "type": "file",
+                  "size": 2554044
+                },
+                "tokio-dbd56717abfa611f.d": {
+                  "type": "file",
+                  "size": 126352
+                },
+                "libarc_swap-a3322ab279667455.rlib": {
+                  "type": "file",
+                  "size": 553496
+                },
+                "libchrono-7b32d0183450ef8b.rmeta": {
+                  "type": "file",
+                  "size": 2306093
+                },
+                "libbytes-fa84c749ecf7f594.rlib": {
+                  "type": "file",
+                  "size": 1790940
+                },
+                "stable_deref_trait-487652ab9e788b36.d": {
+                  "type": "file",
+                  "size": 736
+                },
+                "libindexmap-db09b047f45b1acf.rmeta": {
+                  "type": "file",
+                  "size": 1307197
+                },
+                "libzerofrom-c23cc60b0dc7d769.rlib": {
+                  "type": "file",
+                  "size": 98022
+                },
+                "libequivalent-636655ea09f8262a.rmeta": {
+                  "type": "file",
+                  "size": 8564
+                },
+                "libsqlx-21cf3acb3f521b5c.rmeta": {
+                  "type": "file",
+                  "size": 24268
+                },
+                "chrono-7b32d0183450ef8b.d": {
+                  "type": "file",
+                  "size": 14785
+                },
+                "libcc-36ba111b830d8116.rlib": {
+                  "type": "file",
+                  "size": 4079632
+                },
+                "libslab-1fe17daa02024b00.rmeta": {
+                  "type": "file",
+                  "size": 145723
+                },
+                "libcombine-82d90a37a6194613.rlib": {
+                  "type": "file",
+                  "size": 6290970
+                },
+                "libnum_integer-2ce0144fc545dd18.rlib": {
+                  "type": "file",
+                  "size": 673774
+                },
+                "libparking_lot_core-41822da64a02524e.rlib": {
+                  "type": "file",
+                  "size": 505244
+                },
+                "libidna_adapter-235846807177c46c.rmeta": {
+                  "type": "file",
+                  "size": 33683
+                },
+                "libfastrand-34a764052e3edbb7.rmeta": {
+                  "type": "file",
+                  "size": 101476
+                },
+                "libscopeguard-72077e85bdc77ec2.rmeta": {
+                  "type": "file",
+                  "size": 26108
+                },
+                "libquote-8a050a42cff7de9b.rlib": {
+                  "type": "file",
+                  "size": 516680
+                },
+                "liballocator_api2-c5f47beab62f0ed2.rlib": {
+                  "type": "file",
+                  "size": 709362
+                },
+                "libryu-d00227c60adedaf5.rlib": {
+                  "type": "file",
+                  "size": 301110
+                },
+                "ryu-d00227c60adedaf5.d": {
+                  "type": "file",
+                  "size": 5066
+                },
+                "libicu_properties_data-cfdd18647bcc9694.rlib": {
+                  "type": "file",
+                  "size": 2002788
+                },
+                "libnum_bigint-90a7b9dcdde50d0b.rmeta": {
+                  "type": "file",
+                  "size": 2040748
+                },
+                "serde_core-1e9d9efd87f47fd3.d": {
+                  "type": "file",
+                  "size": 8588
+                },
+                "lock_api-ea1d97961bc41a55.d": {
+                  "type": "file",
+                  "size": 1885
+                },
+                "whoami-0d626766d222cf6e.d": {
+                  "type": "file",
+                  "size": 4614
+                },
+                "libyoke_derive-5916189e7841c8f0.so": {
+                  "type": "file",
+                  "size": 9608264
+                },
+                "libserde_core-1e9d9efd87f47fd3.rlib": {
+                  "type": "file",
+                  "size": 5362798
+                },
+                "libsyn-95c37f75d08d26c9.rmeta": {
+                  "type": "file",
+                  "size": 3309748
+                },
+                "liblog-0cab3ca1da7238a2.rmeta": {
+                  "type": "file",
+                  "size": 192436
+                },
+                "libatoi-ea58707f95fa327a.rlib": {
+                  "type": "file",
+                  "size": 63596
+                },
+                "libserde_core-ed1ad932e2194d5c.rlib": {
+                  "type": "file",
+                  "size": 5381592
+                },
+                "hashlink-a6918d08d3f86b34.d": {
+                  "type": "file",
+                  "size": 1969
+                },
+                "libproc_macro2-48009055b595a344.rlib": {
+                  "type": "file",
+                  "size": 1259224
+                },
+                "libdigest-107559037dc60319.rmeta": {
+                  "type": "file",
+                  "size": 193817
+                },
+                "libversion_check-79d478a2d6ba8ed6.rlib": {
+                  "type": "file",
+                  "size": 465860
+                },
+                "mio-a163f743e9731f15.d": {
+                  "type": "file",
+                  "size": 14160
+                },
+                "libzeroize-cd5dea5b4f2ac696.rmeta": {
+                  "type": "file",
+                  "size": 428389
+                },
+                "libhashbrown-d679f394939754b7.rmeta": {
+                  "type": "file",
+                  "size": 1218597
+                },
+                "potential_utf-9a6143771d86261e.d": {
+                  "type": "file",
+                  "size": 1531
+                },
+                "libsqlx_core-970445692e10e55b.rlib": {
+                  "type": "file",
+                  "size": 8733380
+                },
+                "libonce_cell-58dd468cb35436f8.rmeta": {
+                  "type": "file",
+                  "size": 196890
+                },
+                "libthiserror_impl-c67c1a531d02ab87.so": {
+                  "type": "file",
+                  "size": 9289232
+                },
+                "libedict_db-d0fda51146593271.rmeta": {
+                  "type": "file",
+                  "size": 3338
+                },
+                "zerofrom_derive-b17b86b24b9a34f6.d": {
+                  "type": "file",
+                  "size": 832
+                },
+                "liberrno-6a405010a76bf51b.rmeta": {
+                  "type": "file",
+                  "size": 17468
+                },
+                "libunicode_ident-81bfb0f85f6a8742.rmeta": {
+                  "type": "file",
+                  "size": 34688
+                },
+                "serde_json-305f83a661d4e08c.d": {
+                  "type": "file",
+                  "size": 7396
+                },
+                "itoa-b101c554dc96d6c2.d": {
+                  "type": "file",
+                  "size": 1039
+                },
+                "liburl-3d2e9081ecb091a1.rlib": {
+                  "type": "file",
+                  "size": 2683920
+                },
+                "libutf_types-c1159d532b4a9d0f.rmeta": {
+                  "type": "file",
+                  "size": 626883
+                },
+                "libpercent_encoding-70f9167c8155d3c0.rlib": {
+                  "type": "file",
+                  "size": 278296
+                },
+                "yoke-4ac03fbeeb7d5f44.d": {
+                  "type": "file",
+                  "size": 3826
+                },
+                "edict_core-d1c1f807ce0bcc94.d": {
+                  "type": "file",
+                  "size": 1613
+                },
+                "utf8_iter-5e533fc2f687e78a.d": {
+                  "type": "file",
+                  "size": 3095
+                },
+                "libeither-c1a6c1fe049ac73c.rlib": {
+                  "type": "file",
+                  "size": 318232
+                },
+                "hashbrown-d679f394939754b7.d": {
+                  "type": "file",
+                  "size": 7060
+                },
+                "libfoldhash-6525bf1d272e1444.rmeta": {
+                  "type": "file",
+                  "size": 85388
+                },
+                "unicode_normalization-4c00fbecaa9fe415.d": {
+                  "type": "file",
+                  "size": 5455
+                },
+                "libwebpki_roots-510d5023b93db576.rlib": {
+                  "type": "file",
+                  "size": 5902
+                },
+                "libhome-b7233b550f4ffb0a.rlib": {
+                  "type": "file",
+                  "size": 100106
+                },
+                "libring-7709deb18a11824f.rlib": {
+                  "type": "file",
+                  "size": 10853474
+                },
+                "num_integer-2ce0144fc545dd18.d": {
+                  "type": "file",
+                  "size": 1525
+                },
+                "hmac-e04c355cecde7378.d": {
+                  "type": "file",
+                  "size": 1416
+                },
+                "libonce_cell-58dd468cb35436f8.rlib": {
+                  "type": "file",
+                  "size": 292614
+                },
+                "libzerofrom-c23cc60b0dc7d769.rmeta": {
+                  "type": "file",
+                  "size": 95798
+                },
+                "futures_util-f9900c094c8f3aa2.d": {
+                  "type": "file",
+                  "size": 79522
+                },
+                "form_urlencoded-c9042f133eeb6455.d": {
+                  "type": "file",
+                  "size": 715
+                },
+                "libuuid-dce7787b1935e476.rlib": {
+                  "type": "file",
+                  "size": 1285106
+                },
+                "digest-107559037dc60319.d": {
+                  "type": "file",
+                  "size": 3635
+                },
+                "libfoldhash-6525bf1d272e1444.rlib": {
+                  "type": "file",
+                  "size": 205284
+                },
+                "libwebpki-d549b0389bf47d82.rlib": {
+                  "type": "file",
+                  "size": 4520720
+                },
+                "libicu_provider-8df87f3e710d38f3.rmeta": {
+                  "type": "file",
+                  "size": 428815
+                },
+                "libtinyvec-5afed8586f117ec7.rlib": {
+                  "type": "file",
+                  "size": 544724
+                },
+                "async_trait-4501b968d4de5fa7.d": {
+                  "type": "file",
+                  "size": 2687
+                },
+                "libtokio-dbd56717abfa611f.rlib": {
+                  "type": "file",
+                  "size": 30728096
+                },
+                "libtinyvec-5afed8586f117ec7.rmeta": {
+                  "type": "file",
+                  "size": 542512
+                },
+                "crypto_common-e1af634e9565acc5.d": {
+                  "type": "file",
+                  "size": 701
+                },
+                "uuid-dce7787b1935e476.d": {
+                  "type": "file",
+                  "size": 4969
+                },
+                "libitoa-b101c554dc96d6c2.rlib": {
+                  "type": "file",
+                  "size": 203964
+                },
+                "serde_derive-2f4df722b77f80ee.d": {
+                  "type": "file",
+                  "size": 9585
+                },
+                "num_bigint-90a7b9dcdde50d0b.d": {
+                  "type": "file",
+                  "size": 12523
+                },
+                "byteorder-c2eb3758a373a88b.d": {
+                  "type": "file",
+                  "size": 1062
+                },
+                "libiana_time_zone-263634509012496c.rmeta": {
+                  "type": "file",
+                  "size": 26081
+                },
+                "libwriteable-253f7d22a4a6e525.rmeta": {
+                  "type": "file",
+                  "size": 251178
+                },
+                "libuntrusted-bea8355399956399.rmeta": {
+                  "type": "file",
+                  "size": 43185
+                },
+                "libwhoami-0d626766d222cf6e.rmeta": {
+                  "type": "file",
+                  "size": 157228
+                },
+                "rand_chacha-772038d494f7ec10.d": {
+                  "type": "file",
+                  "size": 1505
+                },
+                "libevent_listener-dde3b2c5511c229a.rlib": {
+                  "type": "file",
+                  "size": 406730
+                },
+                "libtypenum-93390c974fd6012d.rlib": {
+                  "type": "file",
+                  "size": 2812918
+                },
+                "librustversion-330082f51b296de7.so": {
+                  "type": "file",
+                  "size": 6086728
+                },
+                "serde-5d70a9e48be1f415.d": {
+                  "type": "file",
+                  "size": 2807
+                },
+                "libtracing_core-5939259b70f8dcc6.rmeta": {
+                  "type": "file",
+                  "size": 594595
+                },
+                "libwhoami-0d626766d222cf6e.rlib": {
+                  "type": "file",
+                  "size": 790060
+                },
+                "libscopeguard-72077e85bdc77ec2.rlib": {
+                  "type": "file",
+                  "size": 28346
+                },
+                "libgetrandom-0f9ff6b45a2b1a3e.rmeta": {
+                  "type": "file",
+                  "size": 68411
+                },
+                "zerovec-355263fb8164dc0c.d": {
+                  "type": "file",
+                  "size": 10410
+                },
+                "libwebpki_roots-b95c52a2be4a1576.rlib": {
+                  "type": "file",
+                  "size": 139828
+                },
+                "icu_properties_data-cfdd18647bcc9694.d": {
+                  "type": "file",
+                  "size": 87513
+                },
+                "libchrono-ea282dc13e61a01d.rmeta": {
+                  "type": "file",
+                  "size": 2306093
+                },
+                "tracing_attributes-206dde4a97de8512.d": {
+                  "type": "file",
+                  "size": 1187
+                },
+                "libthiserror_impl-d7159352e3061bf7.so": {
+                  "type": "file",
+                  "size": 9276208
+                },
+                "cfg_if-0fbeb365b695d2ff.d": {
+                  "type": "file",
+                  "size": 652
+                },
+                "log-0cab3ca1da7238a2.d": {
+                  "type": "file",
+                  "size": 1814
+                },
+                "libicu_collections-04d234fbdc8078d3.rlib": {
+                  "type": "file",
+                  "size": 1834064
+                },
+                "libmd5-9d0f928d57e921f1.rlib": {
+                  "type": "file",
+                  "size": 73082
+                },
+                "futures_io-7027b38a831f0763.d": {
+                  "type": "file",
+                  "size": 684
+                },
+                "libpin_project_lite-d48789d525c49729.rlib": {
+                  "type": "file",
+                  "size": 97022
+                },
+                "libmemchr-2974315c36bbf455.rmeta": {
+                  "type": "file",
+                  "size": 1310297
+                },
+                "memchr-d889e926a647c184.d": {
+                  "type": "file",
+                  "size": 11922
+                },
+                "libfutures_task-b3d9cb52b6b50815.rlib": {
+                  "type": "file",
+                  "size": 194614
+                },
+                "libtinystr-376fbad8dc8c73e8.rmeta": {
+                  "type": "file",
+                  "size": 314817
+                },
+                "libserde_derive-2f4df722b77f80ee.so": {
+                  "type": "file",
+                  "size": 10288672
+                },
+                "serde_core-ed1ad932e2194d5c.d": {
+                  "type": "file",
+                  "size": 8588
+                },
+                "edict_db-d0fda51146593271.d": {
+                  "type": "file",
+                  "size": 386
+                },
+                "libstable_deref_trait-487652ab9e788b36.rmeta": {
+                  "type": "file",
+                  "size": 10368
+                },
+                "either-c1a6c1fe049ac73c.d": {
+                  "type": "file",
+                  "size": 2372
+                },
+                "edict_core-62eebd5b095c8d12": {
+                  "type": "file",
+                  "size": 12309848
+                },
+                "icu_collections-04d234fbdc8078d3.d": {
+                  "type": "file",
+                  "size": 6539
+                },
+                "libyoke-4ac03fbeeb7d5f44.rlib": {
+                  "type": "file",
+                  "size": 246368
+                },
+                "unicode_ident-81bfb0f85f6a8742.d": {
+                  "type": "file",
+                  "size": 1130
+                },
+                "libserde_core-1e9d9efd87f47fd3.rmeta": {
+                  "type": "file",
+                  "size": 4847924
+                },
+                "sqlx_core-970445692e10e55b.d": {
+                  "type": "file",
+                  "size": 27729
+                },
+                "libtokio_util-9ee28f9ba2347557.rmeta": {
+                  "type": "file",
+                  "size": 931538
+                },
+                "serde-38010616223ac20f.d": {
+                  "type": "file",
+                  "size": 2807
+                },
+                "icu_properties-38fb8e8e4880d17d.d": {
+                  "type": "file",
+                  "size": 5928
+                },
+                "libmemchr-2974315c36bbf455.rlib": {
+                  "type": "file",
+                  "size": 2545896
+                },
+                "libzerotrie-fc0d9a5775744cde.rlib": {
+                  "type": "file",
+                  "size": 663342
+                },
+                "libbitflags-8a25d7f34d514d98.rlib": {
+                  "type": "file",
+                  "size": 461976
+                },
+                "block_buffer-a5e2f621a3d336b4.d": {
+                  "type": "file",
+                  "size": 1119
+                },
+                "num_traits-e9615387847f4a5b.d": {
+                  "type": "file",
+                  "size": 8250
+                },
+                "libgeneric_array-f3252ffe899b8ae6.rmeta": {
+                  "type": "file",
+                  "size": 818040
+                },
+                "libnum_traits-e9615387847f4a5b.rlib": {
+                  "type": "file",
+                  "size": 2008226
+                },
+                "crossbeam_utils-ba3f3f577f521729.d": {
+                  "type": "file",
+                  "size": 6215
+                },
+                "libcpufeatures-d03b0f93a485ccc1.rlib": {
+                  "type": "file",
+                  "size": 41596
+                },
+                "libdotenvy-33ad28f03010c857.rmeta": {
+                  "type": "file",
+                  "size": 74310
+                },
+                "url-3d2e9081ecb091a1.d": {
+                  "type": "file",
+                  "size": 2941
+                },
+                "pin_project_lite-d48789d525c49729.d": {
+                  "type": "file",
+                  "size": 726
+                },
+                "libicu_normalizer_data-9f8db4e471f7462f.rmeta": {
+                  "type": "file",
+                  "size": 442254
+                },
+                "libthiserror-d77e1b97487706ca.rmeta": {
+                  "type": "file",
+                  "size": 31139
+                },
+                "chrono-ea282dc13e61a01d.d": {
+                  "type": "file",
+                  "size": 14785
+                },
+                "libfutures_core-3b39bc7c8546ea11.rlib": {
+                  "type": "file",
+                  "size": 130138
+                },
+                "rand_core-0a4935038c60209c.d": {
+                  "type": "file",
+                  "size": 2654
+                },
+                "libedict_core-d1c1f807ce0bcc94.rlib": {
+                  "type": "file",
+                  "size": 3289238
+                },
+                "libutf8_iter-5e533fc2f687e78a.rmeta": {
+                  "type": "file",
+                  "size": 144767
+                },
+                "base64-91e625063911c6eb.d": {
+                  "type": "file",
+                  "size": 7127
+                },
+                "libequivalent-636655ea09f8262a.rlib": {
+                  "type": "file",
+                  "size": 10802
+                },
+                "edict_core-2863e7cbb6ee737b.d": {
+                  "type": "file",
+                  "size": 1613
+                },
+                "rand-fc460462e98383c4.d": {
+                  "type": "file",
+                  "size": 9984
+                },
+                "libnum_integer-2ce0144fc545dd18.rmeta": {
+                  "type": "file",
+                  "size": 321527
+                },
+                "libsqlx_postgres-0d796c73a0e81a61.rlib": {
+                  "type": "file",
+                  "size": 41516720
+                },
+                "libhashlink-a6918d08d3f86b34.rlib": {
+                  "type": "file",
+                  "size": 464278
+                },
+                "libicu_locale_core-b57eaddde9def39b.rlib": {
+                  "type": "file",
+                  "size": 4406232
+                },
+                "libcrossbeam_queue-d7d0750d275ff518.rmeta": {
+                  "type": "file",
+                  "size": 128548
+                },
+                "librand-fc460462e98383c4.rmeta": {
+                  "type": "file",
+                  "size": 1296658
+                },
+                "libmio-a163f743e9731f15.rmeta": {
+                  "type": "file",
+                  "size": 445501
+                },
+                "libsocket2-ca8210dbcb50b073.rlib": {
+                  "type": "file",
+                  "size": 1858856
+                },
+                "libtracing-22e1fb5888ac5056.rmeta": {
+                  "type": "file",
+                  "size": 606362
+                },
+                "libcrossbeam_queue-d7d0750d275ff518.rlib": {
+                  "type": "file",
+                  "size": 130804
+                },
+                "libmemchr-d889e926a647c184.rlib": {
+                  "type": "file",
+                  "size": 2545652
+                },
+                "libdotenvy-33ad28f03010c857.rlib": {
+                  "type": "file",
+                  "size": 1353190
+                },
+                "libsha2-7f3510439730360c.rlib": {
+                  "type": "file",
+                  "size": 1192948
+                },
+                "libcrypto_common-e1af634e9565acc5.rmeta": {
+                  "type": "file",
+                  "size": 27236
+                },
+                "libiana_time_zone-263634509012496c.rlib": {
+                  "type": "file",
+                  "size": 853436
+                },
+                "atoi-ea58707f95fa327a.d": {
+                  "type": "file",
+                  "size": 638
+                },
+                "arc_swap-a3322ab279667455.d": {
+                  "type": "file",
+                  "size": 7390
+                },
+                "thiserror-d77e1b97487706ca.d": {
+                  "type": "file",
+                  "size": 2827
+                },
+                "libgetrandom-b1d33a9baae31606.rlib": {
+                  "type": "file",
+                  "size": 222488
+                },
+                "unicode_properties-ae5c26a41a65d807.d": {
+                  "type": "file",
+                  "size": 1177
+                },
+                "cc-36ba111b830d8116.d": {
+                  "type": "file",
+                  "size": 6238
+                },
+                "getrandom-b1d33a9baae31606.d": {
+                  "type": "file",
+                  "size": 5247
+                },
+                "libgeneric_array-f3252ffe899b8ae6.rlib": {
+                  "type": "file",
+                  "size": 830968
+                },
+                "libparking-46c3f7e393bb8170.rmeta": {
+                  "type": "file",
+                  "size": 20853
+                },
+                "libicu_properties-38fb8e8e4880d17d.rlib": {
+                  "type": "file",
+                  "size": 6355206
+                },
+                "stringprep-f7ef05eff86f707d.d": {
+                  "type": "file",
+                  "size": 1502
+                },
+                "equivalent-636655ea09f8262a.d": {
+                  "type": "file",
+                  "size": 680
+                },
+                "libserde_json-906cb9383affae14.rlib": {
+                  "type": "file",
+                  "size": 4452050
+                },
+                "libbitflags-8a25d7f34d514d98.rmeta": {
+                  "type": "file",
+                  "size": 223672
+                },
+                "libc-ca95d298963f410e.d": {
+                  "type": "file",
+                  "size": 31262
+                },
+                "libstringprep-f7ef05eff86f707d.rmeta": {
+                  "type": "file",
+                  "size": 168167
+                },
+                "libidna-e491feb74468fa78.rlib": {
+                  "type": "file",
+                  "size": 3715708
+                },
+                "libuuid-677c89edaed90d87.rmeta": {
+                  "type": "file",
+                  "size": 584844
+                },
+                "libevent_listener-dde3b2c5511c229a.rmeta": {
+                  "type": "file",
+                  "size": 316919
+                },
+                "libdigest-107559037dc60319.rlib": {
+                  "type": "file",
+                  "size": 203290
+                },
+                "libstable_deref_trait-487652ab9e788b36.rlib": {
+                  "type": "file",
+                  "size": 12642
+                },
+                "libedict_core-d1c1f807ce0bcc94.rmeta": {
+                  "type": "file",
+                  "size": 715338
+                },
+                "liberrno-6a405010a76bf51b.rlib": {
+                  "type": "file",
+                  "size": 115570
+                },
+                "libwebpki_roots-510d5023b93db576.rmeta": {
+                  "type": "file",
+                  "size": 3655
+                },
+                "futures_channel-92d33592e9092c4e.d": {
+                  "type": "file",
+                  "size": 2936
+                },
+                "libfutures_core-3b39bc7c8546ea11.rmeta": {
+                  "type": "file",
+                  "size": 62422
+                },
+                "ppv_lite86-d9434cbaaaf65c7a.d": {
+                  "type": "file",
+                  "size": 2360
+                },
+                "libserde_json-906cb9383affae14.rmeta": {
+                  "type": "file",
+                  "size": 1454037
+                },
+                "unicode_bidi-5e71f7e6aa303bed.d": {
+                  "type": "file",
+                  "size": 5048
+                },
+                "crc-5c212dd01e8f7f86.d": {
+                  "type": "file",
+                  "size": 3266
+                },
+                "redis-dd0a10c7fd454634.d": {
+                  "type": "file",
+                  "size": 10862
+                },
+                "libhkdf-ec4c90ee45634e0e.rmeta": {
+                  "type": "file",
+                  "size": 49030
+                },
+                "libtinystr-376fbad8dc8c73e8.rlib": {
+                  "type": "file",
+                  "size": 412164
+                },
+                "untrusted-bea8355399956399.d": {
+                  "type": "file",
+                  "size": 1892
+                },
+                "libautocfg-2bddf2f80f691adf.rlib": {
+                  "type": "file",
+                  "size": 706238
+                },
+                "libzerofrom_derive-b17b86b24b9a34f6.so": {
+                  "type": "file",
+                  "size": 9988488
+                },
+                "libedict_db-d0fda51146593271.rlib": {
+                  "type": "file",
+                  "size": 5568
+                },
+                "zerovec_derive-c58744c4780cc510.d": {
+                  "type": "file",
+                  "size": 2124
+                },
+                "libicu_properties_data-cfdd18647bcc9694.rmeta": {
+                  "type": "file",
+                  "size": 2000512
+                },
+                "libfutures_io-7027b38a831f0763.rmeta": {
+                  "type": "file",
+                  "size": 69002
+                },
+                "libfutures_task-b3d9cb52b6b50815.rmeta": {
+                  "type": "file",
+                  "size": 94707
+                },
+                "libhome-b7233b550f4ffb0a.rmeta": {
+                  "type": "file",
+                  "size": 18315
+                },
+                "rustls-0150f9915ecd43e5.d": {
+                  "type": "file",
+                  "size": 38922
+                },
+                "libicu_properties-38fb8e8e4880d17d.rmeta": {
+                  "type": "file",
+                  "size": 3096040
+                },
+                "libryu-d00227c60adedaf5.rmeta": {
+                  "type": "file",
+                  "size": 56351
+                },
+                "libnum_bigint-90a7b9dcdde50d0b.rlib": {
+                  "type": "file",
+                  "size": 4691098
+                },
+                "percent_encoding-70f9167c8155d3c0.d": {
+                  "type": "file",
+                  "size": 1167
+                },
+                "libcombine-82d90a37a6194613.rmeta": {
+                  "type": "file",
+                  "size": 6194454
+                },
+                "libtracing-22e1fb5888ac5056.rlib": {
+                  "type": "file",
+                  "size": 880184
+                },
+                "libcrc_catalog-98429af9fe93fd35.rmeta": {
+                  "type": "file",
+                  "size": 106552
+                },
+                "libshlex-221f6492014c5dba.rlib": {
+                  "type": "file",
+                  "size": 138392
+                }
+              },
+              "examples": {},
+              "libedict_db.rlib": {
+                "type": "file",
+                "size": 5568
+              },
+              "build": {
+                "quote-16720ff8b16631c2": {},
+                "quote-cb66644ea05edbd9": {},
+                "num-traits-c9bf16cc5a66f033": {},
+                "getrandom-41de4742730b9a00": {},
+                "getrandom-15c1bb6c32ffec43": {},
+                "serde_json-1881ac186642c19c": {},
+                "ring-84800e4d24f538b2": {},
+                "libc-b16900953188bf6a": {},
+                "thiserror-f7b54138f33f94db": {},
+                "serde_core-affc157fe1b322b9": {},
+                "serde_core-ba68d45a71ab3b05": {},
+                "icu_properties_data-666d0f8d24a41915": {},
+                "num-traits-95d6c36ec1e92e14": {},
+                "num-traits-96ffca7304da10b8": {},
+                "zmij-1a4b1e45daff5eb9": {},
+                "rustversion-f5ed32b1082d42cd": {},
+                "serde_json-a4a9ff45eaa6f756": {},
+                "ring-e6d96faa9439b04f": {},
+                "proc-macro2-ab005e1b49b4395b": {},
+                "libc-0b3e93e097eeb127": {},
+                "icu_normalizer_data-a3c9a9a46a0d5c74": {},
+                "generic-array-ff81e624fa74bab8": {},
+                "serde_json-7839a7dd090f34de": {},
+                "rustls-4e768335ca7ecf5a": {},
+                "serde-4d28fdace9ba3386": {},
+                "icu_normalizer_data-b6077347b185703a": {},
+                "serde-94cd7afb59b66330": {},
+                "serde_json-9292c087c5536b74": {},
+                "icu_properties_data-92c183a002c940a8": {},
+                "proc-macro2-ef41e94ab0f532d9": {},
+                "serde_core-7ac79f423f53e86d": {},
+                "zerocopy-853a5a8e8b139aa8": {},
+                "crossbeam-utils-c9f621cedb745cfb": {},
+                "rustversion-d2854a6eb6777e68": {},
+                "parking_lot_core-8e0c260d830a3d17": {},
+                "zmij-946061105b7cdaa0": {},
+                "generic-array-290ab085f713b758": {},
+                "thiserror-5f5ed575411202b9": {},
+                "parking_lot_core-2b03cd4cda95e745": {},
+                "serde-ba8426c877a92a17": {},
+                "num-traits-bdeacaa99b59f4aa": {},
+                "crossbeam-utils-82a77f363ece218e": {},
+                "zerocopy-4c835113757bf5cc": {},
+                "serde-6ad8135386316341": {},
+                "serde_core-756e0187c747fd0f": {},
+                "rustls-e310bb89ecb2ba57": {}
+              },
+              "libedict_db.d": {
+                "type": "file",
+                "size": 868
+              },
+              "incremental": {
+                "edict_core-0jwtquojb4att": {},
+                "edict_core-3ctk9u81oo73a": {},
+                "edict_core-2pmnzxeg0btk3": {},
+                "edict_db-160mpxpvm7qcr": {}
+              }
+            },
+            "CACHEDIR.TAG": {
+              "type": "file",
+              "size": 177
+            }
+          },
+          "README.md": {
+            "type": "file",
+            "size": 10276
+          },
+          "data": {}
+        },
+        "languages": [
+          {
+            "language": "Rust",
+            "percentage": 95,
+            "files": 21
+          },
+          {
+            "language": "C",
+            "percentage": 5,
+            "files": 1
+          }
+        ],
+        "dependencies": [],
+        "configs": [
+          {
+            "path": "README.md",
+            "type": "other",
+            "content": "# Edict 2.0\n\nEdict ist eine Aufgabenverwaltung nach dem Vorbild der三省六部. Aufgaben durchlaufen\neine feste Zustandsmaschine, Ereignisse laufen über einen Ereignisbus, und mehrere\nAgenten arbeiten an denselben Vorgängen. Die Oberfläche ist deutschsprachig und als\nDioxus-Anwendung gebaut.\n\nDiese README ist der verbindliche Feature-Record des Projekts. Sie beschreibt, was\ngebaut wird, welche Verträge gelten und wie der Betrieb aussieht.\n\n## Zielbild\n\nDer Vorgänger in `edict-2.0` bestand aus zwei Python-Produkten und einem\nReact-Frontend. Beide Python-Stacks sind durch Rust ersetzt, das Frontend durch Dioxus.\n\n| Bereich | Vorgänger | Ziel |\n| --- | --- | --- |\n| Aufgaben und Ereignisse | FastAPI, SQLAlchemy, Alembic | `edict-server` mit Axum, `edict-db` mit SQLx |\n| Arbeitsteilung | Redis Streams, Redis Pub/Sub | `edict-db` mit Redis Streams und Pub/Sub |\n| Orchestrierung | `orchestrator_worker.py`, `dispatch_worker.py` | `edict-worker` |\n| Dateibasiertes Gedächtnis | Python-Skripte unter `scripts/` | `edict-worker` mit denselben Unterbefehlen |\n| Oberfläche | React, Vite | `edict-web` mit Dioxus, ausgeliefert als WASM |\n| Bedienung | Python-Skripte | `edict-cli` mit dem Binary `edict` |\n| Erweiterungen | keine | Hotplug-Plugins über JSON-RPC |\n\nIm produktiven Betrieb läuft kein Python-Code mehr.\n\n## Funktionsumfang\n\n### Aufgabenverwaltung\n\n- Aufgaben mit Legacy-Kennung (`JJC-YYYYMMDD-NNN`) und technischer UUID. Beide\n  Kennungen werden gleichzeitig geführt und nicht zusammengeführt.\n- Zustände in PascalCase: `Taizi`, `Zhongshu`, `Menxia`, `Assigned`, `Next`, `Doing`,\n  `Review`, `Done`, `Blocked`, `Cancelled`, `Pending`.\n- Zustandswechsel laufen über eine geprüfte Zustandsmaschine. Unzulässige Übergänge\n  werden mit einer deutschen Fehlermeldung abgewiesen.\n- Jede Aufgabe führt ein Zustandsprotokoll, ein Fortschrittsprotokoll, Teilaufgaben,\n  Tags, Vorlagenparameter und Scheduler-Metadaten.\n- Der Herzschlag einer Aufgabe wird aus dem letzten Änderungszeitpunkt berechnet und\n  meldet aktiv, warnend oder festgefahren.\n\n### Ereignisbus\n\n- Themen wie `task.created`, `task.dispatch`, `task.review.request`, `task.stalled`\n  und `agent.heartbeat`.\n- Redis Streams tragen die Arbeitsteilung, Redis Pub/Sub die sofortige\n  Benachrichtigung der Oberfläche.\n- Eine Outbox in PostgreSQL stellt sicher, dass eine Transaktion mit Aufgaben- und\n  Ereignisänderung nie ohne ausgeliefertes Ereignis endet.\n\n### Agenten und Dateien\n\n- Agentenzuordnung aus Zustand und Organisation.\n- Agentenkonfiguration, Skills, Modellwechsel, Morgenbrief und Kennzahlen bleiben\n  dateibasiert im Verzeichnis `data/`. Das entspricht dem bisherigen Vertrag.\n- Atomisches Schreiben mit Dateisperre für alle JSON- und Textdateien.\n\n### Oberfläche\n\n- Dioxus-Anwendung, gebaut für `wasm32-unknown-unknown`.\n- Der Axum-Server liefert das WASM-Bundle statisch aus. Es gibt keinen zweiten\n  Webserver und keinen Fullstack-Server von Dioxus.\n- Deutsche Beschriftungen, Leerzustände, Ladeanzeigen und Fehlermeldungen.\n- Live-Aktualisierung über WebSocket mit Protokoll `ping`, `pong`, `subscribe`,\n  `subscribed` und `event`.\n\n### Kommandozeile\n\nDas Binary `edict` schreibt ausschließlich über die HTTP-API. Ein JSON-Dateifallback\nexistiert nicht.\n\n- `kanban create`, `state`, `flow`, `done`, `block`, `todo`, `progress`\n- `migrate import-json`\n- `skill list`, `list-remote`, `add-remote`, `update-remote`, `remove-remote`,\n  `check-updates`\n- `model set`, `log`, `last-result`\n- `morning-brief show`, `refresh`, `config`\n- `task list`, `show`, `stats`, `live-status`, `archive`, `review`\n\n### Hotplug-Plugins\n\nDer Host kann Erweiterungen zur Laufzeit annehmen, auswerfen und austauschen, ohne\ndass der Server neu startet. Ein Plugin ist ein eigener Prozess, der über JSON-RPC\nauf stdio mit dem Host spricht.\n\n- Ein Plugin liefert ein Manifest mit Name, Version, Fähigkeiten und Initialisierung.\n- Fähigkeiten benennen, welche Aufgabenereignisse das Plugin verarbeitet und welche\n  HTTP-Routen es anbietet.\n- Der Host startet, stoppt und ersetzt Plugins, ohne den Kern neu zu bauen.\n- Plugins teilen keine Datenbanktabelle mit dem Kern. Eigener Namensraum pro Plugin.\n- Ein Plugin erhält keine Tokens der Oberfläche und keine unbeschränkten\n  Shell-Befehle.\n\nDie ersten beiden Plugins sind aus Fremdprojekten abgeleitet, aber vollständig neu\nin Rust geschrieben:\n\n- **gitclaw** prüft Merge-Anfragen. Features: Webhook-Eingang von GitHub, GitLab und\n  Bitbucket, Sperrregeln für Entwürfe, Bot-Autoren, doppelte Prüfsummen und\n  `[skip review]`, Erzeugung strukturierter Befunde, Zusammenfassung und Inline-Kommentare,\n  Unterstützung mehrerer KI-Anbieter, statische Analyse, Konfiguration je Repository.\n- **edict** unterstützt Multi-Agent-Workflows. Features: Projektinitialisierung,\n  Synchronisation eingebetteter Workflow-Dokumente, `doctor`-Prüfungen, Agenten-Schleifen\n  mit Journal, Protokollbefehle für Zustandsübergänge, Review-Gate, Koordination über\n  Beads und Ereignisprotokolle, Hook-System.\n\nDer Quellcode dieser beiden Projekte dient als Referenz für die Features. Die\nImplementierung in diesem Repository ist eigenständig.\n\n## Verzeichnisstruktur\n\n```\nbkg-edict/\n├── crates/\n│   ├── edict-core/     Fachlicher Kern ohne Datenbank- und Netzwerktreiber\n│   ├── edict-db/       SQLx-PostgreSQL, Redis Streams, Pub/Sub, Outbox\n│   ├── edict-server/   Axum-HTTP, WebSocket, statische Auslieferung, Plugin-Host\n│   ├── edict-worker/   Orchestrator, Dispatcher, Scheduler, Synchronisation\n│   ├── edict-cli/      Binary edict\n│   └── edict-web/      Dioxus-Oberfläche, eigenes Cargo.toml, wasm32\n├── docs/               Architektur, API, Betrieb, CLI, Übersetzung, Debatten\n├── data/               Dateibasiertes Gedächtnis\n├── scripts/            Betriebshilfen in Bash\n├── .brain/             Aufgaben, Entscheidungen, Blockaden, Memory\n├── Dockerfile\n└── docker-compose.yml\n```\n\n`edict-web` liegt bewusst außerhalb des Workspace. Das WASM-Ziel baut nicht mit\ndenselben Flags wie die Server-Binaries.\n\n## Voraussetzungen\n\n- Rust 1.83 oder neuer\n- PostgreSQL 14 oder neuer\n- Redis 7 oder neuer\n- Node 20 oder neuer und `dx` 0.7.10 für den Oberflächenbau\n\n## Schnellstart\n\n```bash\ncp .env.example .env\ndocker compose up --build\n```\n\nDie Oberfläche ist danach unter `http://localhost:8000` erreichbar, der API-Zugang\nunter `http://localhost:8000/healthz`.\n\n## Lokaler Build\n\n```bash\ncargo fmt --all -- --check\ncargo clippy --all-targets --all-features -- -D warnings\ncargo test --workspace\ncargo build --locked --release\n```\n\nOberfläche:\n\n```bash\ncd crates/edict-web\ndx build --platform web\n```\n\nDas Ergebnis liegt in `crates/edict-web/dist`.\n\n## Konfiguration\n\n| Variable | Vorgabe | Bedeutung |\n| --- | --- | --- |\n| `DATABASE_URL` | aus `POSTGRES_*` | PostgreSQL-Verbindung |\n| `REDIS_URL` | `redis://localhost:6379/0` | Redis-Verbindung |\n| `BACKEND_HOST` | `0.0.0.0` | Bindeadresse des Servers |\n| `BACKEND_PORT` | `8000` | Port des Servers |\n| `EDICT_ALLOWED_ORIGINS` | `http://localhost:7891` | CORS-Allowlist, Kommagetrennt |\n| `EDICT_ADMIN_TOKEN` | ohne | Token für Admin-Routen |\n| `LEGACY_DATA_DIR` | `../data` | Verzeichnis des dateibasierten Gedächtnisses |\n| `LEGACY_TASKS_FILE` | `../data/tasks_source.json` | Datei der Aufgaben im Legacy-Format |\n| `OPENCLAW_BIN` | `openclaw` | Programm für den Aufruf der Agenten |\n| `OPENCLAW_PROJECT_DIR` | ohne | Verzeichnis der OpenClaw-Sessions |\n| `EDICT_DISPATCH_TIMEOUT_SEC` | `300` | Zeitlimit für einen Dispatch |\n| `EDICT_MAX_CONCURRENT_DISPATCH` | `3` | Zahl gleichzeitiger Dispatches |\n\n`EDICT_ALLOWED_ORIGINS` ist eine Allowlist. Der Wert `*` wird abgewiesen, weil der\nServer Anmeldedaten erlaubt.\n\n## Datenmodell\n\n- `tasks` mit `task_id` als UUID, `legacy_id` als eindeutiger `JJC-`-Kennung und\n  Zustand als Text mit Prüfbedingung.\n- `events` mit Ereigniskennung, Spur, Zeitstempel, Thema, Typ, Erzeuger, Nutzlast.\n- `outbox` für Ereignisse, die nach einer Transaktion veröffentlicht werden.\n- `todos`, `thoughts` und `meta` je Aufgabe.\n\nDie führende Datenquelle für Aufgaben und Ereignisse ist PostgreSQL.\n\n## Migration vom Python-Bestand\n\n```bash\nedict migrate import-json --file data/tasks_source.json --dry-run\nedict migrate import-json --file data/tasks_source.json\n```\n\nDer Import ordnet Legacy-Kennung und Zustand zu, schreibt je Aufgabe ein\n`task.created`-Ereignis und lässt den Scheduler-Zustand unberührt. Vor dem ersten\nProduktivimport ist ein Backup der PostgreSQL-Instanz zu erstellen.\n\n## Sicherheit\n\n- CORS nur über die Allowlist aus `EDICT_ALLOWED_ORIGINS`.\n- Admin-Routen verlangen `EDICT_ADMIN_TOKEN` über den Kopf `X-Admin-Token`.\n- Passwörter und Tokens erscheinen nicht in Protokollen und Fehlermeldungen.\n- Redis läuft ohne Eviction, weil die Streams kein Cache sind.\n- Plugins laufen als getrennte Prozesse und kommen nicht an die Datenbankverbindung\n  des Kerns.\n\n## Projektgeschichtliche Quellen\n\nDie Verträge stammen aus dem Vorgängerprojekt `edict-2.0`, das als Referenz\ndient:\n\n- `dashboard/server.py` für die Legacy-HTTP-Routen und das Dateiformat\n- `edict/backend/app/api/` für die UUID-Routen, das WebSocket-Protokoll und die Admin-Routen\n- `edict/backend/app/services/event_bus.py` für den Redis-Streams-Vertrag\n- `edict/backend/app/services/task_service.py` für die Geschäftsregeln\n- `edict/backend/app/workers/` für die Semantik von Orchestrator und Dispatcher\n- `edict/frontend/src/api.ts` für den HTTP-Vertrag der Oberfläche\n- `edict/migration/versions/001_initial.py` für das Ausgangsschema\n\nDer Bestand bleibt unverändert. Er wird nicht mehr produktiv ausgeführt.\n\n## Dokumentation\n\n- `docs/architektur.md` Crates, Datenfluss, Zustandsmaschine, Ereignisfluss, Plugin-Host\n- `docs/api.md` alle HTTP-Routen und WebSocket-Nachrichten\n- `docs/betrieb.md` Dienste, Umgebungsvariablen, Migrationen, Sicherung, Beobachtung\n- `docs/cli.md` alle Befehle des Binaries `edict`\n- `docs/plugins.md` Plugin-Manifest, JSON-RPC-Vertrag, Fähigkeiten, Beispiele\n- `docs/uebersetzung.md` übersetzte Dokumente und Oberflächentexte\n- `docs/debate/` die sichtbaren Fachdebatten mit Abstimmung\n\n## Lizenz\n\nMIT\n"
+          }
+        ],
+        "architecturePatterns": []
+      }
+    ],
+    "workspace": {
+      "root": "/home/openchamber/dump/coding/bkg-edict",
+      "worktrees": [],
+      "submodules": []
+    },
+    "agents": {
+      "available": [],
+      "active": []
+    },
+    "skills": {
+      "global": [
+        {
+          "name": "opencode-v2",
+          "description": "Load for any work that touches OpenCode — its routes, events, message or session shapes, plugins, the pinned CLI/client version, \"what's new in OpenCode 2.0.x\", or a bug that looks like OpenCode behaving differently than OpenChamber expects. OpenChamber runs on OpenCode 2.x since 2026-09; 1.x code paths are gone.",
+          "triggers": [
+            "description: Load for any work that touches OpenCode — its routes, events, message or session shapes, plugins, the pinned CLI/client version, \"what's new in OpenCode 2.0.x\", or a bug that looks like OpenCode behaving differently than OpenChamber expects. OpenChamber runs on OpenCode 2.x since 2026-09; 1.x code paths are gone."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-rule-crafting",
+          "description": "Create and refactor BKG rules without duplication or contradictions.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "sync-state-invariants",
+          "description": "Use when changing session synchronization, bootstrap or reconnect state, event reducers, polling, optimistic updates, message queues, live activity, ordering/reconciliation, runtime-scoped caches, or directory-dependent session behavior.",
+          "triggers": [
+            "description: Use when changing session synchronization, bootstrap or reconnect state, event reducers, polling, optimistic updates, message queues, live activity, ordering/reconciliation, runtime-scoped caches, or directory-dependent session behavior.",
+            "description: Use when changing session synchronization, bootstrap or reconnect state, event reducers, polling, optimistic updates, message queues, live activity, ordering/reconciliation, runtime-scoped caches, or directory-dependent session behavior."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-labertasche",
+          "description": "German-first BKG Labertasche persona and deterministic fact-preservation contract.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-plannotator-review",
+          "description": "Visual plan and code review workflow using the local Plannotator-compatible plan engine.",
+          "triggers": [],
+          "category": "review",
+          "version": "1.0.0"
+        },
+        {
+          "name": "triage-issues",
+          "description": "Load when asked to triage, clean up, batch-process, or work through the issue backlog — covers the mechanical sweep (stale-fixed, dead needs-info, duplicates), fan-out assessment, and approved batch actions.",
+          "triggers": [
+            "description: Load when asked to triage, clean up, batch-process, or work through the issue backlog — covers the mechanical sweep (stale-fixed, dead needs-info, duplicates), fan-out assessment, and approved batch actions."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-debate",
+          "description": "Visible planning and problem-solving debate with web research, three specialists, votes, Arbiter escalation and persistent reports.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-brain-memory",
+          "description": "Persistent project memory and task continuity.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "relay-transport",
+          "description": "Use when adding or changing OpenChamber WebSocket, SSE, streaming, realtime endpoints, shared UI sockets, runtime transport internals, private relay behavior, or files under the UI/server relay modules.",
+          "triggers": [
+            "description: Use when adding or changing OpenChamber WebSocket, SSE, streaming, realtime endpoints, shared UI sockets, runtime transport internals, private relay behavior, or files under the UI/server relay modules.",
+            "description: Use when adding or changing OpenChamber WebSocket, SSE, streaming, realtime endpoints, shared UI sockets, runtime transport internals, private relay behavior, or files under the UI/server relay modules."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-supervisor",
+          "description": "Supervise configured models, tools, skills, teams, permissions and runtime policy.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "theme-system",
+          "description": "Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons.",
+          "triggers": [
+            "description: Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons.",
+            "description: Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons.",
+            "description: Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "locale-ui-patterns",
+          "description": "Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings.",
+          "triggers": [
+            "description: Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings.",
+            "description: Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings.",
+            "description: Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "triage-prs",
+          "description": "Load when asked to triage, clean up, batch-process, or work through the open PR queue or backlog — covers the mechanical sweep (stale, conflicts, duplicates), fan-out verdict reviews, and approved batch actions.",
+          "triggers": [
+            "description: Load when asked to triage, clean up, batch-process, or work through the open PR queue or backlog — covers the mechanical sweep (stale, conflicts, duplicates), fan-out verdict reviews, and approved batch actions."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-ui-browser-verification",
+          "description": "Browser-backed UI and API verification.",
+          "triggers": [
+            "name: bkg-ui-browser-verification",
+            "description: Browser-backed UI and API verification."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-task-flow",
+          "description": "Deterministic task ownership lifecycle.",
+          "triggers": [
+            "description: Deterministic task ownership lifecycle."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "serve-sim",
+          "description": "Use when working with the OpenChamber iOS Simulator app without opening Xcode - boot/install/launch the Capacitor iOS app, start a browser stream, tap/type/gesture/rotate, inspect accessibility, or hand a simulator URL to the user.",
+          "triggers": [
+            "description: Use when working with the OpenChamber iOS Simulator app without opening Xcode - boot/install/launch the Capacitor iOS app, start a browser stream, tap/type/gesture/rotate, inspect accessibility, or hand a simulator URL to the user.",
+            "description: Use when working with the OpenChamber iOS Simulator app without opening Xcode - boot/install/launch the Capacitor iOS app, start a browser stream, tap/type/gesture/rotate, inspect accessibility, or hand a simulator URL to the user."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "writing-for-agents",
+          "description": "Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md.",
+          "triggers": [
+            "description: Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md.",
+            "description: Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md.",
+            "description: Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "openchamber-change-discipline",
+          "description": "Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership.",
+          "triggers": [
+            "description: Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership.",
+            "description: Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership.",
+            "description: Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "gitspit",
+          "description": "Verwende GitSpit für serverseitig verwaltete Repositories und GitButler-Workflows wie Status, Branch-Stacks, Diff, Commit und Operationsverlauf.",
+          "triggers": [
+            "description: Verwende GitSpit für serverseitig verwaltete Repositories und GitButler-Workflows wie Status, Branch-Stacks, Diff, Commit und Operationsverlauf."
+          ],
+          "category": "workspace",
+          "version": "1.0.0"
+        },
+        {
+          "name": "performance-engineering",
+          "description": "Use when implementing or reviewing code on interaction, render, event, polling, synchronization, list-processing, store-selector, cache, indexing, or high-volume data paths; when users report lag, freezes, jank, high CPU, memory growth, slow startup, or performance regressions; and before accepting memoization or caching as a fix for repeated work.",
+          "triggers": [
+            "description: Use when implementing or reviewing code on interaction, render, event, polling, synchronization, list-processing, store-selector, cache, indexing, or high-volume data paths; when users report lag, freezes, jank, high CPU, memory growth, slow startup, or performance regressions; and before accepting memoization or caching as a fix for repeated work.",
+            "description: Use when implementing or reviewing code on interaction, render, event, polling, synchronization, list-processing, store-selector, cache, indexing, or high-volume data paths; when users report lag, freezes, jank, high CPU, memory growth, slow startup, or performance regressions; and before accepting memoization or caching as a fix for repeated work."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "settings-ui-patterns",
+          "description": "Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior.",
+          "triggers": [
+            "description: Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior.",
+            "description: Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior.",
+            "description: Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "channels-setup",
+          "description": ">",
+          "triggers": [
+            "  Use when a developer wants to build their first CopilotKit Channels agent and",
+            "  Use when a developer wants to build their first CopilotKit Channels agent and"
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "desktop-shell",
+          "description": "Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning.",
+          "triggers": [
+            "description: Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning.",
+            "description: Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning.",
+            "description: Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "update-changelog",
+          "description": "Use only when the maintainer explicitly asks to update the changelog — then write `changelog/unreleased.md` (main app and VS Code extension) summarizing changes since the latest git tag.",
+          "triggers": [
+            "description: Use only when the maintainer explicitly asks to update the changelog — then write `changelog/unreleased.md` (main app and VS Code extension) summarizing changes since the latest git tag."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-git-safe-flow",
+          "description": "Safe status, pull, commit and push workflow.",
+          "triggers": [],
+          "category": "workspace",
+          "version": "1.0.0"
+        },
+        {
+          "name": "clack-cli-patterns",
+          "description": "Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior.",
+          "triggers": [
+            "description: Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior.",
+            "description: Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior.",
+            "description: Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "ui-api-decoupling",
+          "description": "Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes.",
+          "triggers": [
+            "description: Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes.",
+            "description: Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes.",
+            "description: Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-container-runtime",
+          "description": "Project-mounted BKG OpenCode runtime initialization.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-production-readiness",
+          "description": "Production readiness assessment.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "drag-to-reorder",
+          "description": "Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts.",
+          "triggers": [
+            "description: Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts.",
+            "description: Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts.",
+            "description: Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-zero",
+          "description": "Project initialization and audit - inspect repo, git, docs, build/test configuration, Brain and security boundaries before implementation.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-acp",
+          "description": "ACP-aware orchestration between OpenCode and external agent clients.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "enterprise-boundary",
+          "description": "\"Use when a change sends conversation content somewhere other than the session's OpenCode provider or this machine, opens a way into this machine (listening address, tunnel, relay, pairing, share link), adds a way to enter model providers, keys or endpoints, reports usage, or touches enterprise mode, the policy file or `enterprise-mode.js`.\"",
+          "triggers": [
+            "description: \"Use when a change sends conversation content somewhere other than the session's OpenCode provider or this machine, opens a way into this machine (listening address, tunnel, relay, pairing, share link), adds a way to enter model providers, keys or endpoints, reports usage, or touches enterprise mode, the policy file or `enterprise-mode.js`.\"",
+            "description: \"Use when a change sends conversation content somewhere other than the session's OpenCode provider or this machine, opens a way into this machine (listening address, tunnel, relay, pairing, share link), adds a way to enter model providers, keys or endpoints, reports usage, or touches enterprise mode, the policy file or `enterprise-mode.js`.\""
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "isolated-space-boundary",
+          "description": "\"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\"",
+          "triggers": [
+            "description: \"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\"",
+            "description: \"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\"",
+            "description: \"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\""
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-vote-consensus",
+          "description": "Three-agent voting and Arbiter escalation.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "bkg-arbitration",
+          "description": "Arbitration for unresolved BKG planning, architecture, feature and risk decisions.",
+          "triggers": [],
+          "category": "other",
+          "version": "1.0.0"
+        },
+        {
+          "name": "pr-review",
+          "description": "Load before reviewing any pull request, deciding a PR's fate, or drafting a PR verdict, close comment, or review comment — and inside batch triage as the per-PR engine.",
+          "triggers": [],
+          "category": "review",
+          "version": "1.0.0"
+        },
+        {
+          "name": "communication-style",
+          "description": "Load when writing or editing any human-facing text — documentation, UI copy, PR/issue comments, release notes, READMEs — to strip AI-generated patterns and keep a human voice.",
+          "triggers": [
+            "description: Load when writing or editing any human-facing text — documentation, UI copy, PR/issue comments, release notes, READMEs — to strip AI-generated patterns and keep a human voice."
+          ],
+          "category": "other",
+          "version": "1.0.0"
+        }
+      ],
+      "project": [],
+      "categories": {
+        "other": [
+          {
+            "name": "opencode-v2",
+            "description": "Load for any work that touches OpenCode — its routes, events, message or session shapes, plugins, the pinned CLI/client version, \"what's new in OpenCode 2.0.x\", or a bug that looks like OpenCode behaving differently than OpenChamber expects. OpenChamber runs on OpenCode 2.x since 2026-09; 1.x code paths are gone.",
+            "triggers": [
+              "description: Load for any work that touches OpenCode — its routes, events, message or session shapes, plugins, the pinned CLI/client version, \"what's new in OpenCode 2.0.x\", or a bug that looks like OpenCode behaving differently than OpenChamber expects. OpenChamber runs on OpenCode 2.x since 2026-09; 1.x code paths are gone."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-rule-crafting",
+            "description": "Create and refactor BKG rules without duplication or contradictions.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "sync-state-invariants",
+            "description": "Use when changing session synchronization, bootstrap or reconnect state, event reducers, polling, optimistic updates, message queues, live activity, ordering/reconciliation, runtime-scoped caches, or directory-dependent session behavior.",
+            "triggers": [
+              "description: Use when changing session synchronization, bootstrap or reconnect state, event reducers, polling, optimistic updates, message queues, live activity, ordering/reconciliation, runtime-scoped caches, or directory-dependent session behavior.",
+              "description: Use when changing session synchronization, bootstrap or reconnect state, event reducers, polling, optimistic updates, message queues, live activity, ordering/reconciliation, runtime-scoped caches, or directory-dependent session behavior."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-labertasche",
+            "description": "German-first BKG Labertasche persona and deterministic fact-preservation contract.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "triage-issues",
+            "description": "Load when asked to triage, clean up, batch-process, or work through the issue backlog — covers the mechanical sweep (stale-fixed, dead needs-info, duplicates), fan-out assessment, and approved batch actions.",
+            "triggers": [
+              "description: Load when asked to triage, clean up, batch-process, or work through the issue backlog — covers the mechanical sweep (stale-fixed, dead needs-info, duplicates), fan-out assessment, and approved batch actions."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-debate",
+            "description": "Visible planning and problem-solving debate with web research, three specialists, votes, Arbiter escalation and persistent reports.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-brain-memory",
+            "description": "Persistent project memory and task continuity.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "relay-transport",
+            "description": "Use when adding or changing OpenChamber WebSocket, SSE, streaming, realtime endpoints, shared UI sockets, runtime transport internals, private relay behavior, or files under the UI/server relay modules.",
+            "triggers": [
+              "description: Use when adding or changing OpenChamber WebSocket, SSE, streaming, realtime endpoints, shared UI sockets, runtime transport internals, private relay behavior, or files under the UI/server relay modules.",
+              "description: Use when adding or changing OpenChamber WebSocket, SSE, streaming, realtime endpoints, shared UI sockets, runtime transport internals, private relay behavior, or files under the UI/server relay modules."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-supervisor",
+            "description": "Supervise configured models, tools, skills, teams, permissions and runtime policy.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "theme-system",
+            "description": "Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons.",
+            "triggers": [
+              "description: Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons.",
+              "description: Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons.",
+              "description: Use when creating or modifying OpenChamber UI components, styling, colors, buttons, visual states, themes, or icons."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "locale-ui-patterns",
+            "description": "Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings.",
+            "triggers": [
+              "description: Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings.",
+              "description: Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings.",
+              "description: Use when creating or modifying OpenChamber UI text, labels, buttons, placeholders, aria labels, empty states, toasts, dialogs, settings copy, navigation labels, or any user-facing strings."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "triage-prs",
+            "description": "Load when asked to triage, clean up, batch-process, or work through the open PR queue or backlog — covers the mechanical sweep (stale, conflicts, duplicates), fan-out verdict reviews, and approved batch actions.",
+            "triggers": [
+              "description: Load when asked to triage, clean up, batch-process, or work through the open PR queue or backlog — covers the mechanical sweep (stale, conflicts, duplicates), fan-out verdict reviews, and approved batch actions."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-ui-browser-verification",
+            "description": "Browser-backed UI and API verification.",
+            "triggers": [
+              "name: bkg-ui-browser-verification",
+              "description: Browser-backed UI and API verification."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-task-flow",
+            "description": "Deterministic task ownership lifecycle.",
+            "triggers": [
+              "description: Deterministic task ownership lifecycle."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "serve-sim",
+            "description": "Use when working with the OpenChamber iOS Simulator app without opening Xcode - boot/install/launch the Capacitor iOS app, start a browser stream, tap/type/gesture/rotate, inspect accessibility, or hand a simulator URL to the user.",
+            "triggers": [
+              "description: Use when working with the OpenChamber iOS Simulator app without opening Xcode - boot/install/launch the Capacitor iOS app, start a browser stream, tap/type/gesture/rotate, inspect accessibility, or hand a simulator URL to the user.",
+              "description: Use when working with the OpenChamber iOS Simulator app without opening Xcode - boot/install/launch the Capacitor iOS app, start a browser stream, tap/type/gesture/rotate, inspect accessibility, or hand a simulator URL to the user."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "writing-for-agents",
+            "description": "Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md.",
+            "triggers": [
+              "description: Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md.",
+              "description: Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md.",
+              "description: Writing documents for agents. Use when creating or editing skills or modifying AGENTS.md."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "openchamber-change-discipline",
+            "description": "Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership.",
+            "triggers": [
+              "description: Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership.",
+              "description: Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership.",
+              "description: Use when implementing, fixing, refactoring, or otherwise modifying OpenChamber source code, dependencies, exports, build configuration, generated assets, package contracts, or module ownership."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "performance-engineering",
+            "description": "Use when implementing or reviewing code on interaction, render, event, polling, synchronization, list-processing, store-selector, cache, indexing, or high-volume data paths; when users report lag, freezes, jank, high CPU, memory growth, slow startup, or performance regressions; and before accepting memoization or caching as a fix for repeated work.",
+            "triggers": [
+              "description: Use when implementing or reviewing code on interaction, render, event, polling, synchronization, list-processing, store-selector, cache, indexing, or high-volume data paths; when users report lag, freezes, jank, high CPU, memory growth, slow startup, or performance regressions; and before accepting memoization or caching as a fix for repeated work.",
+              "description: Use when implementing or reviewing code on interaction, render, event, polling, synchronization, list-processing, store-selector, cache, indexing, or high-volume data paths; when users report lag, freezes, jank, high CPU, memory growth, slow startup, or performance regressions; and before accepting memoization or caching as a fix for repeated work."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "settings-ui-patterns",
+            "description": "Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior.",
+            "triggers": [
+              "description: Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior.",
+              "description: Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior.",
+              "description: Use when creating or modifying OpenChamber Settings pages, dialogs, controls, configuration surfaces, responsive Settings layouts, or Settings search behavior."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "channels-setup",
+            "description": ">",
+            "triggers": [
+              "  Use when a developer wants to build their first CopilotKit Channels agent and",
+              "  Use when a developer wants to build their first CopilotKit Channels agent and"
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "desktop-shell",
+            "description": "Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning.",
+            "triggers": [
+              "description: Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning.",
+              "description: Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning.",
+              "description: Use when changing Electron main/preload code, desktop IPC, native windows, menus, dialogs, notifications, updater behavior, deep links, SSH or tunnels, child processes, packaged startup, or Windows process spawning."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "update-changelog",
+            "description": "Use only when the maintainer explicitly asks to update the changelog — then write `changelog/unreleased.md` (main app and VS Code extension) summarizing changes since the latest git tag.",
+            "triggers": [
+              "description: Use only when the maintainer explicitly asks to update the changelog — then write `changelog/unreleased.md` (main app and VS Code extension) summarizing changes since the latest git tag."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "clack-cli-patterns",
+            "description": "Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior.",
+            "triggers": [
+              "description: Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior.",
+              "description: Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior.",
+              "description: Use when creating or modifying OpenChamber CLI commands, prompts, terminal output, non-TTY behavior, `--quiet`, or `--json` behavior."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "ui-api-decoupling",
+            "description": "Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes.",
+            "triggers": [
+              "description: Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes.",
+              "description: Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes.",
+              "description: Use when creating or modifying OpenChamber shared UI data access, OpenCode SDK calls, `RuntimeAPIs`, runtime fetch/auth/URLs, authenticated browser assets, bridges/proxies, runtime switching, or server API routes."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-container-runtime",
+            "description": "Project-mounted BKG OpenCode runtime initialization.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-production-readiness",
+            "description": "Production readiness assessment.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "drag-to-reorder",
+            "description": "Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts.",
+            "triggers": [
+              "description: Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts.",
+              "description: Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts.",
+              "description: Use when implementing or modifying OpenChamber sortable or drag-to-reorder behavior, especially `@dnd-kit`, touch/mobile interactions, variable-width items, or wrapping layouts."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-zero",
+            "description": "Project initialization and audit - inspect repo, git, docs, build/test configuration, Brain and security boundaries before implementation.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-acp",
+            "description": "ACP-aware orchestration between OpenCode and external agent clients.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "enterprise-boundary",
+            "description": "\"Use when a change sends conversation content somewhere other than the session's OpenCode provider or this machine, opens a way into this machine (listening address, tunnel, relay, pairing, share link), adds a way to enter model providers, keys or endpoints, reports usage, or touches enterprise mode, the policy file or `enterprise-mode.js`.\"",
+            "triggers": [
+              "description: \"Use when a change sends conversation content somewhere other than the session's OpenCode provider or this machine, opens a way into this machine (listening address, tunnel, relay, pairing, share link), adds a way to enter model providers, keys or endpoints, reports usage, or touches enterprise mode, the policy file or `enterprise-mode.js`.\"",
+              "description: \"Use when a change sends conversation content somewhere other than the session's OpenCode provider or this machine, opens a way into this machine (listening address, tunnel, relay, pairing, share link), adds a way to enter model providers, keys or endpoints, reports usage, or touches enterprise mode, the policy file or `enterprise-mode.js`.\""
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "isolated-space-boundary",
+            "description": "\"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\"",
+            "triggers": [
+              "description: \"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\"",
+              "description: \"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\"",
+              "description: \"Use when changing isolated-space trust boundaries: container hardening, networks and gatekeeper policy, exec and lifecycle, grants and credentials, code transfer and apply, dispatcher isolation, preview content, or tests of these protections.\""
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-vote-consensus",
+            "description": "Three-agent voting and Arbiter escalation.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-arbitration",
+            "description": "Arbitration for unresolved BKG planning, architecture, feature and risk decisions.",
+            "triggers": [],
+            "category": "other",
+            "version": "1.0.0"
+          },
+          {
+            "name": "communication-style",
+            "description": "Load when writing or editing any human-facing text — documentation, UI copy, PR/issue comments, release notes, READMEs — to strip AI-generated patterns and keep a human voice.",
+            "triggers": [
+              "description: Load when writing or editing any human-facing text — documentation, UI copy, PR/issue comments, release notes, READMEs — to strip AI-generated patterns and keep a human voice."
+            ],
+            "category": "other",
+            "version": "1.0.0"
+          }
+        ],
+        "review": [
+          {
+            "name": "bkg-plannotator-review",
+            "description": "Visual plan and code review workflow using the local Plannotator-compatible plan engine.",
+            "triggers": [],
+            "category": "review",
+            "version": "1.0.0"
+          },
+          {
+            "name": "pr-review",
+            "description": "Load before reviewing any pull request, deciding a PR's fate, or drafting a PR verdict, close comment, or review comment — and inside batch triage as the per-PR engine.",
+            "triggers": [],
+            "category": "review",
+            "version": "1.0.0"
+          }
+        ],
+        "workspace": [
+          {
+            "name": "gitspit",
+            "description": "Verwende GitSpit für serverseitig verwaltete Repositories und GitButler-Workflows wie Status, Branch-Stacks, Diff, Commit und Operationsverlauf.",
+            "triggers": [
+              "description: Verwende GitSpit für serverseitig verwaltete Repositories und GitButler-Workflows wie Status, Branch-Stacks, Diff, Commit und Operationsverlauf."
+            ],
+            "category": "workspace",
+            "version": "1.0.0"
+          },
+          {
+            "name": "bkg-git-safe-flow",
+            "description": "Safe status, pull, commit and push workflow.",
+            "triggers": [],
+            "category": "workspace",
+            "version": "1.0.0"
+          }
+        ]
+      }
+    },
+    "mcpServers": {
+      "servers": []
+    },
+    "plugins": {
+      "plugins": []
+    },
+    "commands": {
+      "commands": []
+    },
+    "templates": {
+      "templates": []
+    },
+    "cicd": {
+      "providers": [],
+      "pipelines": []
+    },
+    "docker": {
+      "dockerfiles": [],
+      "composeFiles": []
+    },
+    "containers": {
+      "runtime": "docker",
+      "images": []
+    },
+    "buildSystem": {
+      "type": "cargo",
+      "configFiles": [
+        "Cargo.toml"
+      ],
+      "scripts": {}
+    },
+    "testSystem": {
+      "framework": "unknown",
+      "configFiles": []
+    },
+    "documentation": {
+      "files": [
+        {
+          "path": "README.md",
+          "type": "markdown"
+        }
+      ],
+      "structure": {
+        "readme": true,
+        "contributing": false,
+        "license": false,
+        "changelog": false,
+        "apiDocs": false
+      }
+    },
+    "gitStatus": {
+      "branch": "main",
+      "commit": "unknown",
+      "clean": true,
+      "staged": [],
+      "unstaged": [],
+      "untracked": [],
+      "ahead": 0,
+      "behind": 0,
+      "remotes": []
+    }
+  },
+  "timestamp": "2026-10-31T11:16:33.562Z"
+}

@@ -1,0 +1,14 @@
+{
+  "last": {
+    "id": "DEC-PLUGIN-001",
+    "title": "Plugin-Transport und Ablage",
+    "decided_at": "2026-10-31T01:40:00Z",
+    "status": "in_review",
+    "decision": "Hotplug-Plugins sind eigene Prozesse, die per JSON-RPC ueber stdio mit dem Host sprechen. Sie liegen unter crates/plugins/ und werden ueber ein Manifest zur Laufzeit registriert.",
+    "rationale": "Echter Hotplug ohne Host-Neustart, erzwingbare Prozessgrenze, testbar ohne externe Dienste.",
+    "open_questions": [
+      "Namensraum der Plugin-Daten in PostgreSQL",
+      "Signaturpruefung des Admin-Tokens fuer Plugin-Routen"
+    ]
+  }
+}
