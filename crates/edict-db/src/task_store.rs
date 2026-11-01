@@ -355,28 +355,7 @@ fn read_optional_json<T: DeserializeOwned>(row: &PgRow, column: &str) -> AppResu
 }
 
 /// Wandelt eine Zeichenkette in eine UUID.
-fn parse_uuid(value: &str) -> AppResult<Uuid> {
-    Uuid::parse_str(value.trim())
-        .map_err(|error| AppError::Validation(format!("Ungültige Kennung {value}: {error}")))
-}
-
 /// Liest einen Zeitstempel im RFC-Format oder im Format des Altbestands.
-fn parse_timestamp(value: &str) -> AppResult<DateTime<Utc>> {
-    let trimmed = value.trim();
-    if trimmed.is_empty() {
-        return Ok(Utc::now());
-    }
-    if let Ok(parsed) = DateTime::parse_from_rfc3339(trimmed) {
-        return Ok(parsed.with_timezone(&Utc));
-    }
-    if let Ok(parsed) = NaiveDateTime::parse_from_str(trimmed, "%Y-%m-%d %H:%M:%S") {
-        return Ok(parsed.and_utc());
-    }
-    Err(AppError::Validation(format!(
-        "Zeitstempel {value} lässt sich nicht lesen"
-    )))
-}
-
 #[async_trait::async_trait]
 impl TaskRepository for TaskStore {
     async fn create_task(&self, mut task: Task) -> AppResult<Task> {
