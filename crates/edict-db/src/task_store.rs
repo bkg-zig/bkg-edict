@@ -354,8 +354,6 @@ fn read_optional_json<T: DeserializeOwned>(row: &PgRow, column: &str) -> AppResu
     }
 }
 
-/// Wandelt eine Zeichenkette in eine UUID.
-/// Liest einen Zeitstempel im RFC-Format oder im Format des Altbestands.
 #[async_trait::async_trait]
 impl TaskRepository for TaskStore {
     async fn create_task(&self, mut task: Task) -> AppResult<Task> {

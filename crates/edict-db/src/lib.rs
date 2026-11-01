@@ -5,15 +5,19 @@
 //! veröffentlicht.
 
 pub mod database;
+pub mod dispatch;
+pub mod events;
 pub mod outbox;
 pub mod redis_bus;
 pub mod task_store;
 
 pub use edict_core::repository::{
-    EventPublisher, EventRepository, StatisticsRepository, TaskFilter, TaskRepository,
+    ClaimOutcome, DispatchClaim, DispatchRepository, EventPublisher, EventRepository,
+    StatisticsRepository, TaskFilter, TaskRepository,
 };
 
 pub use database::Database;
+pub use dispatch::DispatchStore;
 pub use outbox::OutboxRelay;
 pub use redis_bus::RedisBus;
 pub use task_store::TaskStore;
