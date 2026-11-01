@@ -53,9 +53,8 @@ pub struct RedisBus {
 impl RedisBus {
     /// Öffnet einen Bus für die angegebene Redis-URL.
     pub fn new(redis_url: &str) -> AppResult<Self> {
-        let client = redis::Client::open(redis_url).map_err(|error| {
-            AppError::Redis(format!("Redis-Verbindung ungültig: {error}"))
-        })?;
+        let client = redis::Client::open(redis_url)
+            .map_err(|error| AppError::Redis(format!("Redis-Verbindung ungültig: {error}")))?;
         Ok(Self {
             client,
             max_len: MAX_STREAM_LEN,
@@ -93,10 +92,7 @@ impl RedisBus {
         notification.insert("trace_id".into(), Value::String(event.trace_id.clone()));
         notification.insert("timestamp".into(), Value::String(event.timestamp.clone()));
         notification.insert("topic".into(), Value::String(event.topic.clone()));
-        notification.insert(
-            "event_type".into(),
-            Value::String(event.event_type.clone()),
-        );
+        notification.insert("event_type".into(), Value::String(event.event_type.clone()));
         notification.insert("producer".into(), Value::String(event.producer.clone()));
         notification.insert("payload".into(), Value::String(payload_text.clone()));
         notification.insert("meta".into(), Value::String(meta_text.clone()));
@@ -217,10 +213,9 @@ impl RedisBus {
             .get_async_pubsub()
             .await
             .map_err(|error| AppError::Redis(format!("Pub/Sub nicht erreichbar: {error}")))?;
-        pubsub
-            .psubscribe(pattern)
-            .await
-            .map_err(|error| AppError::Redis(format!("Muster {pattern} nicht abonnierbar: {error}")))?;
+        pubsub.psubscribe(pattern).await.map_err(|error| {
+            AppError::Redis(format!("Muster {pattern} nicht abonnierbar: {error}"))
+        })?;
         Ok(pubsub)
     }
 
@@ -236,6 +231,17 @@ impl RedisBus {
     }
 }
 
+#[async_trait::async_trait]
+impl edict_core::repository::EventPublisher for RedisBus {
+    async fn publish_event(&self, event: &Event) -> AppResult<String> {
+        RedisBus::publish_event(self, event).await
+    }
+
+    async fn is_healthy(&self) -> bool {
+        RedisBus::is_healthy(self).await
+    }
+}
+
 /// Liest die Antwort von `XREADGROUP`.
 fn parse_read_reply(raw: &redis::Value) -> Vec<StreamMessage> {
     let mut messages = Vec::new();
@@ -246,7 +252,9 @@ fn parse_read_reply(raw: &redis::Value) -> Vec<StreamMessage> {
         let redis::Value::Array(parts) = stream else {
             continue;
         };
-        let Some(entries) = parts.get(1) else { continue };
+        let Some(entries) = parts.get(1) else {
+            continue;
+        };
         let redis::Value::Array(entries) = entries else {
             continue;
         };
@@ -321,7 +329,7 @@ fn value_to_string(value: &redis::Value) -> String {
         redis::Value::BulkString(bytes) => String::from_utf8_lossy(bytes).to_string(),
         redis::Value::SimpleString(text) => text.clone(),
         redis::Value::Double(number) => number.to_string(),
-        redis::Value::BigNumber(number) => number.clone(),
+        redis::Value::BigNumber(number) => number.to_string(),
         _ => String::new(),
     }
 }

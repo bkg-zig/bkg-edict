@@ -1,0 +1,97 @@
+[
+  {
+    "id": "JJC-20260224-001",
+    "title": "Wöchentlichen Projektfortschrittsbericht erstellen",
+    "official": "Rites-Minister",
+    "org": "Rites-Ministerium",
+    "state": "Done",
+    "now": "✅ Wöchentlicher Bericht wurde erstellt und an Feishu übertragen",
+    "eta": "2026-02-24",
+    "block": "Keine",
+    "output": "/tmp/weekly-report-20260224.md",
+    "ac": "Der fertige Bericht enthält eine Zusammenfassung der Leistungen aller Ministerien und den Plan für die kommende Woche",
+    "review_round": 1,
+    "archived": true,
+    "archivedAt": "2026-02-24T16:00:00Z",
+    "flow_log": [
+      {"at": "2026-02-24T09:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Der Kaiser erteilt den Befehl: Wöchentlichen Projektfortschrittsbericht erstellen"},
+      {"at": "2026-02-24T09:02:30Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Zhongshu hat die Planung abgeschlossen · Übergabe an Menxia zur Prüfung"},
+      {"at": "2026-02-24T09:05:00Z", "from": "Menxia", "to": "Shangshu", "remark": "✅ Menxia hat die Prüfung bestanden · Übergabe an Shangshu zur Verteilung"},
+      {"at": "2026-02-24T09:06:00Z", "from": "Shangshu", "to": "Rites-Ministerium", "remark": "📮 Shangshu verteilt den Auftrag → Ausführung durch das Rites-Ministerium"},
+      {"at": "2026-02-24T09:15:00Z", "from": "Rites-Ministerium", "to": "Shangshu", "remark": "📦 Rites-Ministerium hat die Ausführung abgeschlossen · Ergebnis eingereicht"},
+      {"at": "2026-02-24T09:16:00Z", "from": "Shangshu", "to": "Kaiser", "remark": "✅ Rückbericht: Aufgabe für den Wochenbericht abgeschlossen"}
+    ],
+    "updatedAt": "2026-02-24T09:16:00Z"
+  },
+  {
+    "id": "JJC-20260225-001",
+    "title": "Codeprüfung des edict-Repositorys",
+    "official": "Kriegsminister",
+    "org": "Kriegsministerium",
+    "state": "Doing",
+    "now": "🔍 Das Kriegsministerium prüft den Code des dashboard-Moduls",
+    "eta": "2026-02-25",
+    "block": "Keine",
+    "output": "",
+    "ac": "Ergebnis ist eine Liste der Sicherheitslücken, der Fehlerbehandlung und der Performanceprobleme",
+    "review_round": 0,
+    "archived": false,
+    "archivedAt": null,
+    "flow_log": [
+      {"at": "2026-02-25T10:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Der Kaiser erteilt den Befehl: Codeprüfung des edict-Repositorys"},
+      {"at": "2026-02-25T10:03:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Zhongshu hat die Planung abgeschlossen"},
+      {"at": "2026-02-25T10:06:00Z", "from": "Menxia", "to": "Shangshu", "remark": "✅ Menxia hat die Prüfung bestanden"},
+      {"at": "2026-02-25T10:07:00Z", "from": "Shangshu", "to": "Kriegsministerium", "remark": "📮 Shangshu verteilt den Auftrag → Ausführung durch das Kriegsministerium"}
+    ],
+    "updatedAt": "2026-02-25T10:30:00Z"
+  },
+  {
+    "id": "JJC-20260225-002",
+    "title": "Docker-Hub-Image aktualisieren und übertragen",
+    "official": "Bauminister",
+    "org": "Bauministerium",
+    "state": "Done",
+    "now": "✅ Das Docker-Image wurde übertragen",
+    "eta": "2026-02-25",
+    "block": "Keine",
+    "output": "/tmp/docker-push-log.txt",
+    "ac": "Dockerfile aktualisieren, Image bauen und zu Docker Hub übertragen",
+    "review_round": 0,
+    "archived": false,
+    "archivedAt": null,
+    "flow_log": [
+      {"at": "2026-02-25T14:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Der Kaiser erteilt den Befehl: Docker-Image aktualisieren"},
+      {"at": "2026-02-25T14:02:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Planung abgeschlossen"},
+      {"at": "2026-02-25T14:04:00Z", "from": "Menxia", "to": "Shangshu", "remark": "✅ Prüfung bestanden"},
+      {"at": "2026-02-25T14:05:00Z", "from": "Shangshu", "to": "Bauministerium", "remark": "📮 Auftrag verteilt → Bauministerium"},
+      {"at": "2026-02-25T14:20:00Z", "from": "Bauministerium", "to": "Shangshu", "remark": "📦 Ausführung abgeschlossen"},
+      {"at": "2026-02-25T14:21:00Z", "from": "Shangshu", "to": "Kaiser", "remark": "✅ Rückbericht abgeschlossen"}
+    ],
+    "updatedAt": "2026-02-25T14:21:00Z"
+  },
+  {
+    "id": "JJC-20260226-001",
+    "title": "Wettbewerbsanalyse: CrewAI, AutoGen und die drei Kanzleien mit sechs Ministerien",
+    "official": "Finanzminister",
+    "org": "Finanzministerium",
+    "state": "Review",
+    "now": "📊 Der Analysebericht wartet auf Prüfung",
+    "eta": "2026-02-26",
+    "block": "Keine",
+    "output": "/tmp/competitive-analysis.md",
+    "ac": "Der Vergleich betrachtet die Architektur, die Prüfung, die Beobachtbarkeit und die Bedienung",
+    "review_round": 2,
+    "archived": false,
+    "archivedAt": null,
+    "flow_log": [
+      {"at": "2026-02-26T08:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Befehl: Wettbewerbsrahmen analysieren"},
+      {"at": "2026-02-26T08:05:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Planung abgeschlossen"},
+      {"at": "2026-02-26T08:08:00Z", "from": "Menxia", "to": "Zhongshu", "remark": "🔄 Menxia weist zurück: Der Vergleich mit LangGraph fehlt"},
+      {"at": "2026-02-26T08:15:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 LangGraph ergänzt, erneute Einreichung"},
+      {"at": "2026-02-26T08:18:00Z", "from": "Menxia", "to": "Shangshu", "remark": "✅ Prüfung in der zweiten Runde bestanden"},
+      {"at": "2026-02-26T08:20:00Z", "from": "Shangshu", "to": "Finanzministerium", "remark": "📮 Auftrag verteilt → Finanzministerium"},
+      {"at": "2026-02-26T09:00:00Z", "from": "Finanzministerium", "to": "Shangshu", "remark": "📦 Entwurf abgeschlossen, wartet auf Prüfung"}
+    ],
+    "updatedAt": "2026-02-26T09:00:00Z"
+  }
+]

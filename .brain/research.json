@@ -1,0 +1,25 @@
+{
+  "last": {
+    "id": "RESEARCH-ZEPTOCLAW-DISPATCH-001",
+    "date": "2026-10-31",
+    "topic": "ZeptoClaw-Dispatch-Semantik fuer den Rust-Port",
+    "task_ref": "RUST-PORT-WORKER-001",
+    "decision_ref": "DEC-GATEWAY-001",
+    "document": "docs/debate/2026-10-31-zeptoclaw-dispatch.md",
+    "facts": [
+      "ZeptoClaw kennt kein --agent. Die CLI-Definition bietet -m/--message, --template, --no-stream, --dry-run und --mode (src/cli/mod.rs:66-82).",
+      "Rollenidentitaet entsteht ueber Template (~/.zeptoclaw/templates) und SOUL.md im Arbeitsverzeichnis; ZEPTOCLAW_AGENTS_DEFAULTS_WORKSPACE setzt das Arbeitsverzeichnis (src/config/mod.rs:144).",
+      "Ereignisvertrag: task.dispatch.request producer task_service, agent.dispatch.start producer dispatcher auf agent.heartbeat, agent.output producer agent.<rolle> auf agent.thoughts.",
+      "Redis-Strom mit Gruppe und ACK liefert mindestens einmal Zustellung. Genau einmal braucht einen Claim in der Datenbank mit Lease plus Idempotenzschluessel.",
+      "Rust-Bus bietet claim_stale, aber kein Aufrufer. Legacy ruft claim_stale nur beim Start mit 60 s Ruhezeit bei 300 s Aufrufzeitlimit.",
+      "EventRepository::append_event schreibt ohne Transaktion (task_store.rs:805-812). Worker-Ereignisse brauchen einen transaktionalen Weg.",
+      "Die Legacy-SOUL.md verlangt scripts/kanban_update.py. Der Rust-Port hat diese CLI nicht, das CLI-Crate ist ein Platzhalter."
+    ],
+    "vote": "Genehmigt mit Auflagen",
+    "verification": [
+      "ZeptoClaw-Quellen in /tmp/opencode/refs/zeptoclaw/src gelesen",
+      "Legacy-Quellen in /home/openchamber/dump/coding/edict-2.0 gelesen",
+      "Rust-Quellen in crates/edict-core, crates/edict-db und crates/edict-worker gelesen"
+    ]
+  }
+}

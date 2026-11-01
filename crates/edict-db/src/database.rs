@@ -23,9 +23,7 @@ impl Database {
             .connect(database_url)
             .await
             .map_err(|error| {
-                AppError::Database(format!(
-                    "Verbindung zu PostgreSQL fehlgeschlagen: {error}"
-                ))
+                AppError::Database(format!("Verbindung zu PostgreSQL fehlgeschlagen: {error}"))
             })?;
         Ok(Self { pool })
     }
@@ -45,9 +43,6 @@ impl Database {
 
     /// Prüft, ob die Datenbank erreichbar ist.
     pub async fn is_healthy(&self) -> bool {
-        sqlx::query("SELECT 1")
-            .fetch_one(&self.pool)
-            .await
-            .is_ok()
+        sqlx::query("SELECT 1").fetch_one(&self.pool).await.is_ok()
     }
 }

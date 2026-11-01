@@ -290,6 +290,10 @@ pub struct Task {
 
 impl Task {
     /// Neuer Zustand mit Standardwerten.
+    ///
+    /// Eine neue Aufgabe startet beim Taizi und trägt den ersten Eintrag im
+    /// Zustandsprotokoll. Die Texte sind deutsch, damit die Datenbank keine
+    /// chinesischen und deutschen Werte mischt.
     pub fn new(id: impl Into<String>, title: impl Into<String>) -> Self {
         let now = Utc::now().to_rfc3339();
         Task {
@@ -298,10 +302,21 @@ impl Task {
             trace_id: uuid::Uuid::new_v4().to_string(),
             title: title.into(),
             state: TaskState::Taizi,
-            now: String::new(),
+            org: "Taizi".to_string(),
+            creator: "Kaiser".to_string(),
+            now: "Wartet auf Sortierung durch den Taizi".to_string(),
             eta: "-".to_string(),
-            block: "无".to_string(),
+            block: "Keine".to_string(),
             priority: "normal".to_string(),
+            flow_log: vec![FlowEntry {
+                at: Some(now.clone()),
+                from: Some("Kaiser".to_string()),
+                to: Some("Taizi".to_string()),
+                remark: Some("Aufgabe erstellt".to_string()),
+                agent: Some("Kaiser".to_string()),
+                reason: Some("Aufgabe erstellt".to_string()),
+                ts: Some(now.clone()),
+            }],
             created_at: now.clone(),
             updated_at: now,
             ..Default::default()
@@ -375,12 +390,35 @@ pub struct Event {
 /// Live-Status der Aufgabenliste.
 ///
 /// Die Feldnamen entsprechen dem Vertrag des bisherigen Dashboard-Servers.
-/// `tasks` ist ein Array, nicht eine Map.
+/// `tasks` ist ein Array, nicht eine Map. Die Felder `generatedAt`,
+/// `taskSource`, `officials`, `history`, `metrics` und `health` sind optional,
+/// damit die Oberfläche nur `tasks` und `syncStatus` benötigt, die Dashboard-
+///Ansicht aber die vollständigen Angaben behalten kann.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LiveStatus {
     pub tasks: Vec<Task>,
     #[serde(rename = "syncStatus")]
     pub sync_status: Map<String, Value>,
+    #[serde(
+        rename = "generatedAt",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub generated_at: Option<String>,
+    #[serde(
+        rename = "taskSource",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub task_source: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub officials: Option<Vec<Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub history: Option<Vec<Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Map<String, Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<Map<String, Value>>,
 }
 
 /// Themen des Ereignisbus.

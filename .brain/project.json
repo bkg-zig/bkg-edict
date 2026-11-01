@@ -2,7 +2,8 @@
   "last": {
     "name": "Edict 2.0",
     "objective": "Das vorhandene Edict-Projekt vollständig auf Rust umstellen und die deutschsprachige Oberfläche sowie die Projektdokumentation in deutscher Sprache bereitstellen.",
-    "repository": "/home/openchamber/dump/coding/edict-2.0",
+    "repository": "/home/openchamber/dump/coding/bkg-edict",
+    "legacy_reference": "/home/openchamber/dump/coding/edict-2.0",
     "branch": "main",
     "started_at": "2026-10-30T23:22:33Z",
     "owner": {
@@ -24,6 +25,7 @@
         "writing-for-agents"
       ]
     },
-    "scope": "Bestandsaufnahme, Architekturentscheidung, Rust-Port, Übersetzung, Dokumentation, Tests und Build-Verifikation"
+    "scope": "Bestandsaufnahme, Architekturentscheidung, Rust-Port, Übersetzung, Dokumentation, Tests und Build-Verifikation",
+    "note": "Der Legacy-Bestand unter edict-2.0 bleibt unverändert und dient nur als Referenz für Verträge und Anforderungen."
   }
 }

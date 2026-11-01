@@ -1,7 +1,9 @@
 //! Konfiguration aus Umgebungsvariablen.
 //!
-//! Die Namen der Variablen entsprechen dem bestehenden Python-Betrieb. Werte
-//! aus `.env` werden beim Start einmalig geladen.
+//! Die Datenbank- und Redis-Variablen entsprechen dem bisherigen Betrieb.
+//! Das Gateway ist ZeptoClaw. Die Variablen `ZEPTOCLAW_BIN`,
+//! `ZEPTOCLAW_HEALTH_URL` und `ZEPTOCLAW_PROJECT_DIR` steuern den Aufruf des
+//! Gateways. Werte aus `.env` werden beim Start einmalig geladen.
 
 use crate::error::{AppError, AppResult};
 
@@ -19,9 +21,9 @@ pub struct Settings {
     pub backend_port: u16,
     pub secret_key: String,
     pub debug: bool,
-    pub openclaw_gateway_url: String,
-    pub openclaw_bin: String,
-    pub openclaw_project_dir: Option<String>,
+    pub zeptoclaw_bin: String,
+    pub zeptoclaw_health_url: String,
+    pub zeptoclaw_project_dir: Option<String>,
     pub legacy_data_dir: String,
     pub legacy_tasks_file: String,
     pub stall_threshold_sec: i64,
@@ -71,9 +73,9 @@ impl Settings {
             backend_port: env_parse("BACKEND_PORT", 8000u16)?,
             secret_key: env_or("SECRET_KEY", "change-me-in-production"),
             debug: env_parse("DEBUG", false)?,
-            openclaw_gateway_url: env_or("OPENCLAW_GATEWAY_URL", "http://localhost:18789"),
-            openclaw_bin: env_or("OPENCLAW_BIN", "openclaw"),
-            openclaw_project_dir: std::env::var("OPENCLAW_PROJECT_DIR")
+            zeptoclaw_bin: env_or("ZEPTOCLAW_BIN", "zeptoclaw"),
+            zeptoclaw_health_url: env_or("ZEPTOCLAW_HEALTH_URL", "http://127.0.0.1:9090/health"),
+            zeptoclaw_project_dir: std::env::var("ZEPTOCLAW_PROJECT_DIR")
                 .ok()
                 .filter(|value| !value.trim().is_empty()),
             legacy_data_dir: env_or("LEGACY_DATA_DIR", "../data"),

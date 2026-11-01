@@ -1,0 +1,118 @@
+# Betriebsstack von Edict 2.0.
+#
+# Start mit:
+#
+#     cp .env.example .env
+#     docker compose up --build
+#
+# Der Stack besteht aus PostgreSQL, Redis, dem HTTP-Server und dem Worker.
+# Server und Worker benutzen dasselbe Image. Die Oberfläche wird nicht in
+# das Image gebaut, sondern als Bind-Mount unter /app/web eingebunden.
+
+# Eigener Projektname. Der Stack teilt sich damit keine Container- und
+# Volumennamen mit dem Referenzprojekt edict-2.0, das auf demselben Host
+# unter dem Namen edict läuft.
+name: bkg-edict
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-edict}
+      POSTGRES_USER: ${POSTGRES_USER:-edict}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-edict_secret_change_me}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Kein veröffentlichter Host-Port. Die Datenbank ist nur im Netz des
+    # Stacks erreichbar. Für die Wartung dient der Befehl
+    # docker compose exec postgres psql -U edict edict.
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER:-edict} -d ${POSTGRES_DB:-edict}
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Kein allkeys-lru. Die Redis-Streams tragen die Arbeitsteilung und dürfen
+    # nicht durch eine Cache-Verdrängung verloren gehen. Das AOF hält die
+    # Daten nach einem Neustart des Containers.
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --maxmemory-policy
+      - noeviction
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: edict:local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-edict}:${POSTGRES_PASSWORD:-edict_secret_change_me}@postgres:5432/${POSTGRES_DB:-edict}
+      REDIS_URL: redis://redis:6379/0
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_PORT: 8080
+      LEGACY_DATA_DIR: /app/data
+      LEGACY_TASKS_FILE: /app/data/tasks_source.json
+    ports:
+      - "${EDICT_HTTP_PORT:-8080}:8080"
+    volumes:
+      - ./data:/app/data
+      - ./crates/edict-web/dist:/app/web:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command:
+      - edict-server
+
+  worker:
+    image: edict:local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-edict}:${POSTGRES_PASSWORD:-edict_secret_change_me}@postgres:5432/${POSTGRES_DB:-edict}
+      REDIS_URL: redis://redis:6379/0
+      BACKEND_HOST: 0.0.0.0
+      BACKEND_PORT: 8080
+      LEGACY_DATA_DIR: /app/data
+      LEGACY_TASKS_FILE: /app/data/tasks_source.json
+    volumes:
+      - ./data:/app/data
+      - ./crates/edict-web/dist:/app/web:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command:
+      - edict-worker
+
+volumes:
+  pgdata:
+  redisdata:

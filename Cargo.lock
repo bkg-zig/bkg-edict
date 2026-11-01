@@ -485,7 +485,6 @@ dependencies = [
  "clap",
  "dotenvy",
  "edict-core",
- "edict-db",
  "reqwest",
  "serde",
  "serde_json",
@@ -520,6 +519,51 @@ dependencies = [
  "tokio",
  "tracing",
  "uuid",
+]
+
+[[package]]
+name = "edict-plugin-edict"
+version = "2.0.0"
+dependencies = [
+ "edict-core",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "edict-plugin-gitclaw"
+version = "2.0.0"
+dependencies = [
+ "edict-core",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "edict-plugin-host"
+version = "2.0.0"
+dependencies = [
+ "async-trait",
+ "edict-core",
+ "edict-plugin-protocol",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "edict-plugin-protocol"
+version = "2.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
 ]
 
 [[package]]

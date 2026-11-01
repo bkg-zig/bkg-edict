@@ -1,14 +1,58 @@
 {
   "last": {
-    "id": "DEC-PLUGIN-001",
-    "title": "Plugin-Transport und Ablage",
-    "decided_at": "2026-10-31T01:40:00Z",
-    "status": "in_review",
-    "decision": "Hotplug-Plugins sind eigene Prozesse, die per JSON-RPC ueber stdio mit dem Host sprechen. Sie liegen unter crates/plugins/ und werden ueber ein Manifest zur Laufzeit registriert.",
-    "rationale": "Echter Hotplug ohne Host-Neustart, erzwingbare Prozessgrenze, testbar ohne externe Dienste.",
-    "open_questions": [
-      "Namensraum der Plugin-Daten in PostgreSQL",
-      "Signaturpruefung des Admin-Tokens fuer Plugin-Routen"
-    ]
-  }
+    "id": "DEC-EDICT-CLI-001",
+    "title": "CLI-Zugriff auf Edict",
+    "decided_at": "2026-10-31T03:05:00Z",
+    "status": "decided",
+    "decision": "Die CLI spricht ausschliesslich mit der HTTP-Schnittstelle des Servers. Sie hält keine eigene Datenbankverbindung und liest keine Dateien des Datenbestands direkt.",
+    "rationale": "Eine Datenbankverbindung in der CLI dupliziert Zustandsregeln und Umgeht die Zugriffskontrolle des Servers. Der HTTP-Weg nutzt denselben Vertrag wie die Oberflaeche und bleibt damit pruefbar.",
+    "open_questions": []
+  },
+  "history": [
+    {
+      "id": "DEC-PLUGIN-001",
+      "title": "Plugin-Transport und Ablage",
+      "decided_at": "2026-10-31T03:30:00Z",
+      "status": "decided",
+      "decision": "Hotplug-Plugins sind eigene Prozesse, die per JSON-RPC 2.0 ueber stdio mit Content-Length-Rahmen mit dem Host sprechen. Sie liegen unter crates/plugins/ und werden ueber ein Manifest zur Laufzeit registriert. Das gemeinsame Protokoll-Crate heisst crates/edict-plugin-protocol und traegt die Protokollversion 1 mit den Methoden initialize, health, event, invoke, emit_event, shutdown und log. Plugins erben nicht die Umgebung des Hosts, sondern erhalten nur eine Positivliste.",
+      "rationale": "Echter Hotplug ohne Host-Neustart, erzwingbare Prozessgrenze, testbar ohne externe Dienste. Plugins erhalten weder Admin-Token noch Datenbankverbindung. Ereignisse werden ueber Redis-Streams mit Konsumentengruppen zugestellt, damit ein Ausfall des Hosts keine Ereignisse verliert.",
+      "conditions": [
+        "Feste Regel fuer den HTTP-Eingang von Plugins: nur 127.0.0.1, der Host reicht Rohkoerper und Header unveraendert durch.",
+        "Ein gemeinsames Protokoll-Crate fuer Host und Plugins.",
+        "Der Redis-Stream statt Pub/Sub als Zustellweg.",
+        "Kindprozesse erben nicht die Umgebung des Hosts.",
+        "Plugin, Skill und Hook bleiben getrennte Begriffe."
+      ],
+      "debate": "docs/debate/2026-10-31-plugin-transport.md",
+      "vote": "approve mit Auflagen",
+      "open_questions": []
+    },
+    {
+      "id": "DEC-GATEWAY-001",
+      "title": "Gateway-Anbindung",
+      "decided_at": "2026-10-31T03:05:00Z",
+      "status": "decided",
+      "decision": "Das Gateway ist ZeptoClaw. Der Worker ruft `zeptoclaw agent -m <nachricht>` auf und nutzt `ZEPTOCLAW_HEALTH_URL` sowie `ZEPTOCLAW_BIN` aus der Umgebung.",
+      "rationale": "Der Auftrag des Portprojekts nennt ZeptoClaw anstelle von OpenClaw. Die OpenClaw-Variablen und Aufrufe wurden aus dem Kern entfernt.",
+      "open_questions": []
+    },
+    {
+      "id": "DEC-STACK-001",
+      "title": "Technologiestack des Portprojekts",
+      "decided_at": "2026-10-31T03:05:00Z",
+      "status": "decided",
+      "decision": "Dioxus 0.7.10 fuer die Oberflaeche, Axum 0.8 fuer HTTP und WebSocket, SQLx 0.8 mit PostgreSQL, Redis Streams und Pub/Sub fuer Ereignisse, clap fuer die CLI.",
+      "rationale": "Ein Rust-Stack ersetzt den Python-Backendbestand und das React-Frontend in einem Zug. Dioxus erlaubt WebAssembly ohne JavaScript-Laufzeit.",
+      "open_questions": []
+    },
+    {
+      "id": "DEC-PERSIST-001",
+      "title": "Kanonisches Schema und Uebersetzungsmodell",
+      "decided_at": "2026-10-31T03:05:00Z",
+      "status": "decided",
+      "decision": "Die Datenbank haelt die kanonischen Altbestandswerte. Die Anzeigeuebersetzung passiert in edict-core::labels. Neue Aufgaben werden bereits mit deutschen Werten angelegt.",
+      "rationale": "Das Schema bleibt kompatibel zum Altbestand und der Import verliert keine Werte. Die Uebersetzung bleibt eine reine Darstellungsfrage und ist zentral geaendert.",
+      "open_questions": []
+    }
+  ]
 }

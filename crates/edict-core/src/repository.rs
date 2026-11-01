@@ -109,15 +109,10 @@ pub trait EventRepository: Send + Sync {
 #[async_trait]
 pub trait EventPublisher: Send + Sync {
     /// Veröffentlicht ein Ereignis.
-    async fn publish(
-        &self,
-        topic: &str,
-        trace_id: &str,
-        event_type: &str,
-        producer: &str,
-        payload: Value,
-        meta: Value,
-    ) -> AppResult<String>;
+    ///
+    /// Das Ereignis wird unverändert weitergereicht. Kennung und Zeitstempel
+    /// bleiben damit über Datenbank und Ereignisbus hinweg gleich.
+    async fn publish_event(&self, event: &Event) -> AppResult<String>;
 
     /// Meldet, ob der Bus erreichbar ist.
     async fn is_healthy(&self) -> bool;

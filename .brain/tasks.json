@@ -1,24 +1,129 @@
 {
   "last": {
-    "id": "COMPOSE-FIX-001",
-    "title": "Docker-Compose-Stack reparieren",
+    "id": "RUST-PORT-002",
+    "title": "Rust-Port von Edict 2.0 mit deutscher Oberflaeche",
     "owner": {
       "agent": "build",
       "model": "MiniMax-M3.1-Flash"
     },
     "status": "in_progress",
-    "started_at": "2026-10-30T23:54:36.289Z",
-    "scope": "edict/docker-compose.yml, edict/frontend/Dockerfile, edict/frontend/vite.config.ts, edict/backend/app/config.py, edict/migration/env.py",
+    "started_at": "2026-10-31T02:00:00Z",
+    "scope": "crates/edict-core, crates/edict-db, crates/edict-server, crates/edict-worker, crates/edict-cli, crates/edict-web, crates/plugins, Betrieb und Dokumentation",
+    "decision": "Dioxus 0.7.10, Axum 0.8, SQLx 0.8 mit PostgreSQL, Redis Streams und Pub/Sub, Gateway ZeptoClaw, Plugin-Host ueber JSON-RPC auf stdio",
     "acceptance": [
-      "docker compose -f edict/docker-compose.yml up baut alle Images ohne Fehler.",
-      "Backend laeuft gegen Postgres und Redis, Alembic-Migrationen laufen durch.",
-      "Frontend-Image liefert die gebaute Oberflaeche aus."
+      "Alle produktiven Python-Komponenten sind durch Rust ersetzt oder ihre Rust-Entsprechung ist nachweislich im produktiven Lauf nicht mehr erforderlich.",
+      "Oberflaechentexte, Fehlermeldungen und die maßgebliche Dokumentation sind deutsch.",
+      "Die bestehenden HTTP-, WebSocket- und Persistenzverträge bleiben kompatibel.",
+      "cargo fmt, cargo clippy, cargo test, cargo build --locked --release und der Dioxus-Webbuild laufen erfolgreich."
+    ],
+    "verification": [
+      "cargo fmt --all -- --check",
+      "cargo clippy -p edict-core -p edict-db --all-targets --all-features -- -D warnings",
+      "cargo test -p edict-core -p edict-db"
     ]
   },
   "history": [
     {
+      "id": "RUST-PORT-SERVER-001",
+      "title": "Axum-Server mit Legacy-Routen und WebSocket",
+      "owner": {
+        "agent": "subagent",
+        "model": "geerbt"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-31T02:10:00Z",
+      "scope": "crates/edict-server",
+      "acceptance": [
+        "Alle GET- und POST-Routen des Legacy-Dashboards antworten im bekannten Format.",
+        "Der WebSocket befolgt das Protokoll mit ping, pong, subscribe und subscribed.",
+        "CORS nutzt eine Allowlist und Admin-Routen pruefen das Admin-Token.",
+        "Die gebaute Dioxus-Oberflaeche wird als statisches Paket ausgeliefert."
+      ]
+    },
+    {
+      "id": "RUST-PORT-WORKER-001",
+      "title": "Worker mit Outbox-Relay und ZeptoClaw-Anbindung",
+      "owner": {
+        "agent": "subagent",
+        "model": "geerbt"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-31T02:10:00Z",
+      "scope": "crates/edict-worker",
+      "acceptance": [
+        "Das Relay stellt Ereignisse aus der Outbox in Redis zu.",
+        "Auftraege werden ueber zeptoclaw agent -m ausgefuehrt.",
+        "Erfolge und Fehler des Gateways erzeugen die Ereignisse agent.output und agent.dispatch.start."
+      ]
+    },
+    {
+      "id": "RUST-PORT-CLI-001",
+      "title": "Rust-CLI auf HTTP-Basis",
+      "owner": {
+        "agent": "subagent",
+        "model": "geerbt"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-31T02:10:00Z",
+      "scope": "crates/edict-cli",
+      "acceptance": [
+        "Die CLI schreibt ausschliesslich ueber die HTTP-Schnittstelle.",
+        "Befehle fuer Aufgaben, Zustandswechsel, Fortschritt und Teilaufgaben existieren.",
+        "Ausgaben und Fehlermeldungen sind deutsch."
+      ]
+    },
+    {
+      "id": "RUST-PORT-WEB-001",
+      "title": "Dioxus-Oberflaeche",
+      "owner": {
+        "agent": "subagent",
+        "model": "geerbt"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-31T02:10:00Z",
+      "scope": "crates/edict-web",
+      "acceptance": [
+        "Die Oberflaeche nutzt Dioxus 0.7.10 und baut als WebAssembly-Paket.",
+        "Alle sichtbaren Texte sind deutsch.",
+        "Die Oberflaeche liest die Aufgabenliste ueber die HTTP-Schnittstelle und abonniert den WebSocket."
+      ]
+    },
+    {
+      "id": "RUST-PORT-PLUGIN-001",
+      "title": "Plugin-Host und Gitclaw-Plugin",
+      "owner": {
+        "agent": "subagent",
+        "model": "geerbt"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-31T02:10:00Z",
+      "scope": "crates/plugins",
+      "acceptance": [
+        "Der Host startet Plugins als eigene Prozesse und verwaltet ihren Lebenszyklus.",
+        "Das Protokoll ist JSON-RPC ueber stdio mit Content-Length-Rahmen.",
+        "Plugins erhalten weder Admin-Token noch Datenbankverbindung.",
+        "Das gitclaw-Plugin meldet Webhooks und fuehrt eine Review-Pipeline aus."
+      ]
+    },
+    {
+      "id": "RUST-PORT-OPS-001",
+      "title": "Betrieb, Docker und Dokumentation",
+      "owner": {
+        "agent": "subagent",
+        "model": "geerbt"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-31T02:10:00Z",
+      "scope": "Dockerfile, docker-compose.yml, .env.example, docs/, data/",
+      "acceptance": [
+        "Der Stack startet mit docker compose ohne Python.",
+        "Die Dokumentation beschreibt Architektur, API, Betrieb, CLI, Plugins, Uebersetzung und ZeptoClaw-Anbindung auf Deutsch.",
+        "Die Demodaten liegen unter data/ und sind deutsch."
+      ]
+    },
+    {
       "id": "RUST-PORT-001",
-      "title": "Vollständiger Rust-Port und deutsche Übersetzung",
+      "title": "Vollstaendiger Rust-Port und deutsche Uebersetzung",
       "owner": {
         "agent": "build",
         "model": "MiniMax-M3.1-Flash"
@@ -26,14 +131,31 @@
       "status": "in_progress",
       "started_at": "2026-10-30T23:22:33Z",
       "claimed_at": "2026-10-30T23:40:00Z",
-      "scope": "Bestandsaufnahme, Architekturentscheidung, Rust-Port, Übersetzung, Dokumentation, Tests und Build-Verifikation",
-      "decision": "Dioxus für Oberfläche und Server, Axum als HTTP-Schicht, SQLx/PostgreSQL, Redis Streams, Rust-CLI",
+      "scope": "Bestandsaufnahme, Architekturentscheidung, Rust-Port, Uebersetzung, Dokumentation, Tests und Build-Verifikation",
+      "decision": "Dioxus fuer Oberflaeche und Server, Axum als HTTP-Schicht, SQLx/PostgreSQL, Redis Streams, Rust-CLI",
       "acceptance": [
         "Alle produktiven Python-Komponenten sind durch Rust ersetzt oder ihre Rust-Entsprechung ist nachweislich im produktiven Lauf nicht mehr erforderlich.",
-        "Oberflächentexte, Fehlermeldungen und die maßgebliche Dokumentation sind deutsch.",
+        "Oberflaechentexte, Fehlermeldungen und die maßgebliche Dokumentation sind deutsch.",
         "Die bestehenden HTTP-, WebSocket- und Persistenzverträge bleiben kompatibel.",
         "Formatierung, Lint, Tests und Build laufen mit dokumentierten Befehlen erfolgreich."
       ]
+    },
+    {
+      "id": "COMPOSE-FIX-001",
+      "title": "Docker-Compose-Stack reparieren",
+      "owner": {
+        "agent": "build",
+        "model": "MiniMax-M3.1-Flash"
+      },
+      "status": "in_progress",
+      "started_at": "2026-10-30T23:54:36.289Z",
+      "scope": "edict/docker-compose.yml, edict/frontend/Dockerfile, edict/frontend/vite.config.ts, edict/backend/app/config.py, edict/migration/env.py",
+      "acceptance": [
+        "docker compose -f edict/docker-compose.yml up baut alle Images ohne Fehler.",
+        "Backend laeuft gegen Postgres und Redis, Alembic-Migrationen laufen durch.",
+        "Frontend-Image liefert die gebaute Oberflaeche aus."
+      ],
+      "note": "Gehoert zum Legacy-Projekt edict-2.0 und nicht zum Rust-Port. Dort unveraendert."
     }
   ]
 }

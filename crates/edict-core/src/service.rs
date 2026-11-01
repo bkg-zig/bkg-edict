@@ -257,21 +257,25 @@ mod tests {
     #[test]
     fn uebergang_wird_protokolliert() {
         let mut task = Task::new("JJC-1", "Test");
+        let vorher = task.flow_log.len();
         apply_transition(&mut task, TaskState::Zhongshu, "taizi", "Weiterleitung").unwrap();
         assert_eq!(task.state, TaskState::Zhongshu);
         assert_eq!(task.prev_state.as_deref(), Some("Taizi"));
-        assert_eq!(task.flow_log.len(), 1);
-        assert_eq!(task.flow_log[0].from.as_deref(), Some("Taizi"));
+        assert_eq!(task.flow_log.len(), vorher + 1);
+        let eintrag = task.flow_log.last().unwrap();
+        assert_eq!(eintrag.from.as_deref(), Some("Taizi"));
+        assert_eq!(eintrag.to.as_deref(), Some("Zhongshu"));
     }
 
     #[test]
     fn unerlaubter_uebergang_aendert_nichts() {
         let mut task = Task::new("JJC-1", "Test");
+        let vorher = task.flow_log.len();
         let error = apply_transition(&mut task, TaskState::Done, "system", "sofort fertig")
             .expect_err("Direktsprung muss scheitern");
         assert!(matches!(error, AppError::InvalidTransition { .. }));
         assert_eq!(task.state, TaskState::Taizi);
-        assert!(task.flow_log.is_empty());
+        assert_eq!(task.flow_log.len(), vorher);
     }
 
     #[test]

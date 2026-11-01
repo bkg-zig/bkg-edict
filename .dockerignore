@@ -1,0 +1,28 @@
+# Buildartefakte des Rust-Workspace
+target
+**/target
+
+# Versionsverwaltung
+.git
+.gitignore
+
+# Dateibasiertes Gedächtnis und Demodaten. Der Inhalt kommt zur Laufzeit
+# über einen Bind-Mount in das Container.
+data
+
+# Protokolldateien
+*.log
+logs
+
+# Lokale Konfiguration mit Zugangsdaten
+.env
+.env.*
+!.env.example
+
+# Editoren und Betriebssystem
+.idea
+.vscode
+.DS_Store
+
+# Dokumentation und Debatten sind für das Image nicht nötig
+docs

@@ -10,6 +10,7 @@ pub mod config;
 pub mod error;
 pub mod filestore;
 pub mod labels;
+pub mod legacy_id;
 pub mod model;
 pub mod repository;
 pub mod service;
