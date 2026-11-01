@@ -183,6 +183,8 @@ pub enum TaskCommand {
     Todos(TodosArgs),
     /// Fortschrittsmeldung an eine Aufgabe hängen.
     Progress(ProgressArgs),
+    /// Prüfung bestätigen oder zurückweisen.
+    Review(ReviewArgs),
 }
 
 /// Argumente von `edict task advance`.
@@ -203,6 +205,10 @@ pub struct AdvanceArgs {
     /// Begründung des Wechsels.
     #[arg(long, value_name = "TEXT")]
     pub reason: Option<String>,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Argumente von `edict task action`.
@@ -219,6 +225,10 @@ pub struct ActionArgs {
     /// Zusätzliche Felder als JSON-Objekt.
     #[arg(long, value_name = "JSON")]
     pub payload: Option<String>,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Argumente von `edict task todos`.
@@ -231,6 +241,10 @@ pub struct TodosArgs {
     /// Teilaufgaben als JSON-Array.
     #[arg(long, value_name = "JSON")]
     pub from: String,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Argumente von `edict task progress`.
@@ -247,6 +261,30 @@ pub struct ProgressArgs {
     /// Text der Fortschrittsmeldung.
     #[arg(long, value_name = "TEXT")]
     pub content: String,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
+}
+
+/// Argumente von `edict task review`.
+#[derive(Debug, Args)]
+pub struct ReviewArgs {
+    /// Kennung der Aufgabe.
+    #[arg(value_name = "ID")]
+    pub id: String,
+
+    /// Entscheidung der Prüfung. Erlaubt sind approve und reject.
+    #[arg(long, value_name = "ENTSCHEIDUNG")]
+    pub action: String,
+
+    /// Begründung der Entscheidung.
+    #[arg(long, value_name = "TEXT")]
+    pub comment: Option<String>,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Argumente von `edict agents`.

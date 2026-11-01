@@ -18,9 +18,10 @@ demselben Vorgang. Die Oberfläche und die Werkzeuge sind deutschsprachig.
 | `crates/plugins/gitclaw` | Prüfung von Merge-Anfragen | Platzhalter |
 | `crates/plugins/edict` | Mehragenten-Workflows | Platzhalter |
 
-`crates/edict-web` ist im Repository noch nicht angelegt. Die Oberfläche
-entsteht als Dioxus-Anwendung für das Ziel `wasm32-unknown-unknown` und
-liegt bewusst außerhalb des Workspace.
+`crates/edict-web` liegt außerhalb des Workspace. Die Oberfläche entsteht als
+Dioxus-Anwendung für das Ziel `wasm32-unknown-unknown`. Das Verzeichnis
+enthält bisher eine Probeanwendung. Der Build mit `dx build --platform web`
+steht aus.
 
 ## Datenfluss
 

@@ -142,8 +142,9 @@ im Betriebsdokument versteckt.
 - `edict-server` und `edict-worker` enthalten nur einen Platzhalter ohne
   `main`-Funktion. Der Befehl `docker compose build` scheitert deshalb an
   der Übersetzung dieser Crates.
-- `crates/edict-web` ist noch nicht angelegt. Das Zielverzeichnis des
-  Bind-Mounts entsteht erst mit dem ersten Web-Build.
+- `crates/edict-web` enthält bisher nur eine Probeanwendung. Das Verzeichnis
+  `crates/edict-web/dist` fehlt. Docker legt es beim Start des Servers leer
+  an, bis der Web-Build vorliegt.
 - Die Konfigurationstabelle der `README.md` nennt für das Programm und das
   Arbeitsverzeichnis andere Variablennamen als der Kern. Der Kern liest
   `ZEPTOCLAW_BIN` und `ZEPTOCLAW_PROJECT_DIR`. Die Betriebsdatei folgt dem

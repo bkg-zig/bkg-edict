@@ -4,9 +4,9 @@ Ein Plugin ist ein eigener Prozess, den der Host zur Laufzeit startet,
 verwaltet und beendet. Der Host muss dafür nicht neu gebaut werden. Die
 Kommunikation läuft über JSON-RPC 2.0 auf stdio.
 
-Das Protokoll steht in `crates/edict-plugin-protocol`. Der Plugin-Host ist
-im Repository noch nicht angelegt. Die Beschreibung unten ist der
-vereinbarte Vertrag.
+Das Protokoll steht in `crates/edict-plugin-protocol`. Der Plugin-Host liegt
+in `crates/edict-plugin-host` und enthält bisher nur einen Platzhalter. Die
+Beschreibung unten ist der vereinbarte Vertrag.
 
 ## Rahmen
 
