@@ -35,8 +35,6 @@
     "output": "",
     "ac": "Ergebnis ist eine Liste der Sicherheitslücken, der Fehlerbehandlung und der Performanceprobleme",
     "review_round": 0,
-    "archived": false,
-    "archivedAt": null,
     "flow_log": [
       {"at": "2026-02-25T10:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Der Kaiser erteilt den Befehl: Codeprüfung des edict-Repositorys"},
       {"at": "2026-02-25T10:03:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Zhongshu hat die Planung abgeschlossen"},
@@ -57,8 +55,6 @@
     "output": "/tmp/docker-push-log.txt",
     "ac": "Dockerfile aktualisieren, Image bauen und zu Docker Hub übertragen",
     "review_round": 0,
-    "archived": false,
-    "archivedAt": null,
     "flow_log": [
       {"at": "2026-02-25T14:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Der Kaiser erteilt den Befehl: Docker-Image aktualisieren"},
       {"at": "2026-02-25T14:02:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Planung abgeschlossen"},
@@ -81,8 +77,6 @@
     "output": "/tmp/competitive-analysis.md",
     "ac": "Der Vergleich betrachtet die Architektur, die Prüfung, die Beobachtbarkeit und die Bedienung",
     "review_round": 2,
-    "archived": false,
-    "archivedAt": null,
     "flow_log": [
       {"at": "2026-02-26T08:00:00Z", "from": "Kaiser", "to": "Zhongshu", "remark": "📜 Befehl: Wettbewerbsrahmen analysieren"},
       {"at": "2026-02-26T08:05:00Z", "from": "Zhongshu", "to": "Menxia", "remark": "📋 Planung abgeschlossen"},

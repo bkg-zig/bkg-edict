@@ -13,13 +13,7 @@ use edict_core::config::Settings;
 use tokio::process::Command;
 
 /// Vorlagen, die ZeptoClaw selbst mitbringt.
-const BUILTIN_TEMPLATES: [&str; 5] = [
-    "coder",
-    "researcher",
-    "writer",
-    "assistant",
-    "task_manager",
-];
+const BUILTIN_TEMPLATES: [&str; 5] = ["coder", "researcher", "writer", "assistant", "task_manager"];
 
 /// Höchste Länge der übernommenen Standardausgabe.
 const MAX_STDOUT: usize = 5000;
@@ -151,9 +145,7 @@ pub fn template_exists(role: &str) -> bool {
         return true;
     }
     let directory = config_directory().join("templates");
-    directory
-        .join(format!("{role}.json"))
-        .is_file()
+    directory.join(format!("{role}.json")).is_file()
         || directory.join(format!("{role}.toml")).is_file()
 }
 

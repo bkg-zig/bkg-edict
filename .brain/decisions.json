@@ -1,14 +1,33 @@
 {
   "last": {
-    "id": "DEC-EDICT-CLI-001",
-    "title": "CLI-Zugriff auf Edict",
-    "decided_at": "2026-10-31T03:05:00Z",
+    "id": "DEC-SERVER-001",
+    "title": "Serververtrag des Rust-Ports",
+    "decided_at": "2026-11-01T05:00:00Z",
     "status": "decided",
-    "decision": "Die CLI spricht ausschliesslich mit der HTTP-Schnittstelle des Servers. Sie hält keine eigene Datenbankverbindung und liest keine Dateien des Datenbestands direkt.",
-    "rationale": "Eine Datenbankverbindung in der CLI dupliziert Zustandsregeln und Umgeht die Zugriffskontrolle des Servers. Der HTTP-Weg nutzt denselben Vertrag wie die Oberflaeche und bleibt damit pruefbar.",
+    "decision": "PostgreSQL ist die fachliche Wahrheit fuer Aufgaben, Zustaende, Scheduler, Ereignisse und Statistik. Konfigurationsdateien bleiben Dateien ueber edict_core::filestore. GET /api/live-status liefert die Dashboardform mit tasks als Liste, GET /api/tasks/live-status liefert die Karte des FastAPI-Vorgaengers mit tasks und completed_tasks. Die Adminrouten verlangen EDICT_ADMIN_TOKEN ueber X-Admin-Token oder Authorization: Bearer. Ein leerer Token sperrt die Adminrouten mit 403, ein fehlender oder falscher Token ergibt 401. Die CORS-Allowlist kommt aus EDICT_ALLOWED_ORIGINS, der Wert * bricht den Start ab, der Vorgabewert ist http://localhost:8080. Die Fehlerhuelle lautet {\"ok\": false, \"error\": \"deutsche Meldung\"}. Die Rumpfgrenze liegt bei 1 MiB fuer JSON-Routen und 8 MiB fuer Pluginrouten, Ueberschreitung ergibt 413.",
+    "rationale": "Der Altbestand hat zwei Vertragsformen fuer den Live-Status und schuetzt die Adminrouten nicht. Die Debatte vom 01.11.2026 erreichte keine zustimmende Mehrheit, der Arbiter hat die Punkte 1 bis 11 der Empfehlung als verbindliche Vorgabe uebernommen.",
+    "conditions": [
+      "Die Pluginrouten sind ausdruecklich registriert: /api/plugins/{name} und /api/plugins/{name}/{*rest}.",
+      "Die Zieladresse des Plugins wird mit einem URL-Parser geprueft, erlaubt sind 127.0.0.1, localhost und [::1].",
+      "X-Admin-Token, Authorization und Cookie werden nicht an das Plugin weitergereicht.",
+      "Der SPA-Fallback gilt nur ausserhalb von /api/.",
+      "Die Altbestandskennung entsteht ueber edict_core::legacy_id::next_legacy_id und ist eindeutig.",
+      "Der WebSocket quittiert ein Abonnement ohne Filterung, die Routen heissen /ws und /ws/task/{taskId}."
+    ],
+    "debate": "docs/debate/2026-11-01-server-vertrag.md",
+    "vote": "keine Mehrheit, Eskalation an den Arbiter, Entscheidung durch den Arbiter",
     "open_questions": []
   },
   "history": [
+    {
+      "id": "DEC-EDICT-CLI-001",
+      "title": "CLI-Zugriff auf Edict",
+      "decided_at": "2026-10-31T03:05:00Z",
+      "status": "decided",
+      "decision": "Die CLI spricht ausschliesslich mit der HTTP-Schnittstelle des Servers. Sie haelt keine eigene Datenbankverbindung und liest keine Dateien des Datenbestands direkt.",
+      "rationale": "Eine Datenbankverbindung in der CLI dupliziert Zustandsregeln und Umgeht die Zugriffskontrolle des Servers. Der HTTP-Weg nutzt denselben Vertrag wie die Oberflaeche und bleibt damit pruefbar.",
+      "open_questions": []
+    },
     {
       "id": "DEC-PLUGIN-001",
       "title": "Plugin-Transport und Ablage",

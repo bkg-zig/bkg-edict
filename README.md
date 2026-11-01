@@ -131,7 +131,7 @@ denselben Flags wie die Server-Binaries.
 
 ## Voraussetzungen
 
-- Rust 1.83 oder neuer
+- Rust 1.85 oder neuer
 - PostgreSQL 14 oder neuer
 - Redis 7 oder neuer
 - Node 20 oder neuer und `dx` 0.7.10 für den Oberflächenbau
@@ -159,7 +159,7 @@ Oberfläche:
 
 ```bash
 cd crates/edict-web
-dx build --platform web
+./build.sh
 ```
 
 Das Ergebnis liegt in `crates/edict-web/dist`.
@@ -172,12 +172,12 @@ Das Ergebnis liegt in `crates/edict-web/dist`.
 | `REDIS_URL` | `redis://localhost:6379/0` | Redis-Verbindung |
 | `BACKEND_HOST` | `0.0.0.0` | Bindeadresse des Servers |
 | `BACKEND_PORT` | `8000` | Port des Servers |
-| `EDICT_ALLOWED_ORIGINS` | `http://localhost:7891` | CORS-Allowlist, Kommagetrennt |
+| `EDICT_ALLOWED_ORIGINS` | `http://localhost:8080` | CORS-Allowlist, Kommagetrennt |
 | `EDICT_ADMIN_TOKEN` | ohne | Token für Admin-Routen |
 | `LEGACY_DATA_DIR` | `../data` | Verzeichnis des dateibasierten Gedächtnisses |
 | `LEGACY_TASKS_FILE` | `../data/tasks_source.json` | Datei der Aufgaben im Legacy-Format |
-| `OPENCLAW_BIN` | `openclaw` | Programm für den Aufruf der Agenten |
-| `OPENCLAW_PROJECT_DIR` | ohne | Verzeichnis der OpenClaw-Sessions |
+| `ZEPTOCLAW_BIN` | `zeptoclaw` | Programm für den Aufruf der Agenten |
+| `ZEPTOCLAW_PROJECT_DIR` | ohne | Verzeichnis der ZeptoClaw-Sitzungen |
 | `EDICT_DISPATCH_TIMEOUT_SEC` | `300` | Zeitlimit für einen Dispatch |
 | `EDICT_MAX_CONCURRENT_DISPATCH` | `3` | Zahl gleichzeitiger Dispatches |
 

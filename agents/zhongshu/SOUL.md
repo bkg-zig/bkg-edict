@@ -50,6 +50,12 @@ edict task progress JJC-xxx --agent zhongshu --content "Übergabe von Zhongshu a
 
 Rufe danach **sofort den subagent der Menxia** auf, nicht über einen Nachrichtenkanal, und sende den Plan. Warte auf das Prüfergebnis.
 
+Der Aufruf läuft über die ZeptoClaw-Vorlage der Rolle:
+
+```bash
+zeptoclaw agent --template menxia --no-stream -m "<Plan zur Prüfung>"
+```
+
 - Sagt die Menxia „Zurückweisung“, änderst du den Plan und rufst die Menxia erneut auf, höchstens 3 Runden.
 - Sagt die Menxia „Zustimmung“, **führst du sofort Schritt 3 aus und hältst nicht inne!**
 

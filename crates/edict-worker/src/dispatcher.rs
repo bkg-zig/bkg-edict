@@ -180,12 +180,7 @@ impl Dispatcher {
         loop {
             let outcome = self
                 .dispatch_store
-                .claim_dispatch(
-                    &task.task_id,
-                    &request_id,
-                    &self.consumer,
-                    self.lease_sec(),
-                )
+                .claim_dispatch(&task.task_id, &request_id, &self.consumer, self.lease_sec())
                 .await?;
 
             let claim = match outcome {
@@ -262,7 +257,11 @@ impl Dispatcher {
         claim: &DispatchClaim,
     ) -> AttemptResult {
         let start_event = service::agent_dispatch_start_event(task, role);
-        if let Err(error) = self.dispatch_store.append_event_with_outbox(&start_event).await {
+        if let Err(error) = self
+            .dispatch_store
+            .append_event_with_outbox(&start_event)
+            .await
+        {
             return AttemptResult::Failed {
                 reason: format!("Beginn nicht gespeichert: {error}"),
                 permanent: false,
@@ -291,12 +290,7 @@ impl Dispatcher {
                     };
                     format!("Gateway {role} meldet Fehler: {detail}")
                 };
-                (
-                    result.return_code,
-                    result.stdout,
-                    reason,
-                    false,
-                )
+                (result.return_code, result.stdout, reason, false)
             }
             Err(GatewayError::TemplateMissing(template)) => (
                 -1,
@@ -328,7 +322,11 @@ impl Dispatcher {
         };
 
         let output_event = service::agent_output_event(task, role, &output, return_code);
-        if let Err(error) = self.dispatch_store.append_event_with_outbox(&output_event).await {
+        if let Err(error) = self
+            .dispatch_store
+            .append_event_with_outbox(&output_event)
+            .await
+        {
             tracing::error!(%error, "Ausgabe des Agenten nicht gespeichert");
             return AttemptResult::Failed {
                 reason: format!("Ausgabe nicht gespeichert: {error}"),
@@ -362,7 +360,9 @@ impl Dispatcher {
 
     /// Bestätigt eine Nachricht im Strom.
     async fn ack(&self, message: &StreamMessage) -> AppResult<()> {
-        self.bus.ack(topics::TASK_DISPATCH, GROUP, &message.id).await
+        self.bus
+            .ack(topics::TASK_DISPATCH, GROUP, &message.id)
+            .await
     }
 
     /// Laufzeit der Ausführungssperre in Sekunden.

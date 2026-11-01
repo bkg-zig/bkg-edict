@@ -59,7 +59,7 @@ impl Settings {
                     .filter(|item| !item.is_empty())
                     .collect()
             })
-            .unwrap_or_else(|| vec!["http://localhost:7891".to_string()]);
+            .unwrap_or_else(|| vec!["http://localhost:8080".to_string()]);
 
         Ok(Settings {
             postgres_host,

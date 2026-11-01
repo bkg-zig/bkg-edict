@@ -53,12 +53,15 @@ impl DispatchRepository for DispatchStore {
             AppError::Validation(format!("Ungültige Aufgabenkennung {task_id}: {error}"))
         })?;
         let request_uuid = Uuid::parse_str(request_id.trim()).map_err(|error| {
-            AppError::Validation(format!("Ungültige Anforderungskennung {request_id}: {error}"))
+            AppError::Validation(format!(
+                "Ungültige Anforderungskennung {request_id}: {error}"
+            ))
         })?;
 
-        let mut transaction = self.pool.begin().await.map_err(|error| {
-            AppError::Database(format!("Transaktion fehlgeschlagen: {error}"))
-        })?;
+        let mut transaction =
+            self.pool.begin().await.map_err(|error| {
+                AppError::Database(format!("Transaktion fehlgeschlagen: {error}"))
+            })?;
         let connection = &mut *transaction;
 
         let row = sqlx::query(
@@ -69,9 +72,7 @@ impl DispatchRepository for DispatchStore {
         .bind(request_uuid)
         .fetch_optional(&mut *connection)
         .await
-        .map_err(|error| {
-            AppError::Database(format!("Ausführungssperre nicht lesbar: {error}"))
-        })?;
+        .map_err(|error| AppError::Database(format!("Ausführungssperre nicht lesbar: {error}")))?;
 
         let previous_attempt: i64 = row
             .as_ref()
@@ -83,27 +84,25 @@ impl DispatchRepository for DispatchStore {
             .unwrap_or_default();
         let lease_valid: bool = match row.as_ref() {
             Some(row) => {
-                let lease_until: DateTime<Utc> = row.try_get("lease_until").unwrap_or_else(|_| {
-                    Utc::now() - chrono::Duration::seconds(1)
-                });
+                let lease_until: DateTime<Utc> = row
+                    .try_get("lease_until")
+                    .unwrap_or_else(|_| Utc::now() - chrono::Duration::seconds(1));
                 previous_status == STATUS_RUNNING && lease_until > Utc::now()
             }
             None => false,
         };
 
         if previous_status == STATUS_SUCCEEDED {
-            transaction
-                .commit()
-                .await
-                .map_err(|error| AppError::Database(format!("Transaktion fehlgeschlagen: {error}")))?;
+            transaction.commit().await.map_err(|error| {
+                AppError::Database(format!("Transaktion fehlgeschlagen: {error}"))
+            })?;
             return Ok(ClaimOutcome::Finished);
         }
 
         if lease_valid {
-            transaction
-                .commit()
-                .await
-                .map_err(|error| AppError::Database(format!("Transaktion fehlgeschlagen: {error}")))?;
+            transaction.commit().await.map_err(|error| {
+                AppError::Database(format!("Transaktion fehlgeschlagen: {error}"))
+            })?;
             return Ok(ClaimOutcome::Busy);
         }
 
@@ -150,9 +149,8 @@ impl DispatchRepository for DispatchStore {
         success: bool,
         error: Option<&str>,
     ) -> AppResult<()> {
-        let task_uuid = Uuid::parse_str(claim.task_id.trim()).map_err(|error| {
-            AppError::Validation(format!("Ungültige Aufgabenkennung: {error}"))
-        })?;
+        let task_uuid = Uuid::parse_str(claim.task_id.trim())
+            .map_err(|error| AppError::Validation(format!("Ungültige Aufgabenkennung: {error}")))?;
         let request_uuid = Uuid::parse_str(claim.request_id.trim()).map_err(|error| {
             AppError::Validation(format!("Ungültige Anforderungskennung: {error}"))
         })?;
@@ -180,9 +178,10 @@ impl DispatchRepository for DispatchStore {
     }
 
     async fn append_event_with_outbox(&self, event: &Event) -> AppResult<()> {
-        let mut transaction = self.pool.begin().await.map_err(|error| {
-            AppError::Database(format!("Transaktion fehlgeschlagen: {error}"))
-        })?;
+        let mut transaction =
+            self.pool.begin().await.map_err(|error| {
+                AppError::Database(format!("Transaktion fehlgeschlagen: {error}"))
+            })?;
         let connection = &mut *transaction;
         append_event_with_outbox(connection, event).await?;
         transaction

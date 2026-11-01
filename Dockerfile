@@ -8,12 +8,9 @@
 
 # ---------------------------------------------------------------- Builder ---
 # Das Builder-Image ist über ein Build-Argument wählbar. Die Vorgabe folgt
-# der Rust-Version des Workspace. Die veröffentlichte Lockdatei nennt
-# Crates mit der Ausgabeedition 2024. Cargo 1.83 kann sie nicht auflösen.
-# Mit einem neueren Image lässt sich der Bau ausführen:
-#
-#     docker compose build --build-arg RUST_IMAGE=rust:1.90-bookworm
-ARG RUST_IMAGE=rust:1.83-bookworm
+# der Rust-Version des Workspace. Der Workspace verlangt Rust 1.85, weil die
+# veröffentlichte Lockdatei Crates mit der Ausgabeedition 2024 nennt.
+ARG RUST_IMAGE=rust:1.90-bookworm
 FROM ${RUST_IMAGE} AS builder
 
 RUN apt-get update \

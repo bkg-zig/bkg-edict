@@ -14,6 +14,11 @@ und eine archivierte Aufgabe. Alle sichtbaren Texte sind ins Deutsche
 übersetzt. Die Zustandswerte bleiben in der Schreibweise, die die Datenbank
 erwartet.
 
+Die Felder entsprechen genau den Feldern der Datei im Altbestand. Geändert
+sind nur die sichtbaren Texte, darunter Titel, Amtsbezeichnungen,
+Zustandsprotokoll und Abnahmekriterien. Ein Vorgang ohne Archivierung trägt
+die Felder `archived` und `archivedAt` gar nicht.
+
 ## Laden
 
 Ein Import über die Kommandozeile existiert im Repository noch nicht. Die

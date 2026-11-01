@@ -525,22 +525,30 @@ dependencies = [
 name = "edict-plugin-edict"
 version = "2.0.0"
 dependencies = [
+ "async-trait",
  "edict-core",
+ "edict-plugin-protocol",
  "serde",
  "serde_json",
  "tokio",
  "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
 name = "edict-plugin-gitclaw"
 version = "2.0.0"
 dependencies = [
+ "async-trait",
+ "axum",
  "edict-core",
+ "edict-plugin-protocol",
  "serde",
  "serde_json",
+ "sha2",
  "tokio",
  "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -558,6 +566,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tracing",
+ "url",
  "uuid",
 ]
 

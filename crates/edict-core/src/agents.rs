@@ -64,6 +64,18 @@ pub const AGENTS: &[AgentMeta] = &[
         role: "Sicherheit und Notfallreaktion",
         icon: "🛡️",
     },
+    AgentMeta {
+        id: "libu_hr",
+        name: "Libu Personal",
+        role: "Personalführung, Teamausbau und Qualifizierung der Agenten",
+        icon: "🧑‍🏫",
+    },
+    AgentMeta {
+        id: "taizi",
+        name: "Taizi",
+        role: "Empfang aller Nachrichten, Sortierung und Weitergabe an die Zhongshu",
+        icon: "👑",
+    },
 ];
 
 /// Metadaten eines Agenten nach Kennung.

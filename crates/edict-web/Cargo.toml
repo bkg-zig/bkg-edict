@@ -3,7 +3,7 @@ name = "edict-web"
 version = "2.0.0"
 edition = "2021"
 license = "MIT"
-rust-version = "1.83"
+rust-version = "1.85"
 description = "Weboberflaeche von Edict 2.0 auf Basis von Dioxus"
 
 # Eigener Workspace. Die Oberflaeche baut fuer wasm32-unknown-unknown und
@@ -13,6 +13,7 @@ description = "Weboberflaeche von Edict 2.0 auf Basis von Dioxus"
 [dependencies]
 dioxus = { version = "0.7.10", features = ["web"] }
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+console_error_panic_hook = "0.1"
 futures-util = { version = "0.3", features = ["sink"] }
 gloo-net = { version = "0.6.0", default-features = false, features = [
     "http",
@@ -22,8 +23,9 @@ gloo-net = { version = "0.6.0", default-features = false, features = [
 gloo-timers = { version = "0.3", features = ["futures"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
-web-sys = { version = "0.3", features = ["Location", "Window"] }
+web-sys = { version = "0.3", features = ["console", "Location", "Window"] }
 
 [dev-dependencies]
 edict-core = { path = "../../crates/edict-core" }

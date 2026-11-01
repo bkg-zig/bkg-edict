@@ -12,16 +12,18 @@ demselben Vorgang. Die Oberfläche und die Werkzeuge sind deutschsprachig.
 | `edict-core` | Fachlicher Kern ohne Datenbank und Netzwerk | implementiert |
 | `edict-db` | PostgreSQL, Redis Streams, Pub/Sub, Outbox | implementiert |
 | `edict-plugin-protocol` | JSON-RPC-Rahmen für Plugins | implementiert |
+| `edict-plugin-host` | Start, Überwachung und Weiterleitung der Plugins | im Aufbau |
 | `edict-server` | HTTP, WebSocket, Plugin-Host | Platzhalter |
 | `edict-worker` | Orchestrator, Dispatcher, Scheduler | im Aufbau |
 | `edict-cli` | Binary `edict` | übersetzt |
-| `crates/plugins/gitclaw` | Prüfung von Merge-Anfragen | Platzhalter |
+| `crates/plugins/gitclaw` | Prüfung von Merge-Anfragen | im Aufbau |
 | `crates/plugins/edict` | Mehragenten-Workflows | Platzhalter |
 
 `crates/edict-web` liegt außerhalb des Workspace. Die Oberfläche entsteht als
 Dioxus-Anwendung für das Ziel `wasm32-unknown-unknown`. Das Verzeichnis
-enthält bisher eine Probeanwendung. Der Build mit `dx build --platform web`
-steht aus.
+enthält einen API-Client, die Datenmodelle, den gemeinsamen Zustand,
+Ansichten und einzelne Bausteine. Der Einstieg zeigt noch eine
+Probeanwendung. Der Build mit `dx build --platform web` steht aus.
 
 ## Datenfluss
 
@@ -40,11 +42,11 @@ steht aus.
 ```bash
 cp .env.example .env
 docker compose up -d postgres redis
-RUST_IMAGE=rust:1.90-bookworm docker compose build
+docker compose build
 docker compose up -d
 ```
 
-Datenbank und Ereignisbus starten heute. Der Bau des Images braucht ein
+Datenbank und Ereignisbus starten sofort. Der Bau des Images braucht ein
 Rust-Werkzeug ab Version 1.85, weil die veröffentlichte `Cargo.lock` Crates
 mit der Ausgabeedition 2024 nennt. Er braucht außerdem eine lauffähige
 Binary `edict-server`. Die weiteren Gründe stehen im Abschnitt „Offene

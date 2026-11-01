@@ -8,7 +8,7 @@ use std::pin::Pin;
 
 use async_trait::async_trait;
 use edict_core::{AppError, AppResult, Event};
-use futures_util::{Stream, StreamExt};
+use futures_util::Stream;
 use serde_json::Value;
 use tokio::sync::{broadcast, mpsc};
 
@@ -118,9 +118,10 @@ impl EventSource for ChannelEventSource {
 
 /// Wandelt einen Empfangskanal in einen Strom.
 fn stream_from_receiver(receiver: mpsc::Receiver<Event>) -> EventStream {
-    Box::pin(futures_util::stream::unfold(receiver, |mut receiver| async move {
-        receiver.recv().await.map(|ereignis| (ereignis, receiver))
-    }))
+    Box::pin(futures_util::stream::unfold(
+        receiver,
+        |mut receiver| async move { receiver.recv().await.map(|ereignis| (ereignis, receiver)) },
+    ))
 }
 
 /// Wandelt einen Rundfunkkanal in einen Strom.
@@ -145,6 +146,7 @@ fn stream_from_broadcast(receiver: broadcast::Receiver<Event>) -> EventStream {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use futures_util::StreamExt;
     use serde_json::json;
     use std::sync::{Arc, Mutex};
 

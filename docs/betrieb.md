@@ -32,13 +32,10 @@ Nur die Datenbank und der Ereignisbus lassen sich ohne Image starten:
 docker compose up -d postgres redis
 ```
 
-Das Builder-Image lässt sich über die Variable `RUST_IMAGE` wechseln. Das ist
-nötig, solange die veröffentlichte `Cargo.lock` Crates mit der Ausgabeedition
-2024 nennt, die Cargo 1.83 nicht auflösen kann:
-
-```bash
-RUST_IMAGE=rust:1.90-bookworm docker compose build
-```
+Das Builder-Image lässt sich über die Variable `RUST_IMAGE` wechseln. Der
+Workspace verlangt Rust 1.85, weil die veröffentlichte `Cargo.lock` Crates
+mit der Ausgabeedition 2024 nennt. Die Vorgabe des Images ist
+`rust:1.90-bookworm`:
 
 Der HTTP-Port ist auf dem Host über `EDICT_HTTP_PORT` erreichbar, im
 Standard unter `http://localhost:8080`. Der Container lauscht auf Port 8080.
@@ -53,14 +50,14 @@ Node 20 und das Werkzeug `dx` in Version 0.7.10:
 
 ```bash
 cd crates/edict-web
-dx build --platform web
+./build.sh
 ```
 
-Das Ergebnis liegt danach in `crates/edict-web/dist`. Die Compose-Datei
-bindet dieses Verzeichnis als `/app/web` in den Container ein. Der Server
-liefert die Dateien statisch aus. Das Image enthält weder Node noch das
-Werkzeug `dx`, damit es klein bleibt und keine zweite Laufzeitumgebung
-benötigt.
+Das Skript baut die Oberfläche und legt das Ergebnis in
+`crates/edict-web/dist` ab. Die Compose-Datei bindet dieses Verzeichnis als
+`/app/web` in den Container ein. Der Server liefert die Dateien statisch
+aus. Das Image enthält weder Node noch das Werkzeug `dx`, damit es klein
+bleibt und keine zweite Laufzeitumgebung benötigt.
 
 ## Umgebung
 
@@ -87,11 +84,11 @@ stehen dort mit deutscher Erklärung.
 | `LEGACY_TASKS_FILE` | `../data/tasks_source.json` | Datei der Aufgaben im Legacy-Format |
 | `STALL_THRESHOLD_SEC` | `180` | Sekunden ohne Änderung bis zum Stillstandsverdacht |
 | `MAX_DISPATCH_RETRY` | `3` | Zahl der erneuten Zustellversuche |
-| `EDICT_ALLOWED_ORIGINS` | `http://localhost:7891` | Allowlist der erlaubten Herkunft |
+| `EDICT_ALLOWED_ORIGINS` | `http://localhost:8080` | Allowlist der erlaubten Herkunft |
 | `EDICT_ADMIN_TOKEN` | ohne | Token für die Adminrouten |
 | `EDICT_DISPATCH_TIMEOUT_SEC` | `300` | Sekunden bis zum Abbruch eines Dispatchs |
 | `EDICT_MAX_CONCURRENT_DISPATCH` | `3` | Zahl gleichzeitiger Dispatchs |
-| `RUST_IMAGE` | `rust:1.83-bookworm` | Image des Builders, nur für `docker compose build` |
+| `RUST_IMAGE` | `rust:1.90-bookworm` | Image des Builders, nur für `docker compose build` |
 
 Die Compose-Datei setzt `DATABASE_URL`, `REDIS_URL`, `BACKEND_HOST`,
 `BACKEND_PORT`, `LEGACY_DATA_DIR` und `LEGACY_TASKS_FILE` für beide
@@ -100,9 +97,11 @@ gelten für einen Betrieb ohne Docker.
 
 ## Datenbank und Migrationen
 
-Das Schema liegt in `crates/edict-db/migrations/0001_init.sql`. Die
-Migration legt die Tabellen `tasks`, `todos`, `thoughts`, `events` und
-`outbox` an. Die Migration läuft beim Start des Servers.
+Das Schema liegt in `crates/edict-db/migrations/`. Die Migration `0001_init.sql`
+legt die Tabellen `tasks`, `todos`, `thoughts`, `events` und `outbox` an.
+Die Migration `0002_dispatch.sql` legt die Tabelle `dispatch_leases` für die
+Ausführungssperren an. Die Migrationen laufen beim Start des Workers, weil
+er die Datenbankverbindung aufbaut und `migrate()` aufruft.
 
 Vor dem ersten Produktivimport ist eine Sicherung zu erstellen:
 
@@ -151,10 +150,15 @@ im Betriebsdokument versteckt.
 - `edict-server` enthält nur einen Platzhalter ohne `main`-Funktion. Der
   Befehl `docker compose build` scheitert deshalb an der Übersetzung dieses
   Crates.
+- Das Crate `edict-plugin-gitclaw` verlangt in seiner Manifestdatei eine
+  Bibliothek unter `src/lib.rs`. Diese Datei fehlt. Der Bau des Images
+  bricht daran ab, sobald die Lockdatei wieder passt.
 - `edict-core`, `edict-db`, `edict-plugin-protocol`, `edict-plugin-host`,
   `edict-worker` und `edict-cli` übersetzen mit einem Werkzeug ab Rust 1.85.
-  Der Builder nutzt Rust 1.83.
-- `crates/edict-web` enthält bisher nur eine Probeanwendung. Das Verzeichnis
+  Der Builder bringt Rust 1.90 mit.
+- `crates/edict-web` enthält einen API-Client, die Datenmodelle, den
+  gemeinsamen Zustand, Ansichten und einzelne Bausteine. Der Einstieg
+  `main.rs` zeigt weiterhin nur eine Probeanwendung. Das Verzeichnis
   `crates/edict-web/dist` fehlt. Docker legt es beim Start des Servers leer
   an, bis der Web-Build vorliegt.
 - Die Konfigurationstabelle der `README.md` nennt für das Programm und das
@@ -167,6 +171,5 @@ im Betriebsdokument versteckt.
   Grenzen für den Herzschlag einer Aufgabe stehen fest in
   `compute_heartbeat` in `edict-core`.
 - Die veröffentlichte `Cargo.lock` nennt Crates mit der Ausgabeedition 2024.
-  Cargo 1.83 aus dem Builder-Image kann sie nicht auflösen. Der Bau läuft
-  mit einem neueren Image über die Variable `RUST_IMAGE`. Die Lockdatei
-  selbst zu ändern liegt außerhalb dieses Dokuments.
+  Der Workspace verlangt deshalb Rust 1.85, das Builder-Image bringt Rust 1.90
+  mit. Ein älteres Image löst die Lockdatei nicht auf.

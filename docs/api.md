@@ -2,8 +2,12 @@
 
 Diese Seite beschreibt den Vertrag, den der Server erfüllen soll. Der
 Quellcode von `edict-server` ist im Repository noch ein Platzhalter. Die
-Routen sind daher als Ziel vereinbart und nicht als gemessene
-Laufzeit.
+Routen sind daher als Ziel vereinbart und nicht als gemessene Laufzeit.
+
+Der API-Client der Oberfläche liegt in `crates/edict-web/src/api.rs`. Er
+spricht eine Teilmenge der unten genannten Zustands-, Datei- und
+Aufgabenrouten an. Der Client ist damit kein Beleg für einen laufenden
+Server.
 
 Der Vertrag stammt aus zwei Vorgängern. Das Dashboard `dashboard/server.py`
 lieferte die Datei- und Scheduler-Routen. Das FastAPI-Backend unter
@@ -24,7 +28,8 @@ Betriebsdatei setzt `BACKEND_PORT=8080`, Docker veröffentlicht den Port
 | Methode | Pfad | Zweck |
 | --- | --- | --- |
 | GET | `/healthz` | Prüft Datenverzeichnis, Lesbarkeit und Schreibrecht der Aufgabendatei |
-| GET | `/api/live-status` | Liefert den Live-Status des Boards |
+| GET | `/health` | Alias zu `/healthz` für die Prüfläufe von Docker |
+| GET | `/api/live-status` | Liefert den Live-Status des Boards als Liste |
 | GET | `/api/agent-config` | Liefert die Agentenkonfiguration |
 | GET | `/api/model-change-log` | Liefert das Protokoll der Modellwechsel |
 | GET | `/api/last-result` | Liefert das Ergebnis des letzten Modellwechsels |
@@ -70,7 +75,7 @@ für die ersten beiden Gruppen.
 | Methode | Pfad | Zweck |
 | --- | --- | --- |
 | GET | `/api/tasks` | Listet Aufgaben nach Zustand und Filter |
-| GET | `/api/tasks/live-status` | Liefert den Live-Status |
+| GET | `/api/tasks/live-status` | Liefert den Live-Status als Karte |
 | GET | `/api/tasks/stats` | Liefert Kennzahlen zu den Aufgaben |
 | POST | `/api/tasks` | Legt eine Aufgabe an und antwortet mit Status 201 |
 | GET | `/api/tasks/{taskId}` | Liefert eine Aufgabe |
@@ -103,9 +108,26 @@ das Binary den Aufruf über `/api/task-action`.
 | POST | `/api/admin/migrate/check` | Prüft, ob eine Migration aussteht |
 | GET | `/api/admin/config` | Liefert die Konfiguration ohne Geheimnisse |
 
-Adminrouten verlangen den Header `X-Admin-Token` mit dem Wert aus
-`EDICT_ADMIN_TOKEN`. Ist die Variable leer, bleiben die Routen gesperrt.
+Adminrouten verlangen den Wert aus `EDICT_ADMIN_TOKEN`. Der Server nimmt ihn
+in zwei Formen an, als Kopfzeile `X-Admin-Token: <wert>` oder als
+`Authorization: Bearer <wert>`. Ist die Variable nicht gesetzt oder leer,
+bleiben die Routen gesperrt und antworten mit Status 403. Fehlt die
+Kopfzeile oder passt der Wert nicht, antwortet der Server mit Status 401.
 Ein Token gehört nie in eine URL und nie in ein Protokoll.
+
+## Pluginrouten
+
+| Methode | Pfad | Zweck |
+| --- | --- | --- |
+| alle | `/api/plugins/{name}` | Leitet die Anfrage an das genannte Plugin weiter |
+| alle | `/api/plugins/{name}/{*rest}` | Leitet die Anfrage mit Pfadrest weiter |
+
+Die Routen sind ausdrücklich registriert und fangen keine fremden Pfade ab.
+Der Host löst den Namen zur Anfragezeit auf. Die Zieladresse muss `http` auf
+`127.0.0.1`, `localhost` oder `[::1]` sein, sonst lehnt der Host die
+Weiterleitung ab. Die Kopfzeilen `X-Admin-Token`, `Authorization` und
+`Cookie` werden entfernt, bevor die Anfrage das Plugin erreicht. Für diese
+Routen gilt eine Rumpfgrenze von 8 MiB.
 
 ## WebSocket
 
@@ -133,9 +155,18 @@ Ereigniskette. Weitere Felder sind `title`, `state`, `org`, `official`,
 `archivedAt`, `flow_log` und `updatedAt`. `flow_log` ist eine Liste von
 Einträgen mit den Feldern `at`, `from`, `to` und `remark`.
 
-Der Live-Status trägt `tasks` als Liste und `syncStatus` als Objekt. Der
-Altbestand lieferte an dieser Stelle eine Map nach Kennung. Der Kern hat
-das geändert, weil die Oberfläche eine geordnete Liste braucht.
+Die beiden Live-Status-Routen liefern verschiedene Formen, weil zwei
+Vorgänger sie getrennt verwendeten.
+
+`GET /api/live-status` liefert die Form des Dashboards. `tasks` ist eine
+Liste, daneben stehen `syncStatus` als Objekt und, sofern die Dateien
+vorhanden sind, `officials`, `history`, `metrics` und `health`.
+
+`GET /api/tasks/live-status` liefert die Karte des FastAPI-Vorgängers.
+`tasks` und `completed_tasks` sind Maps über die Aufgabenkennung, dazu
+kommt `last_updated`. Die Trennung entsteht über
+`edict_core::state_machine::is_terminal`, also über die Endzustände `Done`
+und `Cancelled`.
 
 Ein Ereignis trägt `event_id`, `trace_id`, `timestamp`, `topic`,
 `event_type`, `producer`, `payload` und `meta`.

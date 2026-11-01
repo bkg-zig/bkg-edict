@@ -11,17 +11,20 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
 use std::time::Duration;
 
 use async_trait::async_trait;
 use edict_core::{AppError, AppResult};
 use edict_plugin_protocol::{
-    Message, RpcError, RPC_INVALID_PARAMS, RPC_METHOD_NOT_FOUND, RPC_PLUGIN_ERROR,
-    read_message, write_message,
+    read_message, write_message, Message, RpcError, RPC_INVALID_PARAMS, RPC_METHOD_NOT_FOUND,
+    RPC_PLUGIN_ERROR,
 };
 use serde_json::Value;
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
-use tokio::process::{Child, ChildStdin, Command, Stdio};
+use std::process::Stdio;
+
+use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::process::{Child, ChildStdin, Command};
 use tokio::sync::{oneshot, Mutex};
 
 /// Anfragen des Plugins an den Host.
@@ -68,13 +71,7 @@ impl PluginProcess {
         for (name, wert) in umgebung {
             befehl.env(name, wert);
         }
-        // Eigene Prozessgruppe. So erreicht das Beenden des Kindes nicht die
-        // Prozessgruppe des Hosts.
-        #[cfg(unix)]
-        {
-            use std::os::unix::process::CommandExt;
-            befehl.as_std_mut().process_group(0);
-        }
+        eigene_prozessgruppe(&mut befehl);
 
         let mut kind = befehl.spawn().map_err(|fehler| {
             AppError::Io(std::io::Error::new(
@@ -115,10 +112,8 @@ impl PluginProcess {
     /// Liest stderr als Protokoll.
     async fn lese_fehler(self: Arc<Self>, stderr: tokio::process::ChildStderr) {
         let mut zeilen = BufReader::new(stderr).lines();
-        while let Ok(zeile) = zeilen.next_line().await {
-            if let Ok(zeile) = zeile {
-                tracing::warn!(plugin = "stderr", "{zeile}");
-            }
+        while let Ok(Some(zeile)) = zeilen.next_line().await {
+            tracing::warn!(plugin = "stderr", "{zeile}");
         }
     }
 
@@ -155,7 +150,10 @@ impl PluginProcess {
                     Err(fehler) => Message::error_response(kennung, fehler.code, fehler.message),
                 };
                 if let Err(fehler) = self.schreibe(&antwort).await {
-                    tracing::error!(plugin = "stdout", "Antwort konnte nicht gesendet werden: {fehler}");
+                    tracing::error!(
+                        plugin = "stdout",
+                        "Antwort konnte nicht gesendet werden: {fehler}"
+                    );
                 }
             }
             (Some(kennung), None) => {
@@ -168,13 +166,14 @@ impl PluginProcess {
                         data: None,
                     }),
                 };
-                let wartekanal = self.offen.lock().await.remove(&kennung.as_u64().unwrap_or(0));
+                let nummer = kennung.as_u64().unwrap_or_default();
+                let wartekanal = self.offen.lock().await.remove(&nummer);
                 if let Some(wartekanal) = wartekanal {
                     let _ = wartekanal.send(antwort);
                 }
             }
             (None, Some(methode)) => {
-                tracing::info!(plugin = methode, "Hinweis des Plugins");
+                tracing::info!(plugin = %methode, "Hinweis des Plugins");
             }
             (None, None) => {}
         }
@@ -192,12 +191,7 @@ impl PluginProcess {
     ///
     /// Nach Ablauf der Frist wird die Anfrage zurückgezogen. Das Plugin darf
     /// dann noch antworten. Die Antwort wird verworfen.
-    pub async fn ruf(
-        &self,
-        methode: &str,
-        params: Value,
-        frist: Duration,
-    ) -> AppResult<Value> {
+    pub async fn ruf(&self, methode: &str, params: Value, frist: Duration) -> AppResult<Value> {
         let kennung = self.naechste_kennung.fetch_add(1, Ordering::SeqCst);
         let (sender, empfaenger) = oneshot::channel();
         self.offen.lock().await.insert(kennung, sender);
@@ -249,7 +243,56 @@ impl PluginProcess {
     pub async fn lebt(&self) -> bool {
         self.kind.lock().await.try_wait().ok().flatten().is_none()
     }
+
+    /// Wartet, bis der Kindprozess endet.
+    ///
+    /// Der Rückgabewert sagt, ob der Prozess innerhalb der Frist endete.
+    pub async fn warte_aus(&self, frist: Duration) -> bool {
+        let ende = tokio::time::Instant::now() + frist;
+        loop {
+            if let Ok(Some(_)) = self.kind.lock().await.try_wait() {
+                return true;
+            }
+            if tokio::time::Instant::now() >= ende {
+                return false;
+            }
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        }
+    }
 }
+
+/// Legt das Kind in eine eigene Prozessgruppe.
+///
+/// Das Kind ruft `setsid` vor dem Start der Programmroutine auf. Damit ist es
+/// Leiter einer eigenen Sitzung und von der Prozessgruppe des Hosts getrennt.
+/// Das Beenden des Kindes erreicht so keine Prozesse des Hosts.
+#[cfg(unix)]
+fn eigene_prozessgruppe(befehl: &mut Command) {
+    use std::os::unix::process::CommandExt;
+
+    // `setsid` stammt aus libc. Die Crate libc steht nicht als Abhängigkeit
+    // zur Verfügung, deshalb bindet der Host die Funktion selbst ein.
+    extern "C" {
+        fn setsid() -> i32;
+    }
+
+    // Der Aufruf von `pre_exec` ist unsicher, weil zwischen fork und exec
+    // fremder Code laufen könnte. Der einzelne Aufruf von `setsid` ist
+    // sicher, weil er keine-allokierenden Aufruf ist.
+    unsafe {
+        befehl.as_std_mut().pre_exec(|| {
+            let ergebnis = setsid();
+            if ergebnis == -1 {
+                return Err(std::io::Error::last_os_error());
+            }
+            Ok(())
+        });
+    }
+}
+
+/// Legt das Kind auf Systemen ohne Unix-Sitzungen in eine Prozessgruppe.
+#[cfg(not(unix))]
+fn eigene_prozessgruppe(_befehl: &mut Command) {}
 
 /// Wandelt einen Fehler des Plugins in einen JSON-RPC-Fehler.
 pub fn als_rpc_fehler(fehler: AppError) -> RpcError {
@@ -299,5 +342,29 @@ mod tests {
         )
         .await;
         assert!(prozess.is_ok(), "Kindprozess startete nicht");
+    }
+
+    #[tokio::test]
+    async fn kindprozess_sieht_nur_die_positivliste() {
+        let mut umgebung = BTreeMap::new();
+        umgebung.insert("PATH".to_string(), "/usr/bin:/bin".to_string());
+        umgebung.insert("LANG".to_string(), "C.UTF-8".to_string());
+        umgebung.insert("HOME".to_string(), "/tmp".to_string());
+
+        let prozess = PluginProcess::start(
+            Path::new("/bin/sh"),
+            Path::new("/tmp"),
+            &umgebung,
+            Arc::new(Aufzeichner {
+                anfragen: Mutex::new(Vec::new()),
+            }),
+        )
+        .await
+        .unwrap();
+
+        let antwort = prozess
+            .ruf("pruefen", json!({}), Duration::from_secs(5))
+            .await;
+        assert!(antwort.is_err(), "das Plugin kennt die Methode nicht");
     }
 }

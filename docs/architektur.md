@@ -28,7 +28,8 @@ ruft Agenten auf und führt den Scheduler aus. `edict-cli` erzeugt das Binary
 
 `edict-server` und `edict-worker` werden gerade ausgebaut. Der Server
 enthält bisher nur einen Platzhalter, der Worker hat einen Einstieg mit den
-Modulen für Dispatch und Gateway. Die beschriebene Aufteilung ist das Ziel
+Modulen für Dispatch und Gateway. Der Plugin-Host ist vorhanden, seine
+Redis-Anbindung ist es noch nicht. Die beschriebene Aufteilung ist das Ziel
 des Ports, nicht der gebaute Stand. `edict-cli` übersetzt.
 
 Die Plugins unter `crates/plugins/` sind eigene Prozesse. Sie teilen keine
@@ -109,9 +110,10 @@ verwendet.
 
 Ein Plugin ist ein langlebiger Prozess, den der Host zur Laufzeit startet,
 verwaltet und wieder beendet. Die Kommunikation läuft über JSON-RPC 2.0 auf
-stdio. Der Host übergibt nur eine Positivliste aus Konfiguration an den
-Kindprozess, damit dieser weder das Admin-Token noch die Zugangsdaten der
-Datenbank erbt.
+stdio. Der Kindprozess erbt keine Umgebung des Hosts. Er erhält nur `PATH`,
+`LANG` und `HOME`, wobei `HOME` auf das Pluginverzeichnis zeigt. Damit
+erbt das Plugin weder das Admin-Token noch die Zugangsdaten der
+Datenbank.
 
 Der Host liest je Plugin eine Konsumentengruppe `plugin:<name>` aus dem
 Redis-Stream, quittiert eine angenommene Nachricht mit `XACK` und holt

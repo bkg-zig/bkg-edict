@@ -1,3 +1,4 @@
 .env
 target/
+crates/edict-web/dist/
 

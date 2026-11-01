@@ -5,13 +5,22 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[lib]
+name = "edict_plugin_gitclaw"
+path = "src/lib.rs"
+
 [[bin]]
 name = "edict-plugin-gitclaw"
 path = "src/main.rs"
 
 [dependencies]
 edict-core.workspace = true
+edict-plugin-protocol.workspace = true
+async-trait.workspace = true
+axum.workspace = true
+sha2.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
 tracing.workspace = true
+tracing-subscriber.workspace = true

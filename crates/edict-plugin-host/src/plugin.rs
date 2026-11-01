@@ -1,29 +1,26 @@
 //! Ein einzelnes Plugin im Host.
 //!
 //! Der Griff hält Manifest, Prozess, Zustand und Ereigniswarteschlange.
-//! Die Aufgaben des Griffs sind:
-//!
-//! - den Kindprozess starten und den Handshake führen,
-//! - Ereignisse aus der Warteschlange an das Plugin senden,
-//! - Aufrufe in beide Richtungen ausführen,
-//! - den Zustand nach dem Grad der Arbeitsfähigkeit führen.
+//! Er übernimmt den Handshake, die Zustellung von Ereignissen, Aufrufe in
+//! beide Richtungen und das geordnete Beenden.
 
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use chrono::Utc;
 use edict_core::{topics, AppError, AppResult, Event};
 use edict_plugin_protocol::{
-    method, InitializeResult, InvokeResult, Message, RpcError, RPC_INVALID_PARAMS,
-    RPC_METHOD_NOT_FOUND, RPC_PLUGIN_ERROR, PROTOCOL_VERSION,
+    method, HealthResult, InitializeResult, InvokeResult, RpcError, PROTOCOL_VERSION,
+    RPC_INVALID_PARAMS, RPC_METHOD_NOT_FOUND, RPC_PLUGIN_ERROR,
 };
 use serde_json::{json, Value};
-use tokio::sync::{mpsc, RwLock};
+use tokio::sync::{mpsc, Notify, RwLock};
 
 use crate::env::build_plugin_env;
 use crate::manifest::Manifest;
+use crate::services::{EventSink, HostServices};
 use crate::state::PluginStatus;
 use crate::transport::{HostRequestHandler, PluginProcess};
 
@@ -62,6 +59,7 @@ impl Default for HostConfig {
 
 impl HostConfig {
     /// Übernimmt die Frist aus der Konfiguration des Systems.
+    #[must_use]
     pub fn with_dispatch_timeout(timeout_sec: u64) -> Self {
         Self {
             dispatch_timeout: Duration::from_secs(timeout_sec),
@@ -76,9 +74,9 @@ impl HostConfig {
 /// melden. Beide Wege laufen über diese Brücke.
 pub struct HostBridge {
     /// Fähigkeiten des Hosts, etwa `task.lookup`.
-    pub services: Arc<dyn crate::services::HostServices>,
+    pub services: Arc<dyn HostServices>,
     /// Ablage für Domainereignisse.
-    pub sink: Arc<dyn crate::services::EventSink>,
+    pub sink: Arc<dyn EventSink>,
 }
 
 #[async_trait::async_trait]
@@ -97,9 +95,7 @@ impl HostRequestHandler for HostBridge {
                     .to_string();
                 let aufruf_params = params.get("params").cloned().unwrap_or(json!({}));
                 match self.services.invoke(&capability, &aufruf_params).await {
-                    Ok(wert) => Ok(serde_json::to_value(InvokeResult { value: wert }).unwrap_or(
-                        json!({"value": Value::Null}),
-                    )),
+                    Ok(wert) => Ok(json!({ "value": wert })),
                     Err(fehler) => Err(RpcError {
                         code: RPC_PLUGIN_ERROR,
                         message: fehler.to_string(),
@@ -108,53 +104,9 @@ impl HostRequestHandler for HostBridge {
                 }
             }
             method::EMIT_EVENT => {
-                let topic = params
-                    .get("topic")
-                    .and_then(Value::as_str)
-                    .ok_or_else(|| RpcError {
-                        code: RPC_INVALID_PARAMS,
-                        message: "Ereignis ohne Thema".to_string(),
-                        data: None,
-                    })?
-                    .to_string();
-                let event_type = params
-                    .get("event_type")
-                    .and_then(Value::as_str)
-                    .unwrap_or(topic.as_str())
-                    .to_string();
-                let producer = params
-                    .get("producer")
-                    .and_then(Value::as_str)
-                    .unwrap_or("plugin")
-                    .to_string();
-                let trace_id = params
-                    .get("trace_id")
-                    .and_then(Value::as_str)
-                    .unwrap_or_default()
-                    .to_string();
-                let payload = params
-                    .get("payload")
-                    .and_then(Value::as_object)
-                    .cloned()
-                    .unwrap_or_default();
-                let meta = params
-                    .get("meta")
-                    .and_then(Value::as_object)
-                    .cloned()
-                    .unwrap_or_default();
-
-                let ereignis = Event {
-                    event_id: uuid::Uuid::new_v4().to_string(),
-                    trace_id,
-                    timestamp: Utc::now().to_rfc3339(),
-                    topic,
-                    event_type,
-                    producer,
-                    payload,
-                    meta,
-                };
+                let ereignis = ereignis_aus_params(&params)?;
                 match self.sink.append_event(&ereignis).await {
-                    Ok(()) => Ok(json!({"event_id": ereignis.event_id})),
+                    Ok(()) => Ok(json!({ "event_id": ereignis.event_id })),
                     Err(fehler) => Err(RpcError {
                         code: RPC_PLUGIN_ERROR,
                         message: fehler.to_string(),
@@ -169,6 +121,67 @@ impl HostRequestHandler for HostBridge {
             }),
         }
     }
+}
+
+/// Baut ein Domainereignis aus den Angaben eines Plugins.
+///
+/// Der Host vergibt Kennung und Zeitstempel. Das Plugin darf nur Thema,
+/// Ereignisart, Erzeuger, Trace und Nutzlast bestimmen.
+fn ereignis_aus_params(params: &Value) -> Result<Event, RpcError> {
+    let topic = params
+        .get("topic")
+        .and_then(Value::as_str)
+        .ok_or_else(|| RpcError {
+            code: RPC_INVALID_PARAMS,
+            message: "Ereignis ohne Thema".to_string(),
+            data: None,
+        })?
+        .to_string();
+    let event_type = params
+        .get("event_type")
+        .and_then(Value::as_str)
+        .unwrap_or(topic.as_str())
+        .to_string();
+    let producer = params
+        .get("producer")
+        .and_then(Value::as_str)
+        .unwrap_or("plugin")
+        .to_string();
+    let trace_id = params
+        .get("trace_id")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let payload = params
+        .get("payload")
+        .and_then(Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let meta = params
+        .get("meta")
+        .and_then(Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+
+    Ok(Event {
+        event_id: uuid::Uuid::new_v4().to_string(),
+        trace_id,
+        timestamp: Utc::now().to_rfc3339(),
+        topic,
+        event_type,
+        producer,
+        payload,
+        meta,
+    })
+}
+
+/// Baut die Parameter eines Hinweises, mit dem der Host ein Ereignis an ein
+/// Plugin schickt.
+///
+/// Das Plugin erhält das ganze Ereignis. Ohne Thema und Ereignisart könnte
+/// es nicht entscheiden, ob der Hinweis zu ihm gehört.
+fn ereignis_als_params(ereignis: &Event) -> Value {
+    serde_json::to_value(ereignis).unwrap_or(Value::Null)
 }
 
 /// Zustandsmeldung eines Plugins für die Registry.
@@ -204,10 +217,14 @@ pub struct PluginHandle {
     zustand: RwLock<PluginStatus>,
     info: RwLock<InitializeResult>,
     prozess: RwLock<Option<Arc<PluginProcess>>>,
+    prozess_gewechselt: Notify,
     sender: mpsc::Sender<Event>,
+    wartende: AtomicU64,
     verworfen: AtomicU64,
+    handshake_fertig: AtomicBool,
     letzter_fehler: RwLock<Option<String>>,
-    gestartet: RwLock<Option<std::time::Instant>>,
+    letzter_code: RwLock<Option<i32>>,
+    gestartet: RwLock<Option<Instant>>,
 }
 
 impl PluginHandle {
@@ -228,24 +245,76 @@ impl PluginHandle {
                 http_base_url: None,
             }),
             prozess: RwLock::new(None),
+            prozess_gewechselt: Notify::new(),
             sender,
+            wartende: AtomicU64::new(0),
             verworfen: AtomicU64::new(0),
+            handshake_fertig: AtomicBool::new(false),
             letzter_fehler: RwLock::new(None),
+            letzter_code: RwLock::new(None),
             gestartet: RwLock::new(None),
         });
-        // Die Warteschlange wird von einer eigenen Task geleert. Der Griff
-        // hält nur den Sender, damit ein hängendes Plugin den Host nicht
-        // am Ende festhält.
-        let schwach = Arc::downgrade(&handle);
+        handle.starte_zusteller(receiver);
+        handle
+    }
+
+    /// Startet die Task, die die Warteschlange leer macht.
+    ///
+    /// Die Task wartet zuerst auf einen laufenden Prozess. Solange keiner
+    /// läuft, bleibt die Warteschlange stehen und kann sich füllen.
+    fn starte_zusteller(self: &Arc<Self>, mut receiver: mpsc::Receiver<Event>) {
+        let handle = self.clone();
         tokio::spawn(async move {
-            while let Some(ereignis) = receiver.recv().await {
-                let Some(handle) = schwach.upgrade() else {
+            loop {
+                let prozess = handle.warte_auf_prozess().await;
+                let Some(prozess) = prozess else {
                     break;
                 };
-                handle.sende_ereignis(ereignis).await;
+                let ereignis = match receiver.recv().await {
+                    Some(ereignis) => ereignis,
+                    None => break,
+                };
+                handle.wartende.fetch_sub(1, Ordering::SeqCst);
+                let params = ereignis_als_params(&ereignis);
+                match prozess.hinweis(method::EVENT, params).await {
+                    Ok(()) => {
+                        let mut zustand = handle.zustand.write().await;
+                        if *zustand == PluginStatus::Degraded
+                            && handle.wartende.load(Ordering::SeqCst)
+                                < handle.config.event_queue_capacity as u64
+                        {
+                            *zustand = PluginStatus::Ready;
+                        }
+                    }
+                    Err(fehler) => {
+                        tracing::warn!(
+                            plugin = %handle.manifest.name,
+                            "Ereignis konnte nicht gesendet werden: {fehler}"
+                        );
+                        handle.verworfen.fetch_add(1, Ordering::SeqCst);
+                        handle
+                            .letzter_fehler
+                            .write()
+                            .await
+                            .replace(fehler.to_string());
+                    }
+                }
             }
         });
-        handle
+    }
+
+    /// Wartet, bis ein Prozess läuft.
+    async fn warte_auf_prozess(&self) -> Option<Arc<PluginProcess>> {
+        loop {
+            if let Some(prozess) = self.prozess.read().await.clone() {
+                return Some(prozess);
+            }
+            let wartender = self.prozess_gewechselt.notified();
+            if let Some(prozess) = self.prozess.read().await.clone() {
+                return Some(prozess);
+            }
+            wartender.await;
+        }
     }
 
     /// Name des Plugins.
@@ -269,9 +338,14 @@ impl PluginHandle {
     }
 
     /// Startet den Kindprozess und führt den Handshake aus.
+    ///
+    /// Stimmt die Protokollversion des Plugins nicht mit dem Manifest überein,
+    /// endet der Prozess mit dem Code [`RPC_INVALID_PARAMS`].
     pub async fn start(&self, bridge: Arc<HostBridge>) -> AppResult<()> {
         *self.zustand.write().await = PluginStatus::Starting;
         *self.letzter_fehler.write().await = None;
+        *self.letzter_code.write().await = None;
+        self.handshake_fertig.store(false, Ordering::SeqCst);
 
         let kommando = self.manifest.resolve_command(&self.dir)?;
         let umgebung = build_plugin_env(&self.dir, &crate::env::host_environment());
@@ -284,6 +358,7 @@ impl PluginHandle {
             }
         };
         *self.prozess.write().await = Some(prozess.clone());
+        self.prozess_gewechselt.notify_waiters();
 
         let params = json!({
             "protocol_version": PROTOCOL_VERSION,
@@ -320,49 +395,47 @@ impl PluginHandle {
             }
         };
 
-        if info.protocol_version != PROTOCOL_VERSION
+        if info.protocol_version != self.manifest.protocol_version
             || self.manifest.protocol_version != PROTOCOL_VERSION
         {
             self.beende_prozess().await;
             *self.zustand.write().await = PluginStatus::Failed;
             let text = format!(
-                "Protokollversion des Plugins {} passt nicht zur Version {PROTOCOL_VERSION}",
-                info.protocol_version
+                "Protokollversion des Plugins {} passt nicht zum Manifest {} und zur Version {PROTOCOL_VERSION}",
+                info.protocol_version, self.manifest.protocol_version
             );
             *self.letzter_fehler.write().await = Some(text.clone());
+            *self.letzter_code.write().await = Some(RPC_INVALID_PARAMS);
             return Err(AppError::Validation(text));
         }
 
         *self.info.write().await = info;
-        *self.gestartet.write().await = Some(std::time::Instant::now());
+        self.handshake_fertig.store(true, Ordering::SeqCst);
+        *self.gestartet.write().await = Some(Instant::now());
         *self.zustand.write().await = PluginStatus::Ready;
         Ok(())
     }
 
     /// Beendet den Kindprozess mit Frist und danach endgültig.
+    ///
+    /// Das Plugin bekommt zuerst die Methode `shutdown`. Läuft es danach
+    /// noch, endet der Prozess.
     pub async fn stop(&self) -> AppResult<()> {
         let prozess = self.prozess.read().await.clone();
         if let Some(prozess) = prozess {
             let _ = prozess
-                .ruf(
-                    method::SHUTDOWN,
-                    json!({}),
-                    self.config.shutdown_grace,
-                )
+                .ruf(method::SHUTDOWN, json!({}), self.config.shutdown_grace)
                 .await;
-            if tokio::time::timeout(self.config.shutdown_grace, prozess.lebt())
-                .await
-                .map(|lebt| !lebt)
-                .unwrap_or(false)
-            {
-                self.beende_prozess().await;
-            } else {
-                self.beende_prozess().await;
+            if !prozess.warte_aus(self.config.shutdown_grace).await {
+                tracing::warn!(plugin = %self.manifest.name, "Plugin beendete sich nicht rechtzeitig");
             }
+            prozess.beende().await;
         }
         *self.prozess.write().await = None;
         *self.gestartet.write().await = None;
+        self.handshake_fertig.store(false, Ordering::SeqCst);
         *self.zustand.write().await = PluginStatus::Stopped;
+        self.prozess_gewechselt.notify_waiters();
         Ok(())
     }
 
@@ -371,6 +444,8 @@ impl PluginHandle {
         if let Some(prozess) = self.prozess.read().await.clone() {
             prozess.beende().await;
         }
+        *self.prozess.write().await = None;
+        self.prozess_gewechselt.notify_waiters();
     }
 
     /// Ruft eine Fähigkeit des Plugins auf.
@@ -382,7 +457,7 @@ impl PluginHandle {
         let antwort = prozess
             .ruf(
                 method::INVOKE,
-                json!({"capability": capability, "params": params}),
+                json!({ "capability": capability, "params": params }),
                 self.config.dispatch_timeout,
             )
             .await?;
@@ -391,7 +466,7 @@ impl PluginHandle {
     }
 
     /// Fragt den Zustand des Plugins ab.
-    pub async fn health(&self) -> AppResult<edict_plugin_protocol::HealthResult> {
+    pub async fn health(&self) -> AppResult<HealthResult> {
         let prozess = self.prozess.read().await.clone();
         let prozess = prozess.ok_or_else(|| {
             AppError::Conflict(format!("Plugin {} läuft nicht", self.manifest.name))
@@ -411,11 +486,14 @@ impl PluginHandle {
             return true;
         }
         match self.sender.try_send(ereignis) {
-            Ok(()) => true,
+            Ok(()) => {
+                self.wartende.fetch_add(1, Ordering::SeqCst);
+                true
+            }
             Err(mpsc::error::TrySendError::Full(_)) => {
                 self.verworfen.fetch_add(1, Ordering::SeqCst);
                 let mut zustand = self.zustand.write().await;
-                if *zustand == PluginStatus::Ready {
+                if *zustand != PluginStatus::Failed && *zustand != PluginStatus::Stopped {
                     *zustand = PluginStatus::Degraded;
                 }
                 false
@@ -429,11 +507,7 @@ impl PluginHandle {
 
     /// Prüft, ob das Plugin das Thema abonniert hat.
     pub fn ist_abonniert(&self, topic: &str) -> bool {
-        let info = self.info.try_read();
-        let abonnements = match info {
-            Ok(info) => info.subscriptions.clone(),
-            Err(_) => self.manifest.subscriptions.clone(),
-        };
+        let abonnements = self.abonnements();
         if abonnements.is_empty() {
             return false;
         }
@@ -442,30 +516,18 @@ impl PluginHandle {
             .any(|muster| muster == "*" || muster == topic)
     }
 
-    /// Sendet ein Ereignis an das Plugin.
+    /// Abonnierte Ereignisarten des Plugins.
     ///
-    /// Das Plugin erhält nur den Nutzlastanteil des Ereignisses.
-    async fn sende_ereignis(&self, ereignis: Event) {
-        let prozess = self.prozess.read().await.clone();
-        let Some(prozess) = prozess else {
-            return;
-        };
-        let mut zustand = self.zustand.write().await;
-        if *zustand != PluginStatus::Ready && *zustand != PluginStatus::Degraded {
-            return;
+    /// Vor dem Handshake gelten die Abonnements aus dem Manifest. Danach
+    /// gelten die Abonnements, die das Plugin selbst gemeldet hat.
+    pub fn abonnements(&self) -> Vec<String> {
+        if !self.handshake_fertig.load(Ordering::SeqCst) {
+            return self.manifest.subscriptions.clone();
         }
-        let params = Value::Object(ereignis.payload.clone());
-        match prozess.hinweis(method::EVENT, params).await {
-            Ok(()) => {
-                if *zustand == PluginStatus::Degraded && self.sender.capacity() > self.sender.len() {
-                    *zustand = PluginStatus::Ready;
-                }
-            }
-            Err(fehler) => {
-                tracing::warn!(plugin = %self.manifest.name, "Ereignis konnte nicht gesendet werden: {fehler}");
-                *self.letzter_fehler.write().await = Some(fehler.to_string());
-            }
-        }
+        self.info
+            .try_read()
+            .map(|info| info.subscriptions.clone())
+            .unwrap_or_else(|_| self.manifest.subscriptions.clone())
     }
 
     /// Zustandsmeldung für die Registry.
@@ -480,10 +542,10 @@ impl PluginHandle {
             version: info.version.clone(),
             state: *self.zustand.read().await,
             capabilities: info.capabilities.clone(),
-            subscriptions: info.subscriptions.clone(),
+            subscriptions: self.abonnements(),
             http_base_url: info.http_base_url.clone(),
             dropped_events: self.verworfen.load(Ordering::SeqCst),
-            queued_events: self.sender.len() as u64,
+            queued_events: self.wartende.load(Ordering::SeqCst),
             uptime_seconds,
             last_error: self.letzter_fehler.read().await.clone(),
         }
@@ -492,6 +554,11 @@ impl PluginHandle {
     /// Anzahl der verworfenen Ereignisse.
     pub fn verworfene_ereignisse(&self) -> u64 {
         self.verworfen.load(Ordering::SeqCst)
+    }
+
+    /// JSON-RPC-Code des letzten Fehlers.
+    pub async fn letzter_fehlercode(&self) -> Option<i32> {
+        *self.letzter_code.read().await
     }
 
     /// Meldet einen Fehler des Plugins im Zustand.
@@ -507,12 +574,18 @@ impl PluginHandle {
 }
 
 /// Baut eine Ereignisnutzlast für den Prüfkanal.
+#[must_use]
 pub fn review_request_event(task_id: &str, dateien: &[String]) -> Event {
     let mut payload = serde_json::Map::new();
     payload.insert("task_id".to_string(), Value::String(task_id.to_string()));
     payload.insert(
         "files".to_string(),
-        Value::Array(dateien.iter().map(|name| Value::String(name.clone())).collect()),
+        Value::Array(
+            dateien
+                .iter()
+                .map(|name| Value::String(name.clone()))
+                .collect(),
+        ),
     );
     Event {
         event_id: uuid::Uuid::new_v4().to_string(),
@@ -524,20 +597,6 @@ pub fn review_request_event(task_id: &str, dateien: &[String]) -> Event {
         payload,
         meta: serde_json::Map::new(),
     }
-}
-
-/// Wandelt eine Nachricht in einen Fehler mit Code.
-pub fn meldungsfehler(text: &str) -> RpcError {
-    RpcError {
-        code: RPC_INVALID_PARAMS,
-        message: text.to_string(),
-        data: None,
-    }
-}
-
-/// Baut eine Antwortnachricht für Fehlerfälle.
-pub fn fehlernachricht(kennung: Value, fehler: RpcError) -> Message {
-    Message::error_response(kennung, fehler.code, fehler.message)
 }
 
 #[cfg(test)]

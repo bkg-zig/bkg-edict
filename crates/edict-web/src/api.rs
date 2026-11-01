@@ -70,14 +70,11 @@ fn log_technical(message: &str) {
 
 /// Liest eine JSON-Antwort einer Lese-Route.
 async fn get_json<T: DeserializeOwned>(path: &str) -> Result<T, ApiError> {
-    let response = Request::get(&endpoint(path))
-        .send()
-        .await
-        .map_err(|_| {
-            ApiError::new(format!(
-                "Der Server ist nicht erreichbar. Die Route {path} konnte nicht abgerufen werden."
-            ))
-        })?;
+    let response = Request::get(&endpoint(path)).send().await.map_err(|_| {
+        ApiError::new(format!(
+            "Der Server ist nicht erreichbar. Die Route {path} konnte nicht abgerufen werden."
+        ))
+    })?;
     let status = response.status();
     if !(200..300).contains(&status) {
         return Err(ApiError::new(format!(
@@ -93,15 +90,17 @@ async fn get_json<T: DeserializeOwned>(path: &str) -> Result<T, ApiError> {
 
 /// Fuehrt eine schreibende Aktion aus und meldet das Ergebnis.
 async fn post_action(path: &str, body: &Value) -> Result<ActionResult, ApiError> {
-    let response = Request::post(&endpoint(path))
-        .json(body)
-        .send()
-        .await
-        .map_err(|_| {
-            ApiError::new(format!(
-                "Der Server ist nicht erreichbar. Die Aktion {path} konnte nicht gesendet werden."
-            ))
-        })?;
+    let request = Request::post(&endpoint(path)).json(body).map_err(|error| {
+        log_technical(&format!("{path} konnte nicht serialisiert werden: {error}"));
+        ApiError::new(format!(
+            "Die Aktion {path} konnte nicht vorbereitet werden."
+        ))
+    })?;
+    let response = request.send().await.map_err(|_| {
+        ApiError::new(format!(
+            "Der Server ist nicht erreichbar. Die Aktion {path} konnte nicht gesendet werden."
+        ))
+    })?;
     let status = response.status();
     let result = response.json::<ActionResult>().await.map_err(|_| {
         ApiError::new(format!(
@@ -145,29 +144,17 @@ pub async fn agents_status() -> Result<AgentsStatusData, ApiError> {
 
 /// Aktivitaet eines Agenten.
 pub async fn agent_activity(agent_id: &str) -> Result<AgentActivityData, ApiError> {
-    get_json(&format!(
-        "/api/agent-activity/{}",
-        encode_segment(agent_id)
-    ))
-    .await
+    get_json(&format!("/api/agent-activity/{}", encode_segment(agent_id))).await
 }
 
 /// Aktivitaet einer Aufgabe.
 pub async fn task_activity(task_id: &str) -> Result<TaskActivityData, ApiError> {
-    get_json(&format!(
-        "/api/task-activity/{}",
-        encode_segment(task_id)
-    ))
-    .await
+    get_json(&format!("/api/task-activity/{}", encode_segment(task_id))).await
 }
 
 /// Scheduler-Zustand einer Aufgabe.
 pub async fn scheduler_state(task_id: &str) -> Result<SchedulerStateData, ApiError> {
-    get_json(&format!(
-        "/api/scheduler-state/{}",
-        encode_segment(task_id)
-    ))
-    .await
+    get_json(&format!("/api/scheduler-state/{}", encode_segment(task_id))).await
 }
 
 /// Amtliche Statistik.
@@ -274,17 +261,17 @@ pub async fn agent_wake(agent_id: &str, message: &str) -> Result<ActionResult, A
 
 /// Legt eine neue Aufgabe an.
 pub async fn create_task(task: &NewTask) -> Result<ActionResult, ApiError> {
-    post_action(
-        "/api/create-task",
-        &json!({
-            "title": task.title,
-            "description": task.description,
-            "org": task.org,
-            "priority": task.priority,
-            "targetDept": task.target_dept,
-        }),
-    )
-    .await
+    let mut body = json!({
+        "title": task.title,
+        "description": task.description,
+        "priority": task.priority,
+        "targetDept": task.target_dept,
+    });
+    // Ohne eigene Organisation setzt der Server seinen Standardwert.
+    if !task.org.trim().is_empty() {
+        body["org"] = json!(task.org);
+    }
+    post_action("/api/create-task", &body).await
 }
 
 /// Wechselt das Modell eines Agenten.
@@ -324,14 +311,20 @@ pub fn websocket_url() -> Result<String, ApiError> {
         ));
     }
     let window = web_sys::window().ok_or_else(|| {
-        ApiError::new("Der Browserkontext ist nicht verfuegbar. Die WebSocket-Adresse bleibt unbekannt.")
+        ApiError::new(
+            "Der Browserkontext ist nicht verfuegbar. Die WebSocket-Adresse bleibt unbekannt.",
+        )
     })?;
     let location = window.location();
     let protocol = location.protocol().map_err(|_| {
-        ApiError::new("Die Adresse der Seite liess sich nicht lesen. Die WebSocket-Adresse bleibt unbekannt.")
+        ApiError::new(
+            "Die Adresse der Seite liess sich nicht lesen. Die WebSocket-Adresse bleibt unbekannt.",
+        )
     })?;
     let host = location.host().map_err(|_| {
-        ApiError::new("Die Adresse der Seite liess sich nicht lesen. Die WebSocket-Adresse bleibt unbekannt.")
+        ApiError::new(
+            "Die Adresse der Seite liess sich nicht lesen. Die WebSocket-Adresse bleibt unbekannt.",
+        )
     })?;
     let scheme = if protocol == "https:" { "wss:" } else { "ws:" };
     Ok(format!("{scheme}//{host}/ws"))
@@ -380,6 +373,7 @@ pub fn parse_server_message(text: &str) -> Option<ServerMessage> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::format_number;
 
     #[test]
     fn pfadsegmente_werden_kodiert() {
@@ -389,8 +383,9 @@ mod tests {
 
     #[test]
     fn nachrichten_werden_ausgewertet() {
-        let event = parse_server_message(r#"{"type":"event","topic":"task.status","data":{"id":"JJC-1"}}"#)
-            .expect("Ereignis wird gelesen");
+        let event =
+            parse_server_message(r#"{"type":"event","topic":"task.status","data":{"id":"JJC-1"}}"#)
+                .expect("Ereignis wird gelesen");
         assert_eq!(
             event,
             ServerMessage::Event {

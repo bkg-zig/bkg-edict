@@ -61,10 +61,7 @@ impl Manifest {
     pub fn load(plugin_dir: &Path) -> AppResult<Self> {
         let path = plugin_dir.join(MANIFEST_FILE_NAME);
         let text = std::fs::read_to_string(&path).map_err(|error| {
-            AppError::Config(format!(
-                "Manifest {} nicht lesbar: {error}",
-                path.display()
-            ))
+            AppError::Config(format!("Manifest {} nicht lesbar: {error}", path.display()))
         })?;
         Self::parse(&text)
     }
@@ -72,10 +69,9 @@ impl Manifest {
     /// Prüft die Pflichtangaben des Manifests.
     pub fn validate(&self) -> AppResult<()> {
         if self.name.is_empty()
-            || !self
-                .name
-                .chars()
-                .all(|zeichen| zeichen.is_ascii_lowercase() || zeichen.is_ascii_digit() || zeichen == '-')
+            || !self.name.chars().all(|zeichen| {
+                zeichen.is_ascii_lowercase() || zeichen.is_ascii_digit() || zeichen == '-'
+            })
         {
             return Err(AppError::Config(format!(
                 "Ungültiger Pluginname: {}",

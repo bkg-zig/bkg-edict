@@ -6,6 +6,8 @@
 //! `fs2` nicht fuer `wasm32-unknown-unknown` gebaut werden kann. Die
 //! README nennt den Compilerfehler und die Folgen.
 
+use std::collections::BTreeMap;
+
 use chrono::{DateTime, NaiveDateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
@@ -140,6 +142,7 @@ pub const ORG_LABELS: &[(&str, &str)] = &[
     ("钦天监", "Astronomisches Amt"),
     ("皇上", "Kaiser"),
     ("太子", "Taizi"),
+    ("执行中", "In Arbeit"),
 ];
 
 /// Deutscher Name einer Organisation.
@@ -164,6 +167,42 @@ pub const OFFICIAL_LABELS: &[(&str, &str)] = &[
     ("工部尚书", "Bauminister"),
 ];
 
+/// Deutsche Bezeichnungen der chinesischen Zustandsbezeichnungen des Servers.
+pub const STATE_LABELS_SERVER: &[(&str, &str)] = &[
+    ("待处理", "Offen"),
+    ("太子", "Taizi"),
+    ("中书省", "Zhongshu"),
+    ("门下省", "Menxia"),
+    ("尚书省", "Shangshu"),
+    ("待执行", "Bereit"),
+    ("执行中", "In Arbeit"),
+    ("审查", "Pruefung"),
+    ("完成", "Abgeschlossen"),
+];
+
+/// Deutscher Name des Versandstatus des Schedulers.
+pub fn dispatch_status_label(value: &str) -> &'static str {
+    match value {
+        "idle" => "Bereit",
+        "queued" => "In der Warteschlange",
+        "success" => "Erfolgreich",
+        "failed" => "Fehlgeschlagen",
+        "timeout" => "Zeitueberschreitung",
+        "gateway-offline" => "Gateway offline",
+        "error" => "Fehler",
+        _ => "Unbekannt",
+    }
+}
+
+/// Deutscher Name einer chinesischen Zustandsbezeichnung des Servers.
+pub fn server_state_label(value: &str) -> String {
+    STATE_LABELS_SERVER
+        .iter()
+        .find(|(source, _)| *source == value)
+        .map(|(_, target)| (*target).to_string())
+        .unwrap_or_else(|| value.to_string())
+}
+
 /// Deutscher Name eines Amtsinhabers.
 pub fn official_label(value: &str) -> String {
     OFFICIAL_LABELS
@@ -183,6 +222,7 @@ pub fn format_number(value: i64) -> String {
         }
         grouped.push(digit);
     }
+    let grouped = grouped.chars().rev().collect::<String>();
     if value < 0 {
         format!("-{grouped}")
     } else {
@@ -239,15 +279,12 @@ pub fn pipeline_index(state: TaskState) -> usize {
         TaskState::Next => 4,
         TaskState::Blocked => 5,
         TaskState::Cancelled => 7,
-        other => PIPELINE
-            .iter()
-            .position(|step| *step == other)
-            .unwrap_or(4),
+        other => PIPELINE.iter().position(|step| *step == other).unwrap_or(4),
     }
 }
 
 /// Eintrag im Zustandsprotokoll einer Aufgabe.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct FlowEntry {
     #[serde(default)]
     pub at: Option<String>,
@@ -266,7 +303,7 @@ pub struct FlowEntry {
 }
 
 /// Eintrag im Fortschrittsprotokoll einer Aufgabe.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ProgressEntry {
     #[serde(default)]
     pub at: Option<String>,
@@ -337,18 +374,38 @@ pub fn todo_status_label(status: &str) -> &'static str {
 }
 
 /// Herzschlag einer Aufgabe.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Heartbeat {
     #[serde(default)]
     pub status: String,
+    /// Beschriftung des Servers. Sie ist nichtsprachig und wird nicht angezeigt.
     #[serde(default)]
     pub label: String,
     #[serde(rename = "ageSec", default)]
     pub age_sec: Option<i64>,
 }
 
+/// Deutscher Text zum Herzschlag einer Aufgabe.
+///
+/// Der Server liefert eine chinesische Beschriftung. Die Oberflaeche zeigt
+/// stattdessen den kanonischen Status und das Alter in Sekunden oder Minuten.
+pub fn heartbeat_label(heartbeat: &Heartbeat) -> String {
+    let status = match heartbeat.status.trim().to_ascii_lowercase().as_str() {
+        "active" => "Aktiv",
+        "warn" => "Moeglicherweise stillstehend",
+        "stalled" => "Stillstehend",
+        "unknown" => "Unbekannt",
+        _ => "Unbekannt",
+    };
+    match heartbeat.age_sec {
+        Some(age) if age < 60 => format!("{status}, vor {age} Sekunden"),
+        Some(age) => format!("{status}, vor {} Minuten", age / 60),
+        None => status.to_string(),
+    }
+}
+
 /// Eine Aufgabe des Systems.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct Task {
     #[serde(default)]
     pub task_id: String,
@@ -460,7 +517,7 @@ impl Task {
 }
 
 /// Live-Status der Aufgabenliste.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct LiveStatus {
     #[serde(default)]
     pub tasks: Vec<Task>,
@@ -475,7 +532,7 @@ pub struct LiveStatus {
 }
 
 /// Antwort auf eine schreibende Aktion.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct ActionResult {
     #[serde(default)]
     pub ok: bool,
@@ -490,7 +547,7 @@ pub struct ActionResult {
 }
 
 /// Zustand des Gateways in der Agentenuebersicht.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct GatewayStatus {
     #[serde(default)]
     pub alive: bool,
@@ -501,7 +558,7 @@ pub struct GatewayStatus {
 }
 
 /// Status eines Agenten.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct AgentStatusInfo {
     #[serde(default)]
     pub id: String,
@@ -520,7 +577,7 @@ pub struct AgentStatusInfo {
 }
 
 /// Antwort der Agentenstatus-Schnittstelle.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct AgentsStatusData {
     #[serde(default)]
     pub ok: bool,
@@ -544,7 +601,7 @@ pub fn agent_status_label(status: &str) -> &'static str {
 }
 
 /// Beteiligung eines Amtsinhabers an einer Aufgabe.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct ParticipatedEdict {
     #[serde(default)]
     pub id: String,
@@ -555,7 +612,7 @@ pub struct ParticipatedEdict {
 }
 
 /// Kennzahlen eines Amtsinhabers.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct OfficialInfo {
     #[serde(default)]
     pub id: String,
@@ -606,7 +663,7 @@ pub struct OfficialInfo {
 }
 
 /// Summen der amtlichen Statistik.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct OfficialTotals {
     #[serde(default)]
     pub tasks_done: i64,
@@ -615,7 +672,7 @@ pub struct OfficialTotals {
 }
 
 /// Antwort der amtlichen Statistik.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct OfficialsData {
     #[serde(default)]
     pub officials: Vec<OfficialInfo>,
@@ -626,7 +683,7 @@ pub struct OfficialsData {
 }
 
 /// Ein Eintrag des Morgenberichts.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct MorningNewsItem {
     #[serde(default)]
     pub title: String,
@@ -635,28 +692,28 @@ pub struct MorningNewsItem {
     #[serde(default)]
     pub desc: Option<String>,
     #[serde(default)]
-    pub link: String,
-    #[serde(default)]
     pub source: String,
     #[serde(default)]
     pub image: Option<String>,
-    #[serde(rename = "pub_date", default)]
+    #[serde(rename = "pub_date", alias = "time", default)]
     pub pub_date: Option<String>,
+    #[serde(rename = "url", alias = "link", default)]
+    pub url: String,
 }
 
 /// Der Morgenbericht mit seinen Kategorien.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct MorningBrief {
     #[serde(default)]
     pub date: Option<String>,
     #[serde(rename = "generated_at", default)]
     pub generated_at: Option<String>,
     #[serde(default)]
-    pub categories: Map<String, Vec<MorningNewsItem>>,
+    pub categories: BTreeMap<String, Vec<MorningNewsItem>>,
 }
 
 /// Ein Skill eines Agenten.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct SkillInfo {
     #[serde(default)]
     pub name: String,
@@ -667,7 +724,7 @@ pub struct SkillInfo {
 }
 
 /// Ein Agent der Konfiguration.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct AgentInfo {
     #[serde(default)]
     pub id: String,
@@ -684,7 +741,7 @@ pub struct AgentInfo {
 }
 
 /// Ein bekanntes Modell.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct KnownModel {
     #[serde(default)]
     pub id: String,
@@ -695,7 +752,7 @@ pub struct KnownModel {
 }
 
 /// Die Agentenkonfiguration.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct AgentConfig {
     #[serde(default)]
     pub agents: Vec<AgentInfo>,
@@ -704,7 +761,7 @@ pub struct AgentConfig {
 }
 
 /// Ein Eintrag des Modellwechsel-Protokolls.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct ChangeLogEntry {
     #[serde(default)]
     pub at: String,
@@ -719,7 +776,7 @@ pub struct ChangeLogEntry {
 }
 
 /// Ein Eintrag im Aktivitaetsprotokoll eines Agenten oder einer Aufgabe.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct ActivityEntry {
     #[serde(default)]
     pub kind: String,
@@ -748,7 +805,7 @@ pub struct ActivityEntry {
 }
 
 /// Antwort der Aktivitaetsschnittstelle eines Agenten.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct AgentActivityData {
     #[serde(default)]
     pub ok: bool,
@@ -759,7 +816,7 @@ pub struct AgentActivityData {
 }
 
 /// Dauer einer Phase einer Aufgabe.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct PhaseDuration {
     #[serde(default)]
     pub phase: String,
@@ -772,7 +829,7 @@ pub struct PhaseDuration {
 }
 
 /// Zusammenfassung der Teilaufgaben einer Aufgabe.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct TodosSummary {
     #[serde(default)]
     pub total: i64,
@@ -787,7 +844,7 @@ pub struct TodosSummary {
 }
 
 /// Antwort der Aktivitaetsschnittstelle einer Aufgabe.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct TaskActivityData {
     #[serde(default)]
     pub ok: bool,
@@ -808,7 +865,7 @@ pub struct TaskActivityData {
 }
 
 /// Scheduler-Metadaten einer Aufgabe.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct SchedulerInfo {
     #[serde(rename = "retryCount", default)]
     pub retry_count: Option<i64>,
@@ -831,7 +888,7 @@ pub struct SchedulerInfo {
 }
 
 /// Antwort der Scheduler-Schnittstelle.
-#[derive(Debug, Clone, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct SchedulerStateData {
     #[serde(default)]
     pub ok: bool,
@@ -861,6 +918,9 @@ pub fn parse_timestamp(value: &str) -> Option<DateTime<Utc>> {
         return Some(parsed.with_timezone(&Utc));
     }
     if let Ok(parsed) = NaiveDateTime::parse_from_str(trimmed, "%Y-%m-%d %H:%M:%S") {
+        return Some(parsed.and_utc());
+    }
+    if let Ok(parsed) = NaiveDateTime::parse_from_str(trimmed, "%Y-%m-%d %H:%M") {
         return Some(parsed.and_utc());
     }
     if let Ok(parsed) = NaiveDateTime::parse_from_str(trimmed, "%Y-%m-%dT%H:%M:%S") {
@@ -905,6 +965,48 @@ pub fn relative_time(value: &str) -> String {
 mod tests {
     use super::*;
 
+    /// Bildet die Zustände der Oberflaeche auf die des Fachkerns ab.
+    fn edict_core_state(state: TaskState) -> edict_core::TaskState {
+        match state {
+            TaskState::Taizi => edict_core::TaskState::Taizi,
+            TaskState::Zhongshu => edict_core::TaskState::Zhongshu,
+            TaskState::Menxia => edict_core::TaskState::Menxia,
+            TaskState::Assigned => edict_core::TaskState::Assigned,
+            TaskState::Next => edict_core::TaskState::Next,
+            TaskState::Doing => edict_core::TaskState::Doing,
+            TaskState::Review => edict_core::TaskState::Review,
+            TaskState::Done => edict_core::TaskState::Done,
+            TaskState::Blocked => edict_core::TaskState::Blocked,
+            TaskState::Cancelled => edict_core::TaskState::Cancelled,
+            TaskState::Pending => edict_core::TaskState::Pending,
+        }
+    }
+
+    #[test]
+    fn zustaende_entsprechen_dem_fachkern() {
+        for state in TaskState::ALL {
+            let core = edict_core_state(state);
+            assert_eq!(state.as_str(), core.as_str(), "Kanonischer Wert");
+            assert_eq!(
+                state_label(state),
+                edict_core::labels::state_label(core),
+                "Deutsche Beschriftung"
+            );
+        }
+    }
+
+    #[test]
+    fn abgeschlossene_zustaende_entsprechen_dem_fachkern() {
+        for state in TaskState::ALL {
+            let core = edict_core_state(state);
+            assert_eq!(
+                state.is_terminal(),
+                edict_core::TERMINAL_STATES.contains(&core),
+                "Abschlussstatus"
+            );
+        }
+    }
+
     #[test]
     fn zustandswerte_werden_case_insensitiv_gelesen() {
         assert_eq!(TaskState::parse("doing"), Some(TaskState::Doing));
@@ -929,13 +1031,21 @@ mod tests {
 
     #[test]
     fn archivierte_aufgaben_werden_erkannt() {
-        let mut task = Task::default();
-        task.state = TaskState::Done;
-        assert!(task.is_archived());
-        task.state = TaskState::Doing;
-        assert!(!task.is_archived());
-        task.archived = true;
-        assert!(task.is_archived());
+        let done = Task {
+            state: TaskState::Done,
+            ..Task::default()
+        };
+        assert!(done.is_archived());
+        let running = Task {
+            state: TaskState::Doing,
+            ..Task::default()
+        };
+        assert!(!running.is_archived());
+        let archived = Task {
+            archived: true,
+            ..Task::default()
+        };
+        assert!(archived.is_archived());
     }
 
     #[test]
@@ -953,3 +1063,4 @@ mod tests {
         assert!(parse_timestamp("kein Datum").is_none());
     }
 }
+

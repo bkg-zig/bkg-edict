@@ -51,10 +51,7 @@ pub fn build_plugin_env(
         .filter(|value| !value.is_empty())
         .unwrap_or(DEFAULT_LANG);
     env.insert("LANG".to_string(), lang.to_string());
-    env.insert(
-        "HOME".to_string(),
-        plugin_dir.to_string_lossy().to_string(),
-    );
+    env.insert("HOME".to_string(), plugin_dir.to_string_lossy().to_string());
     env
 }
 

@@ -54,9 +54,10 @@ erlaubte. Der Port liest eine Allowlist aus `EDICT_ALLOWED_ORIGINS`.
    docker compose exec postgres pg_dump -U edict -Fc edict > edict.dump
    ```
 
-3. Das Schema anlegen. Die Migration `crates/edict-db/migrations/0001_init.sql`
-   legt die Tabellen `tasks`, `todos`, `thoughts`, `events` und `outbox` an
-   und läuft beim Start des Servers.
+3. Das Schema anlegen. Die Migrationen unter
+   `crates/edict-db/migrations/` legen die Tabellen `tasks`, `todos`,
+   `thoughts`, `events` und `outbox` an und legen die Ausführungssperren in
+   `dispatch_leases` an. Sie laufen beim Start des Workers.
 4. Die Aufgaben importieren. Dieser Schritt ist noch nicht möglich. Es gibt
    weder einen Befehl der Kommandozeile noch eine Route für den Import. Die
    Demodaten in `data/tasks_source.json` liegen bereit und werden nach

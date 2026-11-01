@@ -295,6 +295,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "console_error_panic_hook"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a06aeb73f470f66dcdbf7223caeebb85984942f22f1adb2a088cf9668146bbbc"
+dependencies = [
+ "cfg-if",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "const-serialize"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1025,6 +1035,7 @@ name = "edict-web"
 version = "2.0.0"
 dependencies = [
  "chrono",
+ "console_error_panic_hook",
  "dioxus",
  "edict-core",
  "futures-util",
@@ -1032,6 +1043,7 @@ dependencies = [
  "gloo-timers",
  "serde",
  "serde_json",
+ "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
 ]

@@ -5,10 +5,12 @@ verwaltet und beendet. Der Host muss dafür nicht neu gebaut werden. Die
 Kommunikation läuft über JSON-RPC 2.0 auf stdio.
 
 Das Protokoll steht in `crates/edict-plugin-protocol`. Der Plugin-Host liegt
-in `crates/edict-plugin-host`. Dort sind Module für das Manifest, die sichere
-Umgebung, die Zustände, die Ports und den Prozessstart angelegt. Der Einstieg
-in `lib.rs` bindet die Module noch nicht ein. Die Beschreibung unten ist der
-vereinbarte Vertrag.
+in `crates/edict-plugin-host`. Dort liegen Module für das Manifest, die
+sichere Umgebung, die Zustände, die Ports, den Prozessstart, den Zugriff auf
+ein einzelnes Plugin, die Registry der geladenen Plugins, die
+HTTP-Weiterleitung und die Dienste des Hosts. Der Einstieg in `lib.rs`
+bindet diese Module ein. Die Beschreibung unten ist der vereinbarte
+Vertrag. Einige Teile sind im Host noch nicht an den Server gebunden.
 
 ## Rahmen
 
@@ -51,29 +53,35 @@ und optional `dropped_events` sowie `last_error`.
 
 ## Zustellung der Ereignisse
 
-Der Host liest je Plugin eine Konsumentengruppe `plugin:<name>` aus dem
-Redis-Stream des jeweiligen Themas. Eine angenommene Nachricht wird mit
-`XACK` quittiert. Nachrichten eines abgestürzten Prozesses holt der Host
-mit `XAUTOCLAIM` zurück. Der Host filtert die Ereignisse nach den
-Abonnements des Plugins und übergibt nur den Nutzlastanteil.
+Der Host holt die Ereignisse über den Port `EventSource`. Der Server setzt
+diesen Port mit Redis um. Vorgesehen ist je Plugin eine Konsumentengruppe
+`plugin:<name>` aus dem Redis-Stream des jeweiligen Themas. Eine angenommene
+Nachricht wird mit `XACK` quittiert. Nachrichten eines abgestürzten
+Prozesses holt der Host mit `XAUTOCLAIM` zurück. Der Host filtert die
+Ereignisse nach den Abonnements des Plugins und übergibt nur den
+Nutzlastanteil. Diese Redis-Anbindung ist im Plugin-Host noch nicht
+gebunden.
 
 ## Grenzen und Sicherheit
 
 - Der Kindprozess startet mit einer reduzierten Umgebung. Der Host übergibt
-  nur `PATH`, `LANG` und `HOME`.
+  nur `PATH`, `LANG` und `HOME`. `HOME` zeigt auf das Pluginverzeichnis.
 - Das Plugin bekommt weder das Admin-Token noch Zugangsdaten der Datenbank.
-- Das Plugin läuft in einer eigenen Prozessgruppe. Nach der Frist beendet
-  der Host die Gruppe und wartet auf das Ende.
+- Der Kindprozess ruft `setsid` auf und läuft damit in einer eigenen
+  Sitzung. Läuft er nach der Frist nicht von selbst aus, beendet der Host
+  ihn mit einem Signal.
 - Die Warteschlqueue eines Plugins fasst 128 Nachrichten. Ist sie voll,
-  meldet der Host `degraded` und stellt die Zustellung temporär ein.
-- Jede Anfrage bekommt ein Zeitlimit, und die Zahl laufender Anfragen ist
-  begrenzt.
-- Ein Plugin darf nur auf `127.0.0.1` lauschen. Der Host leitet die vom
-  Plugin gemeldeten Routen weiter und reicht Rohkörper und Header
-  unverändert durch.
+  verwirft der Host das Ereignis, zählt es und meldet den Zustand
+  `degraded`. Der Zustand kehrt nach der Leerung der Warteschlange auf
+  `ready` zurück.
+- Jede Anfrage bekommt ein Zeitlimit. Der Standardwert für Aufrufe an ein
+  Plugin liegt bei 300 Sekunden, für das geordnete Beenden bei 5 Sekunden.
+- Ein Plugin darf nur auf `127.0.0.1` oder `localhost` lauschen. Der Host
+  leitet die vom Plugin gemeldeten Routen weiter und reicht Rohkörper und
+  Header unverändert durch. Ein einzelner Rohkörper ist auf 8 MiB begrenzt.
 - Der Befehl eines Plugins wird nur innerhalb des Pluginverzeichnisses
-  aufgelöst. Es gibt keine Shell und keine absoluten Pfade außerhalb des
-  Verzeichnisses.
+  aufgelöst. Absolute Pfade und Pfade außerhalb des Verzeichnisses werden
+  abgewiesen. Es gibt keine Shell.
 
 ## Manifest
 
@@ -97,8 +105,11 @@ Workflow-Dokumente, `doctor`-Prüfungen, Agentenschleifen mit Journal,
 Protokollbefehle für Zustandsübergänge, ein Review-Gate, die Koordination
 über Beads, Ereignisprotokolle und ein Hook-System.
 
-Beide Crates enthalten im Repository nur ein leeres `main`. Die
-Protokollanbindung ist damit noch nicht vorhanden.
+Das gitclaw-Crate enthält Module für die Verbindung zum Host, die
+Auswertung der Webhook-Ereignisse, den HTTP-Eingang und die Prüfung der
+Webhook-Signatur. Das edict-Crate enthält noch nichts außer einem leeren
+`main`. Die Protokollanbindung des gitclaw-Plugins ist im Werkzeug noch
+nicht verdrahtet.
 
 ## Abweichung von der ersten Aufgabenliste
 
