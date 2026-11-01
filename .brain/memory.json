@@ -1,0 +1,6 @@
+{
+  "last": {
+    "scope": "crates/edict-cli",
+    "fact": "CLI-Vertrag: Schreibrouten sind POST /api/create-task, /api/archive-task, /api/advance-state, /api/task-action, /api/task-todos, /api/task-progress und /api/review-action. Die Felder folgen dem Legacy in camelCase (taskId, action, reason, comment, archived, todos, to, agent). Review sendet taskId, action approve|reject und comment. task progress faellt bei HTTP 404 auf /api/task-action mit action progress zurueck. Schreibbefehle geben bei --json oder ohne TTY die Serverantwort als JSON aus."
+  }
+}

@@ -26,9 +26,10 @@ statisch aus und betreibt den Plugin-Host. `edict-worker` liest die Outbox,
 ruft Agenten auf und führt den Scheduler aus. `edict-cli` erzeugt das Binary
 `edict` und schreibt ausschließlich über die HTTP-Schnittstelle.
 
-`edict-server` und `edict-worker` enthalten im Repository nur einen
-Platzhalter. Die beschriebene Aufteilung ist das Ziel des Ports, nicht der
-gebaute Stand. `edict-cli` ist übersetzbar.
+`edict-server` und `edict-worker` werden gerade ausgebaut. Der Server
+enthält bisher nur einen Platzhalter, der Worker hat einen Einstieg mit den
+Modulen für Dispatch und Gateway. Die beschriebene Aufteilung ist das Ziel
+des Ports, nicht der gebaute Stand. `edict-cli` übersetzt.
 
 Die Plugins unter `crates/plugins/` sind eigene Prozesse. Sie teilen keine
 Tabelle mit dem Kern und erhalten weder das Admin-Token noch die
@@ -97,10 +98,12 @@ Ergebnis mit einer optimistischen Sperre. Jede Speicherung erhöht das Feld
 `version`. Das Zustandsprotokoll wächst je Übergang um einen Eintrag mit
 Zeitstempel, Sender, Empfänger und Bemerkung.
 
-Der Herzschalt einer Aufgabe entsteht aus dem Alter der letzten Änderung.
+Der Herzschlag einer Aufgabe entsteht aus dem Alter der letzten Änderung.
 Unter 180 Sekunden gilt die Aufgabe als aktiv, unter 600 Sekunden als
-möglicherweise festgefahren, danach als festgefahren. Der Schwellenwert steht
-in `STALL_THRESHOLD_SEC`.
+möglicherweise festgefahren, danach als festgefahren. Beide Grenzen stehen
+fest in `compute_heartbeat` in `edict-core`. Die Variable
+`STALL_THRESHOLD_SEC` liest der Kern, für diese Rechnung wird sie nicht
+verwendet.
 
 ## Plugin-Host
 

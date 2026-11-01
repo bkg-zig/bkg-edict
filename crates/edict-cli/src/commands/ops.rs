@@ -416,6 +416,7 @@ Schreibbefehle (POST)
   /api/archive-task        Felder: task taskId, archived
   /api/task-todos          Felder: task taskId, todos
   /api/task-progress       Felder: task taskId, agent, content
+  /api/review-action       Felder: task taskId, action, comment
 
 Antwort der Schreibbefehle
   Erfolg: { \"ok\": true, \"message\": \"...\" }
@@ -470,6 +471,7 @@ mod tests {
         let text = protocol_text();
         assert!(text.contains("/api/live-status"));
         assert!(text.contains("/api/task-todos"));
+        assert!(text.contains("/api/review-action"));
         assert!(text.contains("\"ok\": false"));
     }
 }

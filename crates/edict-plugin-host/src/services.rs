@@ -8,10 +8,12 @@ use std::pin::Pin;
 
 use async_trait::async_trait;
 use edict_core::{AppError, AppResult, Event};
-use futures_util::Stream;
+use futures_util::{Stream, StreamExt};
 use serde_json::Value;
-use tokio::sync::broadcast;
-use tokio_stream::wrappers::ReceiverStream;
+use tokio::sync::{broadcast, mpsc};
+
+/// Strom von Ereignissen für ein Plugin.
+pub type EventStream = Pin<Box<dyn Stream<Item = Event> + Send>>;
 
 /// Fähigkeiten, die ein Plugin beim Host aufrufen darf.
 ///
@@ -36,19 +38,19 @@ pub trait EventSink: Send + Sync {
 
 /// Quelle der Ereignisse, die der Host an Plugins verteilt.
 ///
-/// Der Host ruft die Quelle je Plugin einmal auf und liest den Kanal in
-/// einer eigenen Task. Der Kanal ist unbeschränkt, die begrenzte Warteschlange
-/// des Hosts begrenzt erst die Zustellung an das Plugin.
+/// Der Host meldet das Plugin einmal an und liest den Strom in einer eigenen
+/// Task. Die begrenzte Warteschlange des Hosts begrenzt erst die Zustellung
+/// an das Plugin.
 #[async_trait]
 pub trait EventSource: Send + Sync {
-    /// Öffnet den Ereigniskanal für ein Plugin.
-    async fn subscribe(&self, plugin: &str) -> AppResult<Pin<Box<dyn Stream<Item = Event> + Send>>>;
+    /// Öffnet den Ereignisstrom für ein Plugin.
+    async fn subscribe(&self, plugin: &str) -> AppResult<EventStream>;
 }
 
 /// Umgebung ohne Fähigkeiten und ohne Ereignisse.
 ///
 /// Der Host braucht diese Traits immer. Für Tests und für einen Betrieb ohne
-//! Ereignisbus genügt diese leere Umsetzung.
+/// Ereignisbus genügt diese leere Umsetzung.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct NoopServices;
 
@@ -61,7 +63,7 @@ impl HostServices for NoopServices {
     }
 }
 
-/// Ereignisablage, die alles verwirft.
+/// Ereignisablage, die nichts speichert.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct NoopEventSink;
 
@@ -78,15 +80,15 @@ pub struct NoopEventSource;
 
 #[async_trait]
 impl EventSource for NoopEventSource {
-    async fn subscribe(&self, _plugin: &str) -> AppResult<Pin<Box<dyn Stream<Item = Event> + Send>>> {
-        let (_sender, receiver) = tokio::sync::mpsc::channel(1);
-        Ok(Box::pin(ReceiverStream::new(receiver)))
+    async fn subscribe(&self, _plugin: &str) -> AppResult<EventStream> {
+        let (_sender, receiver) = mpsc::channel(1);
+        Ok(Box::pin(stream_from_receiver(receiver)))
     }
 }
 
 /// Ereignisquelle aus einem Sendepuffer.
 ///
-/// Der Puffer wird von allen Plugins geteilt. Jeder abonnierte Kanal sieht
+/// Der Puffer wird von allen Plugins geteilt. Jeder abonnierte Strom sieht
 /// ab seinem Anmeldezeitpunkt alle Ereignisse.
 #[derive(Debug, Clone)]
 pub struct ChannelEventSource {
@@ -108,9 +110,36 @@ impl ChannelEventSource {
 
 #[async_trait]
 impl EventSource for ChannelEventSource {
-    async fn subscribe(&self, _plugin: &str) -> AppResult<Pin<Box<dyn Stream<Item = Event> + Send>>> {
-        Ok(Box::pin(ReceiverStream::new(self.sender.subscribe())))
+    async fn subscribe(&self, _plugin: &str) -> AppResult<EventStream> {
+        let receiver = self.sender.subscribe();
+        Ok(Box::pin(stream_from_broadcast(receiver)))
     }
+}
+
+/// Wandelt einen Empfangskanal in einen Strom.
+fn stream_from_receiver(receiver: mpsc::Receiver<Event>) -> EventStream {
+    Box::pin(futures_util::stream::unfold(receiver, |mut receiver| async move {
+        receiver.recv().await.map(|ereignis| (ereignis, receiver))
+    }))
+}
+
+/// Wandelt einen Rundfunkkanal in einen Strom.
+///
+/// Verpasste Nachrichten werden übersprungen. Der Zähler für verworfene
+/// Ereignisse liegt beim Host, nicht bei der Quelle.
+fn stream_from_broadcast(receiver: broadcast::Receiver<Event>) -> EventStream {
+    Box::pin(futures_util::stream::unfold(
+        receiver,
+        |mut receiver| async move {
+            loop {
+                match receiver.recv().await {
+                    Ok(ereignis) => return Some((ereignis, receiver)),
+                    Err(broadcast::error::RecvError::Lagged(_)) => continue,
+                    Err(broadcast::error::RecvError::Closed) => return None,
+                }
+            }
+        },
+    ))
 }
 
 #[cfg(test)]
@@ -131,38 +160,8 @@ mod tests {
         }
     }
 
-    #[test]
-    fn ereignisquelle_verteilt_ereignisse_an_abonnenten() {
-        let quelle = ChannelEventSource::new(8);
-        let sender = quelle.clone();
-        let runtime = tokio::runtime::Builder::new_current_thread()
-            .enable_all()
-            .build()
-            .unwrap();
-        runtime.block_on(async {
-            let mut kanal = quelle.subscribe("gitclaw").await.unwrap();
-            sender.publish(Event {
-                event_id: "1".to_string(),
-                trace_id: "t".to_string(),
-                timestamp: "jetzt".to_string(),
-                topic: "task.created".to_string(),
-                event_type: "created".to_string(),
-                producer: "test".to_string(),
-                payload: serde_json::Map::new(),
-                meta: serde_json::Map::new(),
-            });
-            let ereignis = kanal.next().await.unwrap();
-            assert_eq!(ereignis.topic, "task.created");
-        });
-    }
-
-    #[tokio::test]
-    async fn mitschreiber_merkt_sich_ereignisse() {
-        let mitschreiber = Arc::new(Mitschreiber {
-            ereignisse: Mutex::new(Vec::new()),
-        });
-        let sink = mitschreiber.clone();
-        sink.append_event(&Event {
+    fn beispiel_ereignis() -> Event {
+        Event {
             event_id: "1".to_string(),
             trace_id: "t".to_string(),
             timestamp: "jetzt".to_string(),
@@ -171,9 +170,25 @@ mod tests {
             producer: "test".to_string(),
             payload: serde_json::Map::new(),
             meta: serde_json::Map::new(),
-        })
-        .await
-        .unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn ereignisquelle_verteilt_ereignisse_an_abonnenten() {
+        let quelle = ChannelEventSource::new(8);
+        let mut kanal = quelle.subscribe("gitclaw").await.unwrap();
+        quelle.publish(beispiel_ereignis());
+        let ereignis = kanal.next().await.unwrap();
+        assert_eq!(ereignis.topic, "task.created");
+    }
+
+    #[tokio::test]
+    async fn mitschreiber_merkt_sich_ereignisse() {
+        let mitschreiber = Arc::new(Mitschreiber {
+            ereignisse: Mutex::new(Vec::new()),
+        });
+        let sink = mitschreiber.clone();
+        sink.append_event(&beispiel_ereignis()).await.unwrap();
         assert_eq!(mitschreiber.ereignisse.lock().unwrap().len(), 1);
     }
 

@@ -95,6 +95,18 @@ pub fn parse_object(text: &str, label: &str) -> Result<Value> {
     Ok(parsed)
 }
 
+/// Gibt das Ergebnis eines Schreibbefehls aus.
+///
+/// Ohne Terminal und mit dem Schalter `--json` erscheint die Antwort des
+/// Servers als JSON. Sonst steht ein deutscher Text in einer Zeile.
+pub fn print_write_result(result: &Value, json: bool, message: &str) -> Result<()> {
+    if crate::output::wants_json(json) {
+        return crate::output::print_json(result);
+    }
+    println!("{message}");
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

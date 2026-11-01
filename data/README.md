@@ -16,21 +16,13 @@ erwartet.
 
 ## Laden
 
-Der Import läuft über die Kommandozeile und schreibt über die
-HTTP-Schnittstelle des Servers:
+Ein Import über die Kommandozeile existiert im Repository noch nicht. Die
+Datei dient als Vorlage für den späteren Import. Im Container liegt sie unter
+`/app/data/tasks_source.json`, weil das Verzeichnis `data` des Projekts
+dorthin eingebunden wird. Der Server liest dieselbe Datei über
+`LEGACY_TASKS_FILE`.
 
-```bash
-edict migrate import-json --file data/tasks_source.json --dry-run
-edict migrate import-json --file data/tasks_source.json
-```
-
-Der erste Befehl zeigt nur an, was importiert würde. Der zweite schreibt
-die Aufgaben. Ein laufender Server ist dafür nötig.
-
-Im Container liegt die Datei unter `/app/data/tasks_source.json`, weil das
-Verzeichnis `data` des Projekts dorthin eingebunden wird.
-
-## Ohne Server laden
+## Datei prüfen
 
 Wer die Datei nur prüfen will, öffnet sie auf dem Rechner, nicht im
 Container:
@@ -39,6 +31,5 @@ Container:
 python3 -m json.tool data/tasks_source.json
 ```
 
-Der Server liest dieselbe Datei über `LEGACY_TASKS_FILE`, wenn er beim Start
-den Altbestand übernehmen soll. Der Pfad steht in `.env` und zeigt im
-Container auf `/app/data/tasks_source.json`.
+Der Befehl ist ein Werkzeug für die Prüfung auf dem Rechner. Der Betrieb
+selbst braucht kein Python.

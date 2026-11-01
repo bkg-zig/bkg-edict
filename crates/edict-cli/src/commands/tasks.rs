@@ -7,10 +7,12 @@ use serde_json::{json, Value};
 
 use crate::api::{message_of, ApiClient};
 use crate::cli::{
-    ActionArgs, AdvanceArgs, ArchiveArgs, CreateArgs, ListArgs, ProgressArgs, ShowArgs, TaskArgs,
-    TaskCommand, TasksArgs, TasksCommand, TodosArgs,
+    ActionArgs, AdvanceArgs, ArchiveArgs, CreateArgs, ListArgs, ProgressArgs, ReviewArgs, ShowArgs,
+    TaskArgs, TaskCommand, TasksArgs, TasksCommand, TodosArgs,
 };
-use crate::commands::data::{extract_tasks, find_task, format_time, parse_object, text_field};
+use crate::commands::data::{
+    extract_tasks, find_task, format_time, parse_object, print_write_result, text_field,
+};
 use crate::output::{self, Cell};
 use crate::state::parse_state;
 
@@ -32,6 +34,7 @@ pub async fn run_task(client: &ApiClient, args: &TaskArgs) -> Result<()> {
         TaskCommand::Action(inner) => action(client, inner).await,
         TaskCommand::Todos(inner) => todos(client, inner).await,
         TaskCommand::Progress(inner) => progress(client, inner).await,
+        TaskCommand::Review(inner) => review(client, inner).await,
     }
 }
 
@@ -300,8 +303,7 @@ pub async fn create(client: &ApiClient, args: &CreateArgs) -> Result<()> {
     if let Some(task_id) = result.get("taskId").and_then(Value::as_str) {
         text = format!("{text} (Kennung {task_id})");
     }
-    println!("{text}");
-    Ok(())
+    print_write_result(&result, args.json, &text)
 }
 
 /// Archiviert eine Aufgabe oder holt sie aus dem Archiv.
@@ -313,8 +315,7 @@ pub async fn archive(client: &ApiClient, args: &ArchiveArgs, archived: bool) -> 
     } else {
         "Die Aufgabe wurde aus dem Archiv geholt."
     };
-    println!("{}", message_of(&result, fallback));
-    Ok(())
+    print_write_result(&result, args.json, &message_of(&result, fallback))
 }
 
 /// Wechselt den Zustand einer Aufgabe.
@@ -334,8 +335,11 @@ pub async fn advance(client: &ApiClient, args: &AdvanceArgs) -> Result<()> {
         "comment": reason,
     });
     let result = client.post("/api/advance-state", &body).await?;
-    println!("{}", message_of(&result, "Der Zustand wurde gewechselt."));
-    Ok(())
+    print_write_result(
+        &result,
+        args.json,
+        &message_of(&result, "Der Zustand wurde gewechselt."),
+    )
 }
 
 /// Führt eine Aktion auf einer Aufgabe aus.
@@ -354,8 +358,11 @@ pub async fn action(client: &ApiClient, args: &ActionArgs) -> Result<()> {
         }
     }
     let result = client.post("/api/task-action", &body).await?;
-    println!("{}", message_of(&result, "Die Aktion wurde ausgeführt."));
-    Ok(())
+    print_write_result(
+        &result,
+        args.json,
+        &message_of(&result, "Die Aktion wurde ausgeführt."),
+    )
 }
 
 /// Setzt die Teilaufgaben einer Aufgabe.
@@ -415,11 +422,11 @@ pub async fn todos(client: &ApiClient, args: &TodosArgs) -> Result<()> {
 
     let body = json!({ "taskId": args.id.trim(), "todos": items });
     let result = client.post("/api/task-todos", &body).await?;
-    println!(
-        "{}",
-        message_of(&result, "Die Teilaufgaben wurden gesetzt.")
-    );
-    Ok(())
+    print_write_result(
+        &result,
+        args.json,
+        &message_of(&result, "Die Teilaufgaben wurden gesetzt."),
+    )
 }
 
 /// Hängt eine Fortschrittsmeldung an eine Aufgabe.
@@ -439,13 +446,11 @@ pub async fn progress(client: &ApiClient, args: &ProgressArgs) -> Result<()> {
         "content": content,
     });
     match client.post("/api/task-progress", &body).await {
-        Ok(result) => {
-            println!(
-                "{}",
-                message_of(&result, "Die Fortschrittsmeldung wurde gespeichert.")
-            );
-            Ok(())
-        }
+        Ok(result) => print_write_result(
+            &result,
+            args.json,
+            &message_of(&result, "Die Fortschrittsmeldung wurde gespeichert."),
+        ),
         Err(first) => {
             if !is_missing_route(&first) {
                 return Err(first);
@@ -458,19 +463,52 @@ pub async fn progress(client: &ApiClient, args: &ProgressArgs) -> Result<()> {
                 "reason": content,
             });
             match client.post("/api/task-action", &fallback).await {
-                Ok(result) => {
-                    println!(
-                        "{}",
-                        message_of(&result, "Die Fortschrittsmeldung wurde gespeichert.")
-                    );
-                    Ok(())
-                }
+                Ok(result) => print_write_result(
+                    &result,
+                    args.json,
+                    &message_of(&result, "Die Fortschrittsmeldung wurde gespeichert."),
+                ),
                 Err(second) => Err(anyhow!(
                     "Die Fortschrittsmeldung konnte nicht gespeichert werden. Die Route /api/task-progress antwortete mit {first}. Die Route /api/task-action antwortete mit {second}."
                 )),
             }
         }
     }
+}
+
+/// Bestätigt oder weist eine Prüfung zurück.
+pub async fn review(client: &ApiClient, args: &ReviewArgs) -> Result<()> {
+    let (action, body) = review_body(&args.id, &args.action, args.comment.as_deref())?;
+    let result = client.post("/api/review-action", &body).await?;
+    let fallback = if action == "approve" {
+        "Die Prüfung wurde bestätigt."
+    } else {
+        "Die Prüfung wurde zurückgewiesen."
+    };
+    print_write_result(&result, args.json, &message_of(&result, fallback))
+}
+
+/// Baut die Anfrage der Prüfroute.
+///
+/// Die Route erwartet die Felder `taskId`, `action` und `comment`.
+fn review_body(id: &str, action: &str, comment: Option<&str>) -> Result<(String, Value)> {
+    let id = id.trim();
+    if id.is_empty() {
+        return Err(anyhow!("Die Kennung der Aufgabe darf nicht leer sein."));
+    }
+    let given = action.trim();
+    let action = given.to_ascii_lowercase();
+    if action != "approve" && action != "reject" {
+        return Err(anyhow!(
+            "Die Prüfentscheidung „{given}“ ist ungültig. Erlaubt sind approve und reject."
+        ));
+    }
+    let body = json!({
+        "taskId": id,
+        "action": action,
+        "comment": comment.unwrap_or_default().trim(),
+    });
+    Ok((action, body))
 }
 
 /// Prüft, ob der Server die Route nicht kennt.
@@ -482,6 +520,7 @@ fn is_missing_route(error: &anyhow::Error) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::api::test_server::TestServer;
     use edict_core::model::TaskState;
 
     #[test]
@@ -508,5 +547,58 @@ mod tests {
         assert_eq!(todo_status("in-progress"), "In Arbeit");
         assert_eq!(todo_status("completed"), "Erledigt");
         assert_eq!(todo_status("sonstiges"), "Unbekannt");
+    }
+
+    #[test]
+    fn pruefbody_traegt_die_vertragsfelder() {
+        let (action, body) = review_body(" JJC-1 ", "Approve", Some(" sieht gut aus ")).unwrap();
+        assert_eq!(action, "approve");
+        assert_eq!(body["taskId"], "JJC-1");
+        assert_eq!(body["action"], "approve");
+        assert_eq!(body["comment"], "sieht gut aus");
+    }
+
+    #[test]
+    fn pruefbody_lehnt_falsche_entscheidungen_ab() {
+        let error = review_body("JJC-1", "maybe", None).unwrap_err();
+        assert!(error.to_string().contains("approve"));
+        let error = review_body("  ", "approve", None).unwrap_err();
+        assert!(error.to_string().contains("Kennung"));
+    }
+
+    #[test]
+    fn pruefbefehl_schreibt_ueber_http() {
+        let mut server = TestServer::start(200, r#"{"ok":true,"message":"bestätigt"}"#);
+        let runtime = tokio::runtime::Runtime::new().unwrap();
+        let client = ApiClient::new(&server.url, None).unwrap();
+        let args = ReviewArgs {
+            id: "JJC-1".to_string(),
+            action: "reject".to_string(),
+            comment: Some("unvollständig".to_string()),
+            json: true,
+        };
+        runtime.block_on(review(&client, &args)).unwrap();
+        let request = server.request();
+        assert!(request.starts_with("POST /api/review-action HTTP/1.1"));
+        assert!(request.contains(r#""taskId":"JJC-1""#));
+        assert!(request.contains(r#""action":"reject""#));
+        assert!(request.contains(r#""comment":"unvollständig""#));
+    }
+
+    #[test]
+    fn fortschritt_faellt_auf_die_aktionsroute_zurueck() {
+        let mut server = TestServer::start(404, r#"{"ok":false,"error":"unknown route"}"#);
+        let runtime = tokio::runtime::Runtime::new().unwrap();
+        let client = ApiClient::new(&server.url, None).unwrap();
+        let args = ProgressArgs {
+            id: "JJC-1".to_string(),
+            agent: "Taizi".to_string(),
+            content: "Erster Schritt".to_string(),
+            json: true,
+        };
+        let error = runtime.block_on(progress(&client, &args)).unwrap_err();
+        assert!(format!("{error:#}").contains("/api/task-action"));
+        let request = server.request();
+        assert!(request.starts_with("POST /api/task-progress HTTP/1.1"));
     }
 }

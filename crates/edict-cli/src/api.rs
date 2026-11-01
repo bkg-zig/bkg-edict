@@ -247,10 +247,80 @@ pub fn message_of(value: &Value, fallback: &str) -> String {
         .to_string()
 }
 
+/// Kleiner HTTP-Server für die Prüfung des Clients.
+#[cfg(test)]
+pub(crate) mod test_server {
+    use std::io::{Read, Write};
+    use std::net::TcpListener;
+
+    /// Nimmt genau eine Anfrage an und liefert eine feste Antwort.
+    pub struct TestServer {
+        pub(crate) url: String,
+        pub(crate) handle: Option<std::thread::JoinHandle<String>>,
+    }
+
+    impl TestServer {
+        /// Startet einen Server, der eine feste Antwort liefert.
+        pub fn start(status: u16, body: &'static str) -> Self {
+            let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+            let address = listener.local_addr().unwrap();
+            let handle = std::thread::spawn(move || {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = Vec::new();
+                let mut chunk = [0u8; 1024];
+                let head_end = loop {
+                    let read = stream.read(&mut chunk).unwrap();
+                    if read == 0 {
+                        break buffer.len();
+                    }
+                    buffer.extend_from_slice(&chunk[..read]);
+                    if let Some(position) =
+                        buffer.windows(4).position(|window| window == b"\r\n\r\n")
+                    {
+                        break position + 4;
+                    }
+                };
+                let head = String::from_utf8_lossy(&buffer[..head_end]).to_string();
+                let length = head
+                    .lines()
+                    .find_map(|line| {
+                        let mut parts = line.splitn(2, ':');
+                        let name = parts.next().unwrap_or("").trim().to_lowercase();
+                        let value = parts.next().unwrap_or("").trim().to_string();
+                        (name == "content-length").then(|| value.parse::<usize>().ok())?
+                    })
+                    .unwrap_or(0);
+                while buffer.len() < head_end + length {
+                    let read = stream.read(&mut chunk).unwrap();
+                    if read == 0 {
+                        break;
+                    }
+                    buffer.extend_from_slice(&chunk[..read]);
+                }
+                let response = format!(
+                    "HTTP/1.1 {status} Test\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                );
+                let _ = stream.write_all(response.as_bytes());
+                let _ = stream.flush();
+                String::from_utf8_lossy(&buffer).to_string()
+            });
+            Self {
+                url: format!("http://{address}"),
+                handle: Some(handle),
+            }
+        }
+
+        /// Wartet auf das Ende der Anfrage und liefert sie als Text.
+        pub fn request(&mut self) -> String {
+            self.handle.take().unwrap().join().unwrap()
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use std::io::{Read, Write};
-
+    use super::test_server::TestServer;
     use super::*;
 
     #[test]
@@ -345,70 +415,6 @@ mod tests {
                 message: "keine weitere Angabe".to_string()
             }
         );
-    }
-
-    /// Kleiner HTTP-Server für die Prüfung des Clients.
-    struct TestServer {
-        url: String,
-        handle: Option<std::thread::JoinHandle<String>>,
-    }
-
-    impl TestServer {
-        /// Startet einen Server, der eine feste Antwort liefert.
-        fn start(status: u16, body: &'static str) -> Self {
-            let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
-            let address = listener.local_addr().unwrap();
-            let handle = std::thread::spawn(move || {
-                let (mut stream, _) = listener.accept().unwrap();
-                let mut buffer = Vec::new();
-                let mut chunk = [0u8; 1024];
-                let head_end = loop {
-                    let read = stream.read(&mut chunk).unwrap();
-                    if read == 0 {
-                        break buffer.len();
-                    }
-                    buffer.extend_from_slice(&chunk[..read]);
-                    if let Some(position) =
-                        buffer.windows(4).position(|window| window == b"\r\n\r\n")
-                    {
-                        break position + 4;
-                    }
-                };
-                let head = String::from_utf8_lossy(&buffer[..head_end]).to_string();
-                let length = head
-                    .lines()
-                    .find_map(|line| {
-                        let mut parts = line.splitn(2, ':');
-                        let name = parts.next().unwrap_or("").trim().to_lowercase();
-                        let value = parts.next().unwrap_or("").trim().to_string();
-                        (name == "content-length").then(|| value.parse::<usize>().ok())?
-                    })
-                    .unwrap_or(0);
-                while buffer.len() < head_end + length {
-                    let read = stream.read(&mut chunk).unwrap();
-                    if read == 0 {
-                        break;
-                    }
-                    buffer.extend_from_slice(&chunk[..read]);
-                }
-                let response = format!(
-                    "HTTP/1.1 {status} Test\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
-                    body.len()
-                );
-                let _ = stream.write_all(response.as_bytes());
-                let _ = stream.flush();
-                String::from_utf8_lossy(&buffer).to_string()
-            });
-            Self {
-                url: format!("http://{address}"),
-                handle: Some(handle),
-            }
-        }
-
-        /// Wartet auf das Ende der Anfrage und liefert sie als Text.
-        fn request(&mut self) -> String {
-            self.handle.take().unwrap().join().unwrap()
-        }
     }
 
     #[test]

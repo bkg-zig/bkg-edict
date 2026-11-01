@@ -5,8 +5,10 @@ verwaltet und beendet. Der Host muss dafür nicht neu gebaut werden. Die
 Kommunikation läuft über JSON-RPC 2.0 auf stdio.
 
 Das Protokoll steht in `crates/edict-plugin-protocol`. Der Plugin-Host liegt
-in `crates/edict-plugin-host` und enthält bisher nur einen Platzhalter. Die
-Beschreibung unten ist der vereinbarte Vertrag.
+in `crates/edict-plugin-host`. Dort sind Module für das Manifest, die sichere
+Umgebung, die Zustände, die Ports und den Prozessstart angelegt. Der Einstieg
+in `lib.rs` bindet die Module noch nicht ein. Die Beschreibung unten ist der
+vereinbarte Vertrag.
 
 ## Rahmen
 
@@ -57,8 +59,8 @@ Abonnements des Plugins und übergibt nur den Nutzlastanteil.
 
 ## Grenzen und Sicherheit
 
-- Der Kindprozess startet mit leerer Umgebung. Der Host übergibt nur eine
-  Positivliste aus nicht geheimen Werten.
+- Der Kindprozess startet mit einer reduzierten Umgebung. Der Host übergibt
+  nur `PATH`, `LANG` und `HOME`.
 - Das Plugin bekommt weder das Admin-Token noch Zugangsdaten der Datenbank.
 - Das Plugin läuft in einer eigenen Prozessgruppe. Nach der Frist beendet
   der Host die Gruppe und wartet auf das Ende.

@@ -7,7 +7,14 @@
 # Bibliotheken. Python ist im Image nicht vorhanden.
 
 # ---------------------------------------------------------------- Builder ---
-FROM rust:1.83-bookworm AS builder
+# Das Builder-Image ist über ein Build-Argument wählbar. Die Vorgabe folgt
+# der Rust-Version des Workspace. Die veröffentlichte Lockdatei nennt
+# Crates mit der Ausgabeedition 2024. Cargo 1.83 kann sie nicht auflösen.
+# Mit einem neueren Image lässt sich der Bau ausführen:
+#
+#     docker compose build --build-arg RUST_IMAGE=rust:1.90-bookworm
+ARG RUST_IMAGE=rust:1.83-bookworm
+FROM ${RUST_IMAGE} AS builder
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --yes \

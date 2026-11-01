@@ -66,6 +66,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        RUST_IMAGE: ${RUST_IMAGE:-rust:1.83-bookworm}
     image: edict:local
     restart: unless-stopped
     env_file:

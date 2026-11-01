@@ -32,6 +32,14 @@ Nur die Datenbank und der Ereignisbus lassen sich ohne Image starten:
 docker compose up -d postgres redis
 ```
 
+Das Builder-Image lässt sich über die Variable `RUST_IMAGE` wechseln. Das ist
+nötig, solange die veröffentlichte `Cargo.lock` Crates mit der Ausgabeedition
+2024 nennt, die Cargo 1.83 nicht auflösen kann:
+
+```bash
+RUST_IMAGE=rust:1.90-bookworm docker compose build
+```
+
 Der HTTP-Port ist auf dem Host über `EDICT_HTTP_PORT` erreichbar, im
 Standard unter `http://localhost:8080`. Der Container lauscht auf Port 8080.
 Die Vorgabe in `edict-core` nennt für `BACKEND_PORT` den Wert 8000, deshalb
@@ -83,6 +91,7 @@ stehen dort mit deutscher Erklärung.
 | `EDICT_ADMIN_TOKEN` | ohne | Token für die Adminrouten |
 | `EDICT_DISPATCH_TIMEOUT_SEC` | `300` | Sekunden bis zum Abbruch eines Dispatchs |
 | `EDICT_MAX_CONCURRENT_DISPATCH` | `3` | Zahl gleichzeitiger Dispatchs |
+| `RUST_IMAGE` | `rust:1.83-bookworm` | Image des Builders, nur für `docker compose build` |
 
 Die Compose-Datei setzt `DATABASE_URL`, `REDIS_URL`, `BACKEND_HOST`,
 `BACKEND_PORT`, `LEGACY_DATA_DIR` und `LEGACY_TASKS_FILE` für beide
@@ -139,9 +148,12 @@ Worker läuft und der Redis nicht erreichbar ist.
 Diese Punkte betreffen den aktuellen Stand des Repositorys. Sie sind nicht
 im Betriebsdokument versteckt.
 
-- `edict-server` und `edict-worker` enthalten nur einen Platzhalter ohne
-  `main`-Funktion. Der Befehl `docker compose build` scheitert deshalb an
-  der Übersetzung dieser Crates.
+- `edict-server` enthält nur einen Platzhalter ohne `main`-Funktion. Der
+  Befehl `docker compose build` scheitert deshalb an der Übersetzung dieses
+  Crates.
+- `edict-core`, `edict-db`, `edict-plugin-protocol`, `edict-plugin-host`,
+  `edict-worker` und `edict-cli` übersetzen mit einem Werkzeug ab Rust 1.85.
+  Der Builder nutzt Rust 1.83.
 - `crates/edict-web` enthält bisher nur eine Probeanwendung. Das Verzeichnis
   `crates/edict-web/dist` fehlt. Docker legt es beim Start des Servers leer
   an, bis der Web-Build vorliegt.
@@ -151,6 +163,10 @@ im Betriebsdokument versteckt.
   Kern.
 - Die Binary `edict` liest `EDICT_API_URL` selbst. `edict-core` kennt die
   Variable nicht, weil sie nur den Server betrifft.
+- Der Kern liest `STALL_THRESHOLD_SEC`, verwendet den Wert aber nicht. Die
+  Grenzen für den Herzschlag einer Aufgabe stehen fest in
+  `compute_heartbeat` in `edict-core`.
 - Die veröffentlichte `Cargo.lock` nennt Crates mit der Ausgabeedition 2024.
-  Cargo 1.83 aus dem Builder-Image kann sie nicht auflösen. Der Bau braucht
-  ein neueres Rust-Werkzeug oder eine angepasste Lockdatei.
+  Cargo 1.83 aus dem Builder-Image kann sie nicht auflösen. Der Bau läuft
+  mit einem neueren Image über die Variable `RUST_IMAGE`. Die Lockdatei
+  selbst zu ändern liegt außerhalb dieses Dokuments.

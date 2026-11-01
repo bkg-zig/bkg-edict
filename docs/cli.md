@@ -5,9 +5,9 @@ ausschließlich über die HTTP-Schnittstelle des Servers. Es hält keine
 Datenbankverbindung und liest die Dateien des Datenbestands nicht
 unmittelbar.
 
-Das Binary liest den Quellcode in `crates/edict-cli`. Die Befehle sind
-übersetzbar. Der Server ist noch nicht lauffähig, deshalb enden die Befehle
-ohne Server mit einer Fehlermeldung.
+Der Quellcode in `crates/edict-cli` übersetzt. Die Befehle unten sind
+umgesetzt. Der Server ist noch kein lauffähiges Binary, deshalb enden die
+Aufrufe ohne Server mit einer Fehlermeldung.
 
 ## Adresse
 
@@ -38,6 +38,7 @@ liest das Binary das Token aus `EDICT_ADMIN_TOKEN` und sendet es im Kopf
 | `edict task action <id> --action <aktion>` | Führt eine Aktion auf einer Aufgabe aus |
 | `edict task todos <id> --from <json>` | Schreibt die Teilaufgaben einer Aufgabe |
 | `edict task progress <id> --agent <agent> --content <text>` | Schreibt einen Fortschrittseintrag |
+| `edict task review <id> --action <entscheidung>` | Bestätigt oder weist eine Prüfung zurück |
 
 `edict tasks list` kennt die Schalter `--state`, `--org` und `--archived`.
 `--state` nimmt die kanonischen Zustandsnamen und die deutschen Anzeigenamen
@@ -61,6 +62,11 @@ Wege erfolglos, nennt die Fehlermeldung beide Routen.
 
 Die Kennung darf die fachliche Kennung im Format `JJC-YYYYMMDD-NNN`, die
 technische Kennung oder die Spur eines Vorgangs sein.
+
+`edict task review` sendet die Felder `taskId`, `action` und `comment` an die
+Route `/api/review-action`. Der Schalter `--action` nimmt `approve` oder
+`reject` an, der Schalter `--comment` eine Begründung. Ein anderer Wert
+bricht den Befehl vor dem Aufruf ab.
 
 ## Betrieb
 
@@ -103,10 +109,13 @@ Aufgabenzahl aus dem Live-Status.
 
 ## Ausgabe und Fehler
 
-Die Befehle `tasks list`, `tasks show`, `agents status`, `agents activity`,
-`brief`, `stats` und `skills list` kennen den Schalter `--json`. Er schreibt
-das Ergebnis der Serverantwort als JSON auf die Standardausgabe. Ohne den
-Schalter erscheint eine Tabelle.
+Die Befehle `doctor`, `tasks list`, `tasks show`, `tasks create`,
+`tasks archive`, `tasks unarchive`, `task advance`, `task action`,
+`task todos`, `task progress`, `task review`, `agents status`,
+`agents activity`, `brief`, `stats` und `skills list` kennen den Schalter
+`--json`. Er schreibt das Ergebnis der Serverantwort als JSON auf die
+Standardausgabe. Ohne den Schalter erscheint eine Tabelle oder eine
+Meldung.
 
 Fehler enden mit dem Text `Fehler:` und einer deutschen Meldung auf der
 Fehlerausgabe. Der Rückgabewert des Prozesses ist dann ungleich null.

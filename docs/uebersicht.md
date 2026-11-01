@@ -13,8 +13,8 @@ demselben Vorgang. Die Oberfläche und die Werkzeuge sind deutschsprachig.
 | `edict-db` | PostgreSQL, Redis Streams, Pub/Sub, Outbox | implementiert |
 | `edict-plugin-protocol` | JSON-RPC-Rahmen für Plugins | implementiert |
 | `edict-server` | HTTP, WebSocket, Plugin-Host | Platzhalter |
-| `edict-worker` | Orchestrator, Dispatcher, Scheduler | Platzhalter |
-| `edict-cli` | Binary `edict` | implementiert |
+| `edict-worker` | Orchestrator, Dispatcher, Scheduler | im Aufbau |
+| `edict-cli` | Binary `edict` | übersetzt |
 | `crates/plugins/gitclaw` | Prüfung von Merge-Anfragen | Platzhalter |
 | `crates/plugins/edict` | Mehragenten-Workflows | Platzhalter |
 
@@ -39,13 +39,16 @@ steht aus.
 
 ```bash
 cp .env.example .env
-docker compose build
 docker compose up -d postgres redis
+RUST_IMAGE=rust:1.90-bookworm docker compose build
+docker compose up -d
 ```
 
-Der Bau des Images scheitert, solange `edict-server` und `edict-worker` keine
-lauffähigen Binaries liefern. Der Stand ist im Abschnitt „Offene Punkte“ in
-`docs/betrieb.md` beschrieben.
+Datenbank und Ereignisbus starten heute. Der Bau des Images braucht ein
+Rust-Werkzeug ab Version 1.85, weil die veröffentlichte `Cargo.lock` Crates
+mit der Ausgabeedition 2024 nennt. Er braucht außerdem eine lauffähige
+Binary `edict-server`. Die weiteren Gründe stehen im Abschnitt „Offene
+Punkte“ in `docs/betrieb.md`.
 
 ## Dokumentation
 
