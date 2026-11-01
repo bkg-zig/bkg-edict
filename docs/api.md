@@ -90,6 +90,10 @@ für die ersten beiden Gruppen.
 | GET | `/api/agents/{agentId}` | Liefert einen Agenten |
 | GET | `/api/agents/{agentId}/config` | Liefert die Konfiguration eines Agenten |
 
+Die Kommandozeile sendet einen Fortschrittseintrag an `/api/task-progress`.
+Diese Route steht nicht im Altbestand. Antwortet der Server mit 404, wiederholt
+das Binary den Aufruf über `/api/task-action`.
+
 ## Adminrouten
 
 | Methode | Pfad | Zweck |

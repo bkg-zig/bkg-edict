@@ -548,12 +548,17 @@ name = "edict-plugin-host"
 version = "2.0.0"
 dependencies = [
  "async-trait",
+ "axum",
+ "chrono",
  "edict-core",
  "edict-plugin-protocol",
+ "futures-util",
+ "reqwest",
  "serde",
  "serde_json",
  "tokio",
  "tracing",
+ "uuid",
 ]
 
 [[package]]

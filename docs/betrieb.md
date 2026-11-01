@@ -107,12 +107,10 @@ Wiederherstellung:
 docker compose exec -T postgres pg_restore -U edict -d edict --clean --if-exists < edict.dump
 ```
 
-Der Import der Aufgaben aus dem Altbestand läuft über die Kommandozeile:
-
-```bash
-edict migrate import-json --file data/tasks_source.json --dry-run
-edict migrate import-json --file data/tasks_source.json
-```
+Der Import der Aufgaben aus dem Altbestand ist im Repository noch nicht
+implementiert. Die Demodaten liegen in `data/tasks_source.json` und werden
+nach `/app/data/tasks_source.json` eingebunden. Die Datei `LEGACY_TASKS_FILE`
+im Container verweist auf diesen Pfad.
 
 ## Beobachtung
 
@@ -142,8 +140,7 @@ Diese Punkte betreffen den aktuellen Stand des Repositorys. Sie sind nicht
 im Betriebsdokument versteckt.
 
 - `edict-server` und `edict-worker` enthalten nur einen Platzhalter ohne
-  `main`-Funktion. `edict-cli` verweist auf Module, die noch nicht
-  vorhanden sind. Der Befehl `docker compose build` scheitert deshalb an
+  `main`-Funktion. Der Befehl `docker compose build` scheitert deshalb an
   der Übersetzung dieser Crates.
 - `crates/edict-web` ist noch nicht angelegt. Das Zielverzeichnis des
   Bind-Mounts entsteht erst mit dem ersten Web-Build.
@@ -151,6 +148,8 @@ im Betriebsdokument versteckt.
   Arbeitsverzeichnis andere Variablennamen als der Kern. Der Kern liest
   `ZEPTOCLAW_BIN` und `ZEPTOCLAW_PROJECT_DIR`. Die Betriebsdatei folgt dem
   Kern.
-- Die Variable `EDICT_API_URL` steht in `.env.example`, wird aber von
-  `edict-core` noch nicht gelesen. Das Binary `edict` muss sie selbst
-  auswerten.
+- Die Binary `edict` liest `EDICT_API_URL` selbst. `edict-core` kennt die
+  Variable nicht, weil sie nur den Server betrifft.
+- Die veröffentlichte `Cargo.lock` nennt Crates mit der Ausgabeedition 2024.
+  Cargo 1.83 aus dem Builder-Image kann sie nicht auflösen. Der Bau braucht
+  ein neueres Rust-Werkzeug oder eine angepasste Lockdatei.

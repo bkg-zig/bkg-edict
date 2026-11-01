@@ -57,15 +57,12 @@ erlaubte. Der Port liest eine Allowlist aus `EDICT_ALLOWED_ORIGINS`.
 3. Das Schema anlegen. Die Migration `crates/edict-db/migrations/0001_init.sql`
    legt die Tabellen `tasks`, `todos`, `thoughts`, `events` und `outbox` an
    und läuft beim Start des Servers.
-4. Die Aufgaben importieren. Der erste Lauf bleibt ohne Wirkung:
-
-   ```bash
-   edict migrate import-json --file data/tasks_source.json --dry-run
-   edict migrate import-json --file data/tasks_source.json
-   ```
-
-5. Den Import prüfen. Je Aufgabe entsteht ein `task.created`-Ereignis. Der
-   Scheduler-Zustand bleibt unberührt.
+4. Die Aufgaben importieren. Dieser Schritt ist noch nicht möglich. Es gibt
+   weder einen Befehl der Kommandozeile noch eine Route für den Import. Die
+   Demodaten in `data/tasks_source.json` liegen bereit und werden nach
+   `/app/data/tasks_source.json` eingebunden.
+5. Den Import prüfen, sobald er existiert. Je Aufgabe entsteht dann ein
+   `task.created`-Ereignis. Der Scheduler-Zustand bleibt unberührt.
 6. Die Oberfläche bauen und einbinden. Das Ergebnis aus
    `crates/edict-web/dist` wird nach `/app/web` eingebunden.
 7. Den Server und den Worker starten und die Adminrouten prüfen.

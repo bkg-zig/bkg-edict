@@ -1,92 +1,113 @@
 # Kommandozeile
 
-Das Binary heißt `edict` und liegt im Paket `edict-cli`. Es schreibt
+Das Binary heißt `edict` und liegt in dem Paket `edict-cli`. Es schreibt
 ausschließlich über die HTTP-Schnittstelle des Servers. Es hält keine
 Datenbankverbindung und liest die Dateien des Datenbestands nicht
 unmittelbar.
 
-Der Quellcode von `edict-cli` ist im Repository noch im Aufbau. Die
-`main.rs` verweist auf Module, die noch nicht vorhanden sind. Die Befehle
-unten sind der im Projekt vereinbarte Satz und noch nicht lauffähig.
+Das Binary liest den Quellcode in `crates/edict-cli`. Die Befehle sind
+übersetzbar. Der Server ist noch nicht lauffähig, deshalb enden die Befehle
+ohne Server mit einer Fehlermeldung.
 
 ## Adresse
 
-Das Binary liest die Basisadresse des Servers aus `EDICT_API_URL`. Ohne
-diese Variable greift der Vorgabewert `http://localhost:8080`. Der Wert
-steht in `.env.example` und wird beim Start aus `.env` geladen.
+Die Adresse des Servers wird in dieser Reihenfolge ermittelt:
+
+1. Die Option `--url` überschreibt alle anderen Quellen.
+2. Die Umgebungsvariable `EDICT_API_URL` gilt danach.
+3. Die Umgebungsvariable `EDICT_SERVER_URL` gilt als nächstes.
+4. Die Konfigurationsdatei `~/.config/edict/config.json` liefert den
+   Eintrag `serverUrl`. Das Verzeichnis folgt `XDG_CONFIG_HOME`, sonst dem
+   Verzeichnis `.config` des Benutzers.
+5. Ohne Treffer gilt die Vorgabe `http://127.0.0.1:8080`.
+
+Der Befehl `edict init` schreibt die Konfigurationsdatei. Für die Adminrouten
+liest das Binary das Token aus `EDICT_ADMIN_TOKEN` und sendet es im Kopf
+`X-Admin-Token`.
 
 ## Aufgaben
 
 | Befehl | Wirkung |
 | --- | --- |
-| `edict task list` | Listet Aufgaben nach Zustand und Filter |
-| `edict task show <taskId>` | Zeigt eine Aufgabe mit Zustandsprotokoll |
-| `edict task stats` | Zeigt Kennzahlen zu den Aufgaben |
-| `edict task live-status` | Zeigt den Live-Status des Boards |
-| `edict task archive <taskId>` | Archiviert eine Aufgabe |
-| `edict task review <taskId>` | Bestätigt oder weist eine Prüfung zurück |
+| `edict tasks list` | Listet Aufgaben nach Zustand und Filter |
+| `edict tasks show <id>` | Zeigt eine Aufgabe mit Zustandsprotokoll |
+| `edict tasks create --title <titel>` | Legt eine Aufgabe an |
+| `edict tasks archive <id>` | Archiviert eine Aufgabe |
+| `edict tasks unarchive <id>` | Holt eine Aufgabe aus dem Archiv |
+| `edict task advance <id> --to <zustand> --agent <agent>` | Wechselt den Zustand einer Aufgabe |
+| `edict task action <id> --action <aktion>` | Führt eine Aktion auf einer Aufgabe aus |
+| `edict task todos <id> --from <json>` | Schreibt die Teilaufgaben einer Aufgabe |
+| `edict task progress <id> --agent <agent> --content <text>` | Schreibt einen Fortschrittseintrag |
 
-Die Kennung kann die technische UUID oder die Legacy-Kennung sein. Das
-Binary erkennt das Format `JJC-YYYYMMDD-NNN` und sucht dann über die
-Legacy-Route.
+`edict tasks list` kennt die Schalter `--state`, `--org` und `--archived`.
+`--state` nimmt die kanonischen Zustandsnamen und die deutschen Anzeigenamen
+an. Ohne `--archived` zeigt das Binary die aktiven Aufgaben.
 
-## Board
+`edict tasks create` kennt die Schalter `--description`, `--priority` und
+`--assignee`. Die Priorität ist `low`, `normal`, `high` oder `urgent`.
 
-| Befehl | Wirkung |
-| --- | --- |
-| `edict kanban create` | Legt eine Aufgabe an |
-| `edict kanban state <taskId> <state>` | Wechselt den Zustand einer Aufgabe |
-| `edict kanban flow <taskId>` | Zeigt das Zustandsprotokoll |
-| `edict kanban done <taskId>` | Schließt eine Aufgabe ab |
-| `edict kanban block <taskId> <reason>` | Blockiert eine Aufgabe |
-| `edict kanban todo <taskId>` | Zeigt und schreibt die Teilaufgaben |
-| `edict kanban progress <taskId> <text>` | Schreibt einen Fortschrittseintrag |
+`edict task advance` kennt den Schalter `--reason`. Fehlt er, trägt der
+Eintrag den Text „Zustandswechsel über die Kommandozeile“. Der Server prüft
+den Übergang gegen die Zustandsmaschine und lehnt unzulässige Wechsel mit
+einer deutschen Meldung ab.
 
-Ein Zustandswechsel wird gegen die Zustandsmaschine geprüft. Ein
-unzulässiger Übergang endet mit einer deutschen Fehlermeldung und ohne
-Änderung an der Aufgabe.
+`edict task action` kennt den Schalter `--payload`. Er erwartet ein
+JSON-Objekt mit weiteren Feldern. Die Aktion `stop`, `cancel` und `resume`
+sind im CLI vorgesehen.
 
-## Migration
+`edict task progress` sendet zuerst die Route `/api/task-progress`. Antwortet
+der Server mit 404, versucht das Binary `/api/task-action`. Bleiben beide
+Wege erfolglos, nennt die Fehlermeldung beide Routen.
 
-| Befehl | Wirkung |
-| --- | --- |
-| `edict migrate import-json --file <datei>` | Liest Aufgaben aus einer Datei im Legacy-Format |
-| `edict migrate import-json --file <datei> --dry-run` | Zeigt nur an, was importiert würde |
+Die Kennung darf die fachliche Kennung im Format `JJC-YYYYMMDD-NNN`, die
+technische Kennung oder die Spur eines Vorgangs sein.
 
-Der Import legt je Aufgabe ein `task.created`-Ereignis an und lässt den
-Scheduler-Zustand unberührt.
-
-## Skills
+## Betrieb
 
 | Befehl | Wirkung |
 | --- | --- |
-| `edict skill list` | Listet die Skills eines Agenten |
-| `edict skill list-remote` | Listet die entfernten Skills |
-| `edict skill add-remote <agentId> <name> <url>` | Übernimmt einen Skill aus einer entfernten Quelle |
-| `edict skill update-remote <agentId> <name>` | Aktualisiert einen entfernten Skill |
-| `edict skill remove-remote <agentId> <name>` | Entfernt einen entfernten Skill |
-| `edict skill check-updates` | Prüft alle entfernten Skills auf neue Fassungen |
+| `edict init` | Schreibt die Konfigurationsdatei und prüft den Server |
+| `edict sync` | Lädt den Live-Status und speichert ihn lokal |
+| `edict doctor` | Prüft Server, Datenbank und Gateway |
+| `edict protocol` | Zeigt den Wire-Vertrag der Serverantworten |
 
-## Modelle
+`edict init` überschreibt eine vorhandene Konfigurationsdatei nur mit dem
+Schalter `--force`. Der Befehl schreibt die Datei und prüft danach die Route
+`/healthz`. Ist der Server nicht erreichbar, bleibt die Konfigurationsdatei
+trotzdem bestehen und der Befehl endet mit einem Fehler.
+
+`edict sync` speichert den Live-Status unter
+`~/.local/share/edict/status.json`. Der Schalter `--output` nennt eine andere
+Zieldatei. Das Verzeichnis folgt `XDG_DATA_HOME`, sonst dem Verzeichnis
+`.local/share` des Benutzers.
+
+`edict doctor` fragt die Routen `/healthz`, `/api/live-status` und
+`/api/agents-status` ab und zählt die fehlgeschlagenen Prüfungen.
+
+## Agenten und Berichte
 
 | Befehl | Wirkung |
 | --- | --- |
-| `edict model set <agentId> <model>` | Stellt einen Modellwechsel ein |
-| `edict model log` | Zeigt das Protokoll der Modellwechsel |
-| `edict model last-result` | Zeigt das Ergebnis des letzten Modellwechsels |
+| `edict agents status` | Zeigt den Status aller Agenten |
+| `edict agents activity <agentId>` | Zeigt die Aktivität eines Agenten |
+| `edict brief` | Zeigt den Morgenbrief |
+| `edict stats` | Zeigt Kennzahlen zu den Aufgaben |
+| `edict skills list` | Listet die entfernten Skills |
 
-## Morgenbrief
+`edict brief` kennt den Schalter `--date`. Das Datum steht im Format
+`JJJJ-MM-TT` oder `JJJJMMTT`. Ohne Datum fragt das Binary die Route
+`/api/morning-brief` ab, sonst die Route `/api/morning-brief/<JJJJMMTT>`.
 
-| Befehl | Wirkung |
-| --- | --- |
-| `edict morning-brief show` | Zeigt den Morgenbrief |
-| `edict morning-brief show <datum>` | Zeigt den Morgenbrief eines Tages |
-| `edict morning-brief refresh` | Startet die Sammlung erneut |
-| `edict morning-brief config` | Zeigt und schreibt die Konfiguration der Sammlung |
+`edict stats` fragt die Route `/api/officials-stats` ab und ergänzt die
+Aufgabenzahl aus dem Live-Status.
 
 ## Ausgabe und Fehler
 
-Erfolgreiche Befehle schreiben das Ergebnis als Text oder als JSON, wenn
-der Aufrufer das Format verlangt. Fehler enden mit dem Text `Fehler:` und
-einer deutschen Meldung. Der Rückgabewert des Prozesses ist dann ungleich
-null. Passwörter und Tokens erscheinen nicht in der Ausgabe.
+Die Befehle `tasks list`, `tasks show`, `agents status`, `agents activity`,
+`brief`, `stats` und `skills list` kennen den Schalter `--json`. Er schreibt
+das Ergebnis der Serverantwort als JSON auf die Standardausgabe. Ohne den
+Schalter erscheint eine Tabelle.
+
+Fehler enden mit dem Text `Fehler:` und einer deutschen Meldung auf der
+Fehlerausgabe. Der Rückgabewert des Prozesses ist dann ungleich null.
+Passwörter und Tokens erscheinen nicht in der Ausgabe.

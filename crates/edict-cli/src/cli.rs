@@ -147,6 +147,10 @@ pub struct CreateArgs {
     /// Agent oder Amt, das die Aufgabe bearbeitet.
     #[arg(long, value_name = "NAME")]
     pub assignee: Option<String>,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Argumente von `edict tasks archive` und `edict tasks unarchive`.
@@ -155,6 +159,10 @@ pub struct ArchiveArgs {
     /// Kennung der Aufgabe.
     #[arg(value_name = "ID")]
     pub id: String,
+
+    /// Antwort des Servers als JSON ausgeben.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Argumente von `edict task`.

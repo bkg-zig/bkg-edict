@@ -26,6 +26,10 @@ statisch aus und betreibt den Plugin-Host. `edict-worker` liest die Outbox,
 ruft Agenten auf und führt den Scheduler aus. `edict-cli` erzeugt das Binary
 `edict` und schreibt ausschließlich über die HTTP-Schnittstelle.
 
+`edict-server` und `edict-worker` enthalten im Repository nur einen
+Platzhalter. Die beschriebene Aufteilung ist das Ziel des Ports, nicht der
+gebaute Stand. `edict-cli` ist übersetzbar.
+
 Die Plugins unter `crates/plugins/` sind eigene Prozesse. Sie teilen keine
 Tabelle mit dem Kern und erhalten weder das Admin-Token noch die
 Datenbankverbindung.

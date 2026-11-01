@@ -14,7 +14,7 @@ demselben Vorgang. Die Oberfläche und die Werkzeuge sind deutschsprachig.
 | `edict-plugin-protocol` | JSON-RPC-Rahmen für Plugins | implementiert |
 | `edict-server` | HTTP, WebSocket, Plugin-Host | Platzhalter |
 | `edict-worker` | Orchestrator, Dispatcher, Scheduler | Platzhalter |
-| `edict-cli` | Binary `edict` | im Aufbau, noch nicht übersetzbar |
+| `edict-cli` | Binary `edict` | implementiert |
 | `crates/plugins/gitclaw` | Prüfung von Merge-Anfragen | Platzhalter |
 | `crates/plugins/edict` | Mehragenten-Workflows | Platzhalter |
 
@@ -42,9 +42,9 @@ docker compose build
 docker compose up -d postgres redis
 ```
 
-Der Bau des Images scheitert, solange `edict-server`, `edict-worker` und
-`edict-cli` keine lauffähigen Binaries liefern. Der Stand ist im Abschnitt
-„Offene Punkte“ in `docs/betrieb.md` beschrieben.
+Der Bau des Images scheitert, solange `edict-server` und `edict-worker` keine
+lauffähigen Binaries liefern. Der Stand ist im Abschnitt „Offene Punkte“ in
+`docs/betrieb.md` beschrieben.
 
 ## Dokumentation
 

@@ -44,16 +44,34 @@
       "id": "RUST-PORT-WORKER-001",
       "title": "Worker mit Outbox-Relay und ZeptoClaw-Anbindung",
       "owner": {
-        "agent": "subagent",
-        "model": "geerbt"
+        "agent": "build",
+        "model": "MiniMax-M3.1-Flash"
       },
       "status": "in_progress",
       "started_at": "2026-10-31T02:10:00Z",
-      "scope": "crates/edict-worker",
+      "scope": "crates/edict-worker, crates/edict-db/src/dispatch.rs, crates/edict-db/src/events.rs, crates/edict-db/migrations/0002_dispatch.sql, crates/edict-core/src/repository.rs",
       "acceptance": [
         "Das Relay stellt Ereignisse aus der Outbox in Redis zu.",
         "Auftraege werden ueber zeptoclaw agent -m ausgefuehrt.",
         "Erfolge und Fehler des Gateways erzeugen die Ereignisse agent.output und agent.dispatch.start."
+      ],
+      "changed_files": [
+        "crates/edict-worker/src/main.rs",
+        "crates/edict-worker/src/dispatcher.rs",
+        "crates/edict-worker/src/gateway.rs",
+        "crates/edict-db/src/dispatch.rs",
+        "crates/edict-db/src/events.rs",
+        "crates/edict-db/migrations/0002_dispatch.sql",
+        "crates/edict-core/src/repository.rs"
+      ],
+      "verification": [
+        "cargo build -p edict-worker",
+        "cargo clippy -p edict-worker -p edict-db -p edict-core --all-targets --all-features -- -D warnings",
+        "cargo test -p edict-worker -p edict-db -p edict-core"
+      ],
+      "open": [
+        "Sperrlogik und Outbox-Zustellung noch nicht gegen PostgreSQL und Redis geprueft.",
+        "Rollenverzeichnisse mit SOUL.md und ZeptoClaw-Vorlagen fehlen noch."
       ]
     },
     {

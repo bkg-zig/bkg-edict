@@ -5,11 +5,20 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[features]
+default = ["http"]
+http = ["dep:axum", "dep:reqwest"]
+
 [dependencies]
 edict-core.workspace = true
 edict-plugin-protocol.workspace = true
 async-trait.workspace = true
+axum = { workspace = true, optional = true }
+chrono.workspace = true
+futures-util.workspace = true
+reqwest = { workspace = true, optional = true }
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
 tracing.workspace = true
+uuid.workspace = true
