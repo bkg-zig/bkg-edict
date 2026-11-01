@@ -147,9 +147,10 @@ im Betriebsdokument versteckt.
   der Übersetzung dieser Crates.
 - `crates/edict-web` ist noch nicht angelegt. Das Zielverzeichnis des
   Bind-Mounts entsteht erst mit dem ersten Web-Build.
-- Die Konfigurationstabelle der `README.md` nennt `OPENCLAW_BIN` und
-  `OPENCLAW_PROJECT_DIR`. Der Kern liest `ZEPTOCLAW_BIN` und
-  `ZEPTOCLAW_PROJECT_DIR`. Die Betriebsdatei folgt dem Kern.
+- Die Konfigurationstabelle der `README.md` nennt für das Programm und das
+  Arbeitsverzeichnis andere Variablennamen als der Kern. Der Kern liest
+  `ZEPTOCLAW_BIN` und `ZEPTOCLAW_PROJECT_DIR`. Die Betriebsdatei folgt dem
+  Kern.
 - Die Variable `EDICT_API_URL` steht in `.env.example`, wird aber von
   `edict-core` noch nicht gelesen. Das Binary `edict` muss sie selbst
   auswerten.

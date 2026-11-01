@@ -124,3 +124,63 @@ pub trait StatisticsRepository: Send + Sync {
     /// Zählt die Aufgaben je Zustand und Organisation.
     async fn count_by_state_and_org(&self) -> AppResult<Vec<(String, String, i64)>>;
 }
+
+/// Beanspruchte Ausführung eines Auftrags.
+///
+/// Der Idempotenzschlüssel `dispatch_id` setzt sich aus Aufgabe, Anforderung
+/// und Versuch zusammen. Er geht als `EDICT_DISPATCH_ID` an das Gateway, damit
+/// eine wiederholte Ausführung am Gateway erkennbar bleibt.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DispatchClaim {
+    pub task_id: String,
+    pub request_id: String,
+    pub attempt: i64,
+    pub dispatch_id: String,
+    pub owner: String,
+}
+
+/// Ergebnis einer Beanspruchung.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ClaimOutcome {
+    /// Der Auftrag wurde für diesen Worker beansprucht.
+    Claimed(DispatchClaim),
+    /// Ein anderer Worker hält die Sperre. Der Auftrag bleibt unbestätigt.
+    Busy,
+    /// Der Auftrag wurde bereits erfolgreich ausgeführt.
+    Finished,
+}
+
+/// Persistenz für die Ausführung von Aufträgen durch das Gateway.
+///
+/// Die Sperre verhindert, dass ein Auftrag gleichzeitig mehrfach läuft. Läuft
+/// der Worker länger als die Lease, darf ein anderer Worker den Auftrag
+/// übernehmen.
+#[async_trait]
+pub trait DispatchRepository: Send + Sync {
+    /// Beansprucht einen Auftrag für die Ausführung.
+    async fn claim_dispatch(
+        &self,
+        task_id: &str,
+        request_id: &str,
+        owner: &str,
+        lease_sec: i64,
+    ) -> AppResult<ClaimOutcome>;
+
+    /// Meldet das Ende einer Ausführung.
+    ///
+    /// Bei Erfolg gilt der Auftrag als erledigt und wird nicht erneut
+    /// ausgeführt. Bei einem Fehler wird die Sperre freigegeben, damit ein
+    /// weiterer Versuch möglich ist.
+    async fn finish_dispatch(
+        &self,
+        claim: &DispatchClaim,
+        success: bool,
+        error: Option<&str>,
+    ) -> AppResult<()>;
+
+    /// Schreibt ein Ereignis und den zugehörigen Outbox-Eintrag.
+    ///
+    /// Beide entstehen in derselben Transaktion, damit kein Ereignis ohne
+    /// Zustellung bleibt.
+    async fn append_event_with_outbox(&self, event: &Event) -> AppResult<()>;
+}

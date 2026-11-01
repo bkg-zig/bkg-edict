@@ -3,7 +3,7 @@
 //! Der Datenbestand bleibt die kanonische Form. Die Übersetzung ins Deutsche
 //! übernimmt der Kern beim Anzeigen, siehe `edict_core::labels`.
 
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 use sqlx::postgres::{PgPool, PgRow};
@@ -14,6 +14,8 @@ use edict_core::error::{AppError, AppResult};
 use edict_core::model::{Event, FlowEntry, LiveStatus, ProgressEntry, Task, TaskState, TodoItem};
 use edict_core::repository::{EventRepository, StatisticsRepository, TaskFilter, TaskRepository};
 use edict_core::service;
+
+use crate::events::{append_event_with_outbox, parse_timestamp, parse_uuid};
 
 /// Spaltenliste der Aufgaben. Sie wird von allen Auslesewegen benutzt.
 const TASK_COLUMNS: &str = "task_id, legacy_id, trace_id, title, description, state, org, \
@@ -158,39 +160,7 @@ impl TaskStore {
         connection: &mut sqlx::PgConnection,
         event: &Event,
     ) -> AppResult<()> {
-        let event_id = parse_uuid(&event.event_id)?;
-        let task_id = event
-            .payload
-            .get("task_id")
-            .and_then(Value::as_str)
-            .and_then(|value| Uuid::parse_str(value).ok());
-        let timestamp = parse_timestamp(&event.timestamp)?;
-
-        sqlx::query(
-            "INSERT INTO events (event_id, task_id, trace_id, topic, event_type, producer, \
-             payload, meta, timestamp) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-        )
-        .bind(event_id)
-        .bind(task_id)
-        .bind(&event.trace_id)
-        .bind(&event.topic)
-        .bind(&event.event_type)
-        .bind(&event.producer)
-        .bind(Value::Object(event.payload.clone()))
-        .bind(Value::Object(event.meta.clone()))
-        .bind(timestamp)
-        .execute(&mut *connection)
-        .await
-        .map_err(|error| AppError::Database(format!("Ereignis nicht gespeichert: {error}")))?;
-
-        sqlx::query("INSERT INTO outbox (event_id) VALUES ($1)")
-            .bind(event_id)
-            .execute(&mut *connection)
-            .await
-            .map_err(|error| {
-                AppError::Database(format!("Outbox-Eintrag nicht gespeichert: {error}"))
-            })?;
-        Ok(())
+        append_event_with_outbox(connection, event).await
     }
 }
 

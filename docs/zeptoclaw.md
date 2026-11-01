@@ -24,15 +24,16 @@ Der Worker übergibt den Auftrag eines Agenten als Nachricht an den
 Gateway-Aufruf:
 
 ```bash
-zeptoclaw agent -m "Auftrag an den Agenten"
+zeptoclaw agent --template <rolle> --no-stream -m <nachricht>
 ```
 
-Der Gateway-Aufruf kennt weitere Schalter. `--template` wählt eine
-Agentenvorlage aus dem eingebauten Angebot oder aus einer Datei unter
-`~/.zeptoclaw/templates`. `--mode` legt die Rechte des Agenten fest, etwa
-`observer`, `assistant` oder `autonomous`. `--no-stream` unterdrückt die
-fortlaufende Ausgabe. `--dry-run` zeigt nur die Werkzeugaufrufe, ohne sie
-auszuführen.
+Der Schalter `--template` wählt eine Agentenvorlage aus dem eingebauten
+Angebot oder aus einer Datei unter `~/.zeptoclaw/templates`. Die Vorlage
+bestimmt die Rolle des Agenten. Der Schalter `--no-stream` unterdrückt die
+fortlaufende Ausgabe, damit der Worker nur die fertige Antwort verarbeitet.
+Der Schalter `--mode` legt die Rechte des Agenten fest, etwa `observer`,
+`assistant` oder `autonomous`. Der Schalter `--dry-run` zeigt nur die
+Werkzeugaufrufe, ohne sie auszuführen.
 
 Um die Bereitschaft zu prüfen, fragt der Worker die Adresse aus
 `ZEPTOCLAW_HEALTH_URL` ab. Ist das Gateway nicht erreichbar, bleibt der
@@ -70,7 +71,7 @@ für die Einrichtung und die Fehlersuche nützlich.
 | `zeptoclaw doctor` | Prüft das System, mit `--online` auch die Anbieter |
 | `zeptoclaw status` | Zeigt den Systemzustand |
 | `zeptoclaw version` | Zeigt die Version |
-| `zeptoclaw agent -m <text>` | Führt einen Auftrag aus |
+| `zeptoclaw agent --template <rolle> --no-stream -m <text>` | Führt einen Auftrag aus |
 | `zeptoclaw agent-stdin` | Führt Aufträge über stdin und stdout aus |
 | `zeptoclaw batch --input <datei>` | Verarbeitet mehrere Aufträge aus einer Datei |
 | `zeptoclaw gateway` | Startet das Gateway, optional mit `--containerized` |
@@ -90,7 +91,7 @@ Ergebnis mit `--output` in eine Datei. Der Befehl `migrate` bietet
 - Das Container-Image enthält kein ZeptoClaw. Der Worker findet das
   Programm nur, wenn es auf dem Host oder als zusätzlicher Dienst im
   Compose-Netz bereitsteht. Die Compose-Datei stellt es bisher nicht bereit.
-- Die `README.md` des Projekts nennt die Variablen `OPENCLAW_BIN` und
-  `OPENCLAW_PROJECT_DIR`. Der Kern liest `ZEPTOCLAW_BIN` und
-  `ZEPTOCLAW_PROJECT_DIR`. Die Betriebsdatei folgt dem Kern. Die
-  `README.md` ist zu berichtigen.
+- Die Konfigurationstabelle der `README.md` nennt für das Programm und das
+  Arbeitsverzeichnis andere Variablennamen als der Kern. Der Kern liest
+  `ZEPTOCLAW_BIN` und `ZEPTOCLAW_PROJECT_DIR`. Die Betriebsdatei folgt dem
+  Kern. Die `README.md` ist zu berichtigen.
